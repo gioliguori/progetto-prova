@@ -14,3 +14,9 @@ VALUES (UUID(), 'Electric Bike', 80, 45.464200, 9.191370,
        (UUID(), 'Road Bike', 90, 45.463000, 9.190160, 
         (SELECT partner_id FROM partners WHERE partner_name = 'Altro'), 'no', 0);
 
+
+-- Inserisci tre nuovi utenti
+INSERT INTO users (user_id, username, email, first_name, last_name, password)
+VALUES (UUID(), 'mario.rossi', 'mario.rossi@example.com', 'Mario', 'Rossi', 'password123'),
+       (UUID(), 'luigi.bianchi', 'luigi.bianchi@example.com', 'Luigi', 'Bianchi', 'password456'),
+       (UUID(), 'anna.verdi', 'anna.verdi@example.com', 'Anna', 'Verdi', 'password789');

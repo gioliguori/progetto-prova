@@ -54,6 +54,7 @@ export default {
         });
         Loading.hide();
         if (response.data.success) {
+          localStorage.setItem("username", response.data.user.username); // Salva il nome utente
           this.$router.push({ name: "loggedInPage" });
         } else {
           this.$q.notify({

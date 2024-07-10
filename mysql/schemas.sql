@@ -30,3 +30,14 @@ CREATE TABLE bikes (
 
 
 -- count_bike di partner serve un trigger che quando inserisci bici fa +1 a quel partner_id
+
+-- Crea di nuovo la tabella "users" con UUID generato automaticamente
+CREATE TABLE users (
+    user_id CHAR(36) PRIMARY KEY DEFAULT (UUID()),     -- UUID come ID univoco per ogni utente
+    username VARCHAR(100) NOT NULL,                    -- Username dell'utente
+    email VARCHAR(100) NOT NULL,                       -- Email dell'utente
+    first_name VARCHAR(100) NOT NULL,                  -- Nome dell'utente
+    last_name VARCHAR(100) NOT NULL,                   -- Cognome dell'utente
+    password VARCHAR(100) NOT NULL,                    -- Password dell'utente
+    profile_creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Data di creazione del profilo
+);

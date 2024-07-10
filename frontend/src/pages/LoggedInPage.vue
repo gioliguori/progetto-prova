@@ -18,15 +18,15 @@
 export default {
   data() {
     return {
-      username: "testuser", // Replace with dynamic data as needed
+      username: "", // Viene aggiornato con il nome utente reale
     };
   },
   created() {
-    console.log("LoggedInPage component created");
+    this.username = localStorage.getItem("username"); // Recupera il nome utente da localStorage
   },
-
   methods: {
     logout() {
+      localStorage.removeItem("username"); // Rimuove il nome utente da localStorage
       this.$router.push({ name: "login" });
     },
   },
