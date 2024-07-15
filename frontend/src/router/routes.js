@@ -1,13 +1,18 @@
-import IndexPage from "pages/IndexPage.vue";
-import LoggedInPage from "pages/LoggedInPage.vue";
-
 const routes = [
   {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
     children: [
-      { path: "", component: IndexPage, name: "login" },
-      { path: "logged-in", component: LoggedInPage, name: "loggedInPage" },
+      {
+        path: "",
+        component: () => import("pages/IndexPage.vue"),
+        name: "login",
+      },
+      {
+        path: "logged-in",
+        component: () => import("pages/LoggedInPage.vue"),
+        name: "loggedInPage",
+      },
     ],
   },
   {
