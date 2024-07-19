@@ -7,7 +7,10 @@
         >
           <q-card-section>
             <q-avatar size="103px" class="absolute-center shadow-10">
-              <img src="src/assets/bici-login-admin.png" />
+              <img
+                src="src/assets/bici-login-admin.png"
+                style="object-fit: cover; width: 100%; height: 100%"
+              />
             </q-avatar>
           </q-card-section>
           <q-card-section>
@@ -52,7 +55,7 @@ import axios from "axios";
 import { Loading, QSpinnerGears } from "quasar";
 
 export default {
-  name: "LoginPage",
+  name: "LoginAdmin",
   data() {
     return {
       username: "",
@@ -89,9 +92,14 @@ export default {
           );
           if (this.role === "admin") {
             localStorage.setItem("username", response.data.user.username); // Salva il nome utente per l'admin
+            localStorage.setItem(
+              "partners",
+              JSON.stringify(response.data.partners)
+            ); // Salva i partner per l'admin
             this.$router.push({ name: "DashboardAdmin" });
           } else if (this.role === "partner") {
             localStorage.setItem("partner_id", response.data.user.partner_id); // Salva il partner_id per il partner
+            localStorage.setItem("partner_name", response.data.user.username); // Salva il partner_name per il partner
             this.$router.push({ name: "DashboardPartner" });
           }
         } else {
@@ -119,6 +127,6 @@ export default {
 
 <style>
 .bg-image {
-  background-image: linear-gradient(135deg, #7028e4 0%, #e5b2ca 100%);
+  background-image: linear-gradient(135deg, #a2d9ff, #66b2ff);
 }
 </style>
