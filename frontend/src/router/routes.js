@@ -14,7 +14,7 @@ const routes = [
         name: "loggedInPage",
       },
       {
-        path: "/DashboardAdmin",
+        path: "/dashboard/admin",
         component: () => import("pages/DashboardAdmin.vue"),
         name: "DashboardAdmin",
       },
