@@ -19,7 +19,7 @@ const routes = [
         name: "DashboardAdmin",
       },
       {
-        path: "/DashboardPartner",
+        path: "/dashboard/partner",
         component: () => import("pages/DashboardPartner.vue"),
         name: "DashboardPartner",
       },
@@ -31,7 +31,7 @@ const routes = [
     component: () => import("pages/ErrorNotFound.vue"),
   },
   {
-    path: "/LoginAdmin",
+    path: "/login/admin",
     component: () => import("pages/LoginAdmin.vue"),
     name: "LoginAdmin",
   },
