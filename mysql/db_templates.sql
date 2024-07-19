@@ -20,3 +20,16 @@ INSERT INTO users (user_id, username, email, first_name, last_name, password)
 VALUES (UUID(), 'mario.rossi', 'mario.rossi@example.com', 'Mario', 'Rossi', 'password123'),
        (UUID(), 'luigi.bianchi', 'luigi.bianchi@example.com', 'Luigi', 'Bianchi', 'password456'),
        (UUID(), 'anna.verdi', 'anna.verdi@example.com', 'Anna', 'Verdi', 'password789');
+
+       
+INSERT INTO admin (username, password) VALUES 
+('admin1', 'password1'),
+('admin2', 'password2'),
+('admin3', 'password3');
+
+-- Inserisci tre nuovi partner nella tabella partner_auth rispettando gli UUID
+-- Inserisci i partner nella tabella partner_auth rispettando gli UUID esistenti
+INSERT INTO partner_auth (uuid, username, password) VALUES 
+('3397a676-3b87-11ef-9df2-a4bfcecd978d', 'HotelBellaVista', 'password1'),
+('3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'RistoranteLaPergola', 'password2'),
+('3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'Altro', 'password3');

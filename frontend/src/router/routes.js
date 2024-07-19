@@ -13,11 +13,27 @@ const routes = [
         component: () => import("pages/LoggedInPage.vue"),
         name: "loggedInPage",
       },
+      {
+        path: "/DashboardAdmin",
+        component: () => import("pages/DashboardAdmin.vue"),
+        name: "DashboardAdmin",
+      },
+      {
+        path: "/DashboardPartner",
+        component: () => import("pages/DashboardPartner.vue"),
+        name: "DashboardPartner",
+      },
     ],
   },
   {
     path: "/:catchAll(.*)*",
+
     component: () => import("pages/ErrorNotFound.vue"),
+  },
+  {
+    path: "/LoginAdmin",
+    component: () => import("pages/LoginAdmin.vue"),
+    name: "LoginAdmin",
   },
 ];
 
