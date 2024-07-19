@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const knex = require("../knexfile"); // Importa la configurazione di knex
+const knex = require("../knexfile"); // Assicurati che la configurazione di Knex sia corretta
 
 // Login route per utenti generici (users)
 router.post("/api/login", async (req, res) => {
@@ -39,9 +39,10 @@ router.post("/api/login/admin-partner", async (req, res) => {
 
       if (results.length > 0) {
         console.log("Login avvenuto con successo per l'admin:", username);
-        // Recupera la lista dei partner
-        const partners = await knex("partners").select("*");
-        res.json({ success: true, user: results[0], partners });
+        res.json({
+          success: true,
+          user: results[0],
+        });
       } else {
         console.log("Username o password non validi per l'admin:", username);
         res.json({ success: false, message: "Invalid username or password" });

@@ -92,10 +92,6 @@ export default {
           );
           if (this.role === "admin") {
             localStorage.setItem("username", response.data.user.username); // Salva il nome utente per l'admin
-            localStorage.setItem(
-              "partners",
-              JSON.stringify(response.data.partners)
-            ); // Salva i partner per l'admin
             this.$router.push({ name: "DashboardAdmin" });
           } else if (this.role === "partner") {
             localStorage.setItem("partner_id", response.data.user.partner_id); // Salva il partner_id per il partner
