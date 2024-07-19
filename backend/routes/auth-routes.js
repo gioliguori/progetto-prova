@@ -39,7 +39,9 @@ router.post("/api/login/admin-partner", async (req, res) => {
 
       if (results.length > 0) {
         console.log("Login avvenuto con successo per l'admin:", username);
-        res.json({ success: true, user: results[0] });
+        // Recupera la lista dei partner
+        const partners = await knex("partners").select("*");
+        res.json({ success: true, user: results[0], partners });
       } else {
         console.log("Username o password non validi per l'admin:", username);
         res.json({ success: false, message: "Invalid username or password" });
