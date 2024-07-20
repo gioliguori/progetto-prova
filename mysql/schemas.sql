@@ -5,18 +5,19 @@ CREATE TABLE partners (
     partner_type ENUM('hotel', 'ristorante', 'altro') NOT NULL,  -- Tipo di partner
     latitude DECIMAL(10, 8),                           -- Latitudine
     longitude DECIMAL(11, 8),                          -- Longitudine
-    count_bike INT DEFAULT 0                           -- Conteggio delle bici
+    count_bike INT DEFAULT 0,                          -- Conteggio delle bici
+    profile_pic VARCHAR(255)                           -- Percorso dell'immagine del profilo
 );
 
 -- Crea la tabella "bikes"
 CREATE TABLE bikes (
     bike_id CHAR(36) PRIMARY KEY DEFAULT (UUID()),     -- UUID come ID univoco per ogni bici
-    bike_type VARCHAR(100) NOT NULL,                   -- Tipo di bici
+    bike_type ENUM('City Bike Elettrica', 'Mtb Elettrica', 'Pieghevole Elettrica', 'Bici Da Città', 'Bici Per Bambini', 'Mountain Bike') NOT NULL,  -- Tipo di bici
     battery_level INT,                                 -- Livello della batteria
     latitude DECIMAL(10, 8),                           -- Latitudine
     longitude DECIMAL(11, 8),                          -- Longitudine
     partner_id CHAR(36),                               -- UUID del partner (chiave esterna)
-    reserved ENUM('yes', 'no') DEFAULT 'no',           -- Stato di prenotazione
+    state ENUM('disponibile', 'in noleggio', 'riservata', 'dismessa') DEFAULT 'disponibile',  -- Stato della bici
     count_run INT DEFAULT 0,                           -- Conteggio delle corse
     FOREIGN KEY (partner_id) REFERENCES partners(partner_id) -- Chiave esterna
 );
@@ -58,30 +59,18 @@ CREATE TABLE reservations (
     FOREIGN KEY (user_id) REFERENCES users(user_id),     -- Chiave esterna
     FOREIGN KEY (bike_id) REFERENCES bikes(bike_id)      -- Chiave esterna
 );
--- Crea il trigger per impostare la data di scadenza
-DELIMITER $$
 
-CREATE TRIGGER set_expiration_date
-BEFORE INSERT ON reservations
-FOR EACH ROW
-BEGIN
-  SET NEW.expiration_date = DATE_ADD(NEW.reservation_date, INTERVAL 15 MINUTE);
-END$$
 
-DELIMITER ;
+SET GLOBAL event_scheduler = ON;
 
--- Crea la procedura per aggiornare lo stato delle prenotazioni scadute
-DELIMITER //
 
-CREATE PROCEDURE expire_reservations()
-BEGIN
+CREATE EVENT IF NOT EXISTS expire_reservations_event
+ON SCHEDULE EVERY 1 MINUTE
+DO
   UPDATE reservations
   SET status = 'cancelled'
   WHERE status = 'active'
     AND expiration_date <= NOW();
-END//
-
-DELIMITER ;
 
 
 -- Crea la tabella "rentals"
@@ -89,11 +78,14 @@ CREATE TABLE rentals (
     rental_id CHAR(36) PRIMARY KEY DEFAULT (UUID()),       -- UUID come ID univoco per ogni noleggio
     user_id CHAR(36) NOT NULL,                             -- UUID dell'utente che ha noleggiato la bici
     bike_id CHAR(36) NOT NULL,                             -- UUID della bici noleggiata
-    rental_type ENUM('hourly', 'daily', 'weekly') NOT NULL, -- Tipo di noleggio
+    rental_type ENUM('hourly', 'daily', 'weekly') NOT NULL,-- Tipo di noleggio
     rental_start TIMESTAMP DEFAULT CURRENT_TIMESTAMP,      -- Data e ora di inizio del noleggio
     rental_end TIMESTAMP,                                  -- Data e ora di fine del noleggio
     amount DECIMAL(10, 2) NOT NULL,                        -- Importo del noleggio
-    FOREIGN KEY (user_id, bike_id) REFERENCES reservations(user_id, bike_id) -- Chiave esterna composta
+    reservation_id CHAR(36),                               -- UUID della prenotazione (opzionale)
+    FOREIGN KEY (user_id) REFERENCES users(user_id),       -- Chiave esterna verso la tabella users
+    FOREIGN KEY (bike_id) REFERENCES bikes(bike_id),       -- Chiave esterna verso la tabella bikes
+    FOREIGN KEY (reservation_id) REFERENCES reservations(reservation_id) -- Chiave esterna verso la tabella reservations
 );
 
 -- Crea la tabella "payments"

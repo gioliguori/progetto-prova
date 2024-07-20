@@ -1,10 +1,10 @@
 const routes = [
   {
     path: "/",
-    component: () => import("layouts/MainLayout.vue"),
+    component: () => import("layouts/AdminLayout.vue"),
     children: [
       {
-        path: "/dashboard/admin",
+        path: "/DashboardAdmin",
         component: () => import("pages/DashboardAdmin.vue"),
         name: "DashboardAdmin",
       },
@@ -28,10 +28,10 @@ const routes = [
 
   {
     path: "/",
-    component: () => import("layouts/MainLayoutPARTNER.vue"),
+    component: () => import("layouts/PartnerLayout.vue"),
     children: [
       {
-        path: "/dashboard/partner",
+        path: "/DashboardPartner",
         component: () => import("pages/DashboardPartner.vue"),
         name: "DashboardPartner",
       },
@@ -56,6 +56,12 @@ const routes = [
   // Always leave this as last one,
   // but you can also remove it
   {
+    path: "",
+    component: () => import("pages/LoginAdmin.vue"),
+    name: "LoginAdmin",
+  },
+
+  {
     path: "/:catchAll(.*)*",
     component: () => import("pages/Error404.vue"),
   },
@@ -68,11 +74,6 @@ const routes = [
     component: () => import("pages/Maintenance.vue"),
   },
 
-  {
-    path: "/login/admin",
-    component: () => import("pages/LoginAdmin.vue"),
-    name: "LoginAdmin",
-  },
   {
     path: "/Lock",
     component: () => import("pages/LockScreen.vue"),

@@ -1,26 +1,26 @@
 -- Inserisci tre nuovi partner
-INSERT INTO partners (partner_id, partner_name, partner_type, latitude, longitude, count_bike)
+INSERT INTO partners (partner_id, partner_name, partner_type, latitude, longitude, count_bike, profile_pic)
 VALUES 
-('3397a676-3b87-11ef-9df2-a4bfcecd978d', 'Hotel Bella Vista', 'hotel', 45.464211, 9.191383, 1),
-('3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'Ristorante La Pergola', 'ristorante', 45.465421, 9.192593, 1),
-('3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'Altro', 'altro', 45.463001, 9.190173, 1);
+('3397a676-3b87-11ef-9df2-a4bfcecd978d', 'Hotel Bella Vista', 'hotel', 45.464211, 9.191383, 1, 'rosso.jpg'),
+('3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'Ristorante La Pergola', 'ristorante', 45.465421, 9.192593, 1, 'giallo.jpg'),
+('3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'Altro', 'altro', 45.463001, 9.190173, 1, 'verde.jpg');
 
 -- Inserisci tre nuove bici associate ai partner
-INSERT INTO bikes (bike_id, bike_type, battery_level, latitude, longitude, partner_id, reserved, count_run)
+INSERT INTO bikes (bike_id, bike_type, battery_level, latitude, longitude, partner_id, state, count_run)
 VALUES 
-('3398d99c-3b87-11ef-9df2-a4bfcecd978d', 'Electric Bike', 80, 45.464200, 9.191370, '3397a676-3b87-11ef-9df2-a4bfcecd978d', 'no', 0),
-('3398a3e6-3b87-11ef-9df2-a4bfcecd978d', 'Mountain Bike', 75, 45.465400, 9.192580, '3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'no', 0),
-('3398a5f8-3b87-11ef-9df2-a4bfcecd978d', 'Road Bike', 90, 45.463000, 9.190160, '3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'no', 0);
+('3398d99c-3b87-11ef-9df2-a4bfcecd978d', 'City Bike Elettrica', 80, 45.464200, 9.191370, '3397a676-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0),
+('3398a3e6-3b87-11ef-9df2-a4bfcecd978d', 'Mtb Elettrica', 75, 45.465400, 9.192580, '3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0),
+('3398a5f8-3b87-11ef-9df2-a4bfcecd978d', 'Pieghevole Elettrica', 90, 45.463000, 9.190160, '3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0);
 
 -- Inserisci altre bici associate ai partner
-INSERT INTO bikes (bike_id, bike_type, battery_level, latitude, longitude, partner_id, reserved, count_run)
+INSERT INTO bikes (bike_id, bike_type, battery_level, latitude, longitude, partner_id, state, count_run)
 VALUES 
-(UUID(), 'Electric Bike', 85, 45.464210, 9.191375, '3397a676-3b87-11ef-9df2-a4bfcecd978d', 'no', 0),
-(UUID(), 'Mountain Bike', 70, 45.465410, 9.192585, '3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'no', 0),
-(UUID(), 'Road Bike', 95, 45.463010, 9.190165, '3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'no', 0),
-(UUID(), 'Hybrid Bike', 90, 45.464215, 9.191380, '3397a676-3b87-11ef-9df2-a4bfcecd978d', 'no', 0),
-(UUID(), 'Folding Bike', 75, 45.465415, 9.192590, '3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'no', 0),
-(UUID(), 'Cruiser Bike', 80, 45.463015, 9.190170, '3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'no', 0);
+(UUID(), 'City Bike Elettrica', 85, 45.464210, 9.191375, '3397a676-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0),
+(UUID(), 'Mtb Elettrica', 70, 45.465410, 9.192585, '3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0),
+(UUID(), 'Pieghevole Elettrica', 95, 45.463010, 9.190165, '3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0),
+(UUID(), 'Bici Da Città', 90, 45.464215, 9.191380, '3397a676-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0),
+(UUID(), 'Bici Per Bambini', 75, 45.465415, 9.192590, '3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0),
+(UUID(), 'Mountain Bike', 80, 45.463015, 9.190170, '3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0);
 
 -- Aggiorna il conteggio delle bici per ciascun partner
 UPDATE partners
@@ -47,14 +47,12 @@ SET count_bike = (
 )
 WHERE partner_name = 'Altro';
 
-
 -- Inserisci tre nuovi utenti
 INSERT INTO users (user_id, username, email, first_name, last_name, password)
 VALUES 
 ('b011b132-3ef8-11ef-9df2-a4bfcecd978d', 'mario.rossi', 'mario.rossi@example.com', 'Mario', 'Rossi', 'password123'),
 ('b011b51a-3ef8-11ef-9df2-a4bfcecd978d', 'luigi.bianchi', 'luigi.bianchi@example.com', 'Luigi', 'Bianchi', 'password456'),
 ('b011b646-3ef8-11ef-9df2-a4bfcecd978d', 'anna.verdi', 'anna.verdi@example.com', 'Anna', 'Verdi', 'password789');
-
 
 -- Inserisci tre nuovi admin
 INSERT INTO admin (username, password) VALUES 
@@ -68,13 +66,12 @@ INSERT INTO partner_auth (uuid, username, password) VALUES
 ('3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'RistoranteLaPergola', 'password2'),
 ('3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'Altro', 'password3');
 
-
--- Inserisci delle nuove prenotazioni
-INSERT INTO reservations (reservation_id, user_id, bike_id, reservation_date, status)
+-- Inserisci delle nuove prenotazioni con la data di scadenza calcolata
+INSERT INTO reservations (reservation_id, user_id, bike_id, reservation_date, expiration_date, status)
 VALUES 
-(UUID(), 'b011b132-3ef8-11ef-9df2-a4bfcecd978d', '3398d99c-3b87-11ef-9df2-a4bfcecd978d', CURRENT_TIMESTAMP, 'active'),
-(UUID(), 'b011b51a-3ef8-11ef-9df2-a4bfcecd978d', '3398a3e6-3b87-11ef-9df2-a4bfcecd978d', CURRENT_TIMESTAMP, 'active'),
-(UUID(), 'b011b646-3ef8-11ef-9df2-a4bfcecd978d', '3398a5f8-3b87-11ef-9df2-a4bfcecd978d', CURRENT_TIMESTAMP, 'active');
+(UUID(), 'b011b132-3ef8-11ef-9df2-a4bfcecd978d', '3398d99c-3b87-11ef-9df2-a4bfcecd978d', CURRENT_TIMESTAMP, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 15 MINUTE), 'active'),
+(UUID(), 'b011b51a-3ef8-11ef-9df2-a4bfcecd978d', '3398a3e6-3b87-11ef-9df2-a4bfcecd978d', CURRENT_TIMESTAMP, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 15 MINUTE), 'active'),
+(UUID(), 'b011b646-3ef8-11ef-9df2-a4bfcecd978d', '3398a5f8-3b87-11ef-9df2-a4bfcecd978d', CURRENT_TIMESTAMP, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 15 MINUTE), 'active');
 
 -- Inserisci dei nuovi noleggi e aggiorna il campo count_run
 -- Primo noleggio
