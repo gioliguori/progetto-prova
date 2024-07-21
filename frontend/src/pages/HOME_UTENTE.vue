@@ -6,7 +6,9 @@
 import { defineComponent, onMounted } from "vue";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import { useRouter } from "vue-router";
+import 'leaflet-control-geocoder';
 
 export default defineComponent({
   name: "MapComponent",
@@ -45,6 +47,49 @@ export default defineComponent({
             router.push(marker.page); // Naviga alla pagina specificata
           });
       });
+
+      // Ottenere la posizione in tempo reale dell'utente
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const userLocation = [
+              position.coords.latitude,
+              position.coords.longitude,
+            ];
+
+            // Aggiungi un marker per la posizione dell'utente
+            L.marker(userLocation)
+              .addTo(map)
+              .bindPopup("TU SEI QUI!")
+              .bindTooltip("TU SEI QUI!", {
+                permanent: true,
+                direction: "top",
+                className: "marker-tooltip",
+              });
+
+            // Centra la mappa sulla posizione dell'utente
+            map.setView(userLocation, 13);
+          },
+          (error) => {
+            console.error("Errore nella geolocalizzazione:", error);
+          }
+        );
+      } else {
+        console.error("Geolocation non è supportato da questo browser.");
+      }
+
+      // Aggiungi la barra di ricerca
+      const geocoder = L.Control.Geocoder.nominatim();
+      L.Control.geocoder({
+        defaultMarkGeocode: false,
+      })
+        .on("markgeocode", function (e) {
+          const bbox = e.geocode.bbox;
+          const center = e.geocode.center;
+          L.marker(center).addTo(map).bindPopup(e.geocode.name).openPopup();
+          map.fitBounds(bbox);
+        })
+        .addTo(map);
     });
 
     return {};

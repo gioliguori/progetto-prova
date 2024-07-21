@@ -54,21 +54,46 @@ const routes = [
 
   {
     path: "/",
-    component: () => import("layouts/MainLayoutUTENTE.vue"),
+    component: () => import("layouts/MainLayoutUtente.vue"),
     children: [
       {
         path: "HOME_UTENTE",
         component: () => import("pages/HOME_UTENTE.vue"),
         name: "HOME_UTENTE",
       },
+      {
+        path: "ProfiloUtente",
+        component: () => import("pages/ProfiloUtente.vue"),
+        name: "ProfiloUtente",
+      },
+      {
+        path: "Movimenti",
+        component: () => import("pages/Movimenti.vue"),
+        name: "Movimenti",
+      },
+      {
+        path: "ModificaProfilo",
+        component: () => import("pages/ModificaProfilo.vue"),
+        name: "ModificaProfilo",
+      },
+      {
+        path: "Assistenza",
+        component: () => import("pages/Assistenza.vue"),
+        name: "Assistenza",
+      },
     ],
   },
 
 
   {
-    path: "",
+    path: "/LoginUtente",
     component: () => import("pages/LoginUtente.vue"),
     name: "LoginUtente",
+  },
+  {
+    path: "/RegistrazioneUtente",
+    component: () => import("pages/RegistrazioneUtente.vue"),
+    name: "RegistrazioneUtente",
   },
   {
     path: "/LoginAdmin",
@@ -93,6 +118,11 @@ const routes = [
     path: "/lock",
     component: () => import("pages/LockScreen.vue"),
     name: "Lock",
+  },
+  {
+    path: "",
+    component: () => import("pages/PaginaIniziale.vue"),
+    name: "PaginaIniziale",
   },
 ];
 

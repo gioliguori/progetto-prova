@@ -8,7 +8,7 @@
           <q-card-section>
             <q-avatar size="103px" class="absolute-center shadow-10">
               <img
-                src="src/assets/bici-login-admin.png"
+                src="src/assets/schiano.go.png"
                 style="object-fit: cover; width: 100%; height: 100%"
               />
             </q-avatar>

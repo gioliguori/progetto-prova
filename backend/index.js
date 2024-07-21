@@ -13,11 +13,13 @@ app.use(bodyParser.json());
 const bikesRoutes = require("./routes/bikes-routes");
 const authRoutes = require("./routes/auth-routes");
 const adminDashboardRoutes = require("./routes/admin-dashboard-routes");
+const userRoutes = require("./routes/user-routes");
 
 // Utilizza i router
 app.use(bikesRoutes);
 app.use(authRoutes);
 app.use(adminDashboardRoutes);
+app.use(userRoutes);
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);

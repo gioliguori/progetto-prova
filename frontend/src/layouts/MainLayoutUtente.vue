@@ -1,17 +1,18 @@
 <template>
-  <q-layout view="lHh lpr lFf">
+  <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <!-- Bottone Freccia -->
         <q-btn
           flat
           dense
           round
-          @click="goToHomeUser"
+          @click="goToHome"
           icon="arrow_back"
-          aria-label="Back to Home"
+          aria-label="Back"
         />
-        <q-toolbar-title class="title-font"> Schiano.GO </q-toolbar-title>
+        <q-toolbar-title class="title-font">
+          Schiano.GO
+        </q-toolbar-title>
         <q-space />
       </q-toolbar>
     </q-header>
@@ -22,43 +23,39 @@
 
     <!-- Nuovo Footer Menu -->
     <q-footer class="footer-menu" elevated>
-      <q-btn flat round color="primary" @click="navigateTo('page1')">
-        <q-icon name="star" />
-      </q-btn>
-      <q-btn flat round color="primary" @click="navigateTo('page2')">
-        <q-icon name="location_on" />
-        <!-- Mappa o indicatore di posizione -->
-      </q-btn>
-      <q-btn flat round color="primary" @click="navigateTo('page3')">
-        <q-icon name="account_circle" />
-        <!-- Profilo utente -->
-      </q-btn>
+      <div class="footer-btn">
+        <q-btn flat round color="primary" @click="navigateTo('Movimenti')">
+          <q-icon name="credit_card" />
+        </q-btn>
+        <div class="footer-label">Movimenti</div>
+      </div>
+      <div class="footer-btn">
+        <q-btn flat round color="primary" @click="navigateTo('HOME_UTENTE')">
+          <q-icon name="map" />
+        </q-btn>
+        <div class="footer-label">Mappa</div>
+      </div>
+      <div class="footer-btn">
+        <q-btn flat round color="primary" @click="navigateTo('ProfiloUtente')">
+          <q-icon name="person" />
+        </q-btn>
+        <div class="footer-label">Profilo</div>
+      </div>
     </q-footer>
   </q-layout>
 </template>
 
 <script>
-import EssentialLink from "components/EssentialLink.vue";
-import Messages from "./Messages.vue";
-
-import { defineComponent } from "vue";
-import { useQuasar } from "quasar";
-import { useRouter } from "vue-router";
+import { defineComponent } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
-  name: "MainLayout",
-
-  components: {
-    EssentialLink,
-    Messages,
-  },
-
+  name: 'MainLayout',
   setup() {
-    const $q = useQuasar();
     const router = useRouter();
 
-    const goToHomeUser = () => {
-      router.push("/HOME_UTENTE");
+    const goToHome = () => {
+      router.push('/HOME_UTENTE');
     };
 
     const navigateTo = (page) => {
@@ -66,8 +63,7 @@ export default defineComponent({
     };
 
     return {
-      $q,
-      goToHomeUser,
+      goToHome,
       navigateTo,
     };
   },
@@ -75,24 +71,31 @@ export default defineComponent({
 </script>
 
 <style scoped>
-/* Stile per il menu in basso */
 .footer-menu {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: #ffffff; /* Colore di sfondo bianco */
+  background-color: #ffffff; /* Cambiato a bianco */
   display: flex;
   justify-content: space-around;
   align-items: center;
   padding: 10px 0;
 }
 
-.footer-menu q-btn {
-  color: #333; /* Colore del testo (icone) scuro per contrastare con lo sfondo bianco */
+.footer-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #333; /* Colore del testo per contrastare con lo sfondo bianco */
 }
 
-.footer-menu q-icon {
-  font-size: 24px; /* Dimensione dell'icona */
+.footer-label {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.q-icon {
+  color: #333; /* Colore delle icone per contrastare con lo sfondo bianco */
 }
 </style>
