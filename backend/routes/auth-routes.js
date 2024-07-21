@@ -50,8 +50,13 @@ router.post("/api/login/admin-partner", async (req, res) => {
     } else if (role === "partner") {
       // Login per partner
       const results = await knex("partner_auth")
-        .where({ username: username, password: password })
-        .select("uuid as partner_id", "username");
+        .join("partners", "partner_auth.uuid", "partners.partner_id")
+        .where({
+          "partner_auth.username": username,
+          "partner_auth.password": password,
+          "partners.is_deleted": false,
+        })
+        .select("partner_auth.uuid as partner_id", "partner_auth.username");
 
       if (results.length > 0) {
         console.log("Login avvenuto con successo per il partner:", username);
