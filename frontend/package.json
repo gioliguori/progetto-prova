@@ -14,11 +14,13 @@
   "dependencies": {
     "@quasar/extras": "^1.16.11",
     "@quasar/quasar-ui-qcalendar": "^4.0.0-beta.19",
+    "@vue/runtime-dom": "^3.4.33",
     "axios": "^1.7.2",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "echarts": "^5.4.1",
     "express": "^4.19.2",
+    "leaflet": "^1.9.4",
     "pinia": "^2.0.11",
     "quasar": "^2.16.4",
     "vue": "^3.0.0",
