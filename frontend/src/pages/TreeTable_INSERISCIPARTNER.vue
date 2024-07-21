@@ -22,19 +22,46 @@
         class="q-mb-md"
       ></q-select>
 
+      <!-- Mappa per selezionare latitudine e longitudine -->
+      <div id="map" style="height: 400px" class="q-mb-md"></div>
+
       <q-input
-        v-model="latitude"
+        v-model="formattedLatitude"
         label="Latitudine"
-        type="number"
+        type="text"
+        outlined
+        readonly
+        class="q-mb-md"
+      ></q-input>
+
+      <q-input
+        v-model="formattedLongitude"
+        label="Longitudine"
+        type="text"
+        outlined
+        readonly
+        class="q-mb-md"
+      ></q-input>
+
+      <!-- Titolo per le credenziali del partner -->
+      <div class="q-mb-md">
+        <h3>CREDENZIALI PARTNER</h3>
+      </div>
+
+      <q-input
+        v-model="username"
+        label="Username"
+        maxlength="50"
         outlined
         required
         class="q-mb-md"
       ></q-input>
 
       <q-input
-        v-model="longitude"
-        label="Longitudine"
-        type="number"
+        v-model="password"
+        label="Password"
+        type="text"
+        maxlength="50"
         outlined
         required
         class="q-mb-md"
@@ -74,8 +101,24 @@
         </q-card-section>
 
         <q-card-section>
-          Input non valido. Per favore, evita di usare parole riservate come
-          "DROP TABLE".
+          {{ errorMessage }}
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="OK" color="primary" v-close-popup></q-btn>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <!-- Dialogo di errore per password -->
+    <q-dialog v-model="passwordErrorDialog" persistent>
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Errore Password</div>
+        </q-card-section>
+
+        <q-card-section>
+          La password deve contenere almeno un numero.
         </q-card-section>
 
         <q-card-actions align="right">
@@ -87,13 +130,25 @@
 </template>
 
 <script>
-export default {
+import { defineComponent, onMounted } from "vue";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import "leaflet-control-geocoder/dist/Control.Geocoder.css";
+import "leaflet-control-geocoder";
+import axios from "axios";
+
+export default defineComponent({
+  name: "PartnerForm",
   data() {
     return {
       name: "",
       type: null,
-      latitude: null,
-      longitude: null,
+      latitude: 40.8522, // Default latitude
+      longitude: 14.2681, // Default longitude
+      formattedLatitude: "40.852200", // Default formatted latitude
+      formattedLongitude: "14.268100", // Default formatted longitude
+      username: "",
+      password: "",
       typeOptions: [
         { label: "Hotel", value: "hotel" },
         { label: "Ristorante", value: "ristorante" },
@@ -101,54 +156,97 @@ export default {
       ],
       successDialog: false,
       errorDialog: false,
+      passwordErrorDialog: false,
+      errorMessage: "", // Aggiunto per memorizzare il messaggio di errore
     };
   },
   methods: {
-    containsUnsafeTerms(input) {
-      const blacklist = [
-        "DROP TABLE",
-        "SELECT *",
-        "DELETE FROM",
-        "INSERT INTO",
-        "UPDATE",
-        "--",
-        ";",
-        "/*",
-        "*/",
-      ];
-      return blacklist.some((term) => input.toUpperCase().includes(term));
+    isPasswordValid(password) {
+      return /\d/.test(password); // Controlla se la password contiene almeno un numero
     },
-    submitForm() {
-      // Verifica se gli input contengono termini pericolosi
-      const isNameUnsafe = this.containsUnsafeTerms(this.name);
-      const isLatitudeUnsafe = this.containsUnsafeTerms(
-        this.latitude.toString()
-      );
-      const isLongitudeUnsafe = this.containsUnsafeTerms(
-        this.longitude.toString()
-      );
-
-      if (isNameUnsafe || isLatitudeUnsafe || isLongitudeUnsafe) {
-        // Mostra il dialogo di errore se l'input è non sicuro
-        this.errorDialog = true;
+    async submitForm() {
+      if (!this.isPasswordValid(this.password)) {
+        // Mostra il dialogo di errore se la password non è valida
+        this.passwordErrorDialog = true;
       } else {
-        // Logica per la gestione del form
-        console.log("Nome:", this.name);
-        console.log("Tipo:", this.type);
-        console.log("Latitudine:", this.latitude);
-        console.log("Longitudine:", this.longitude);
-
-        // Mostra il dialogo di successo
-        this.successDialog = true;
+        try {
+          const response = await axios.post(
+            "http://localhost:3000/api/admin/partner/insert",
+            {
+              name: this.name,
+              type: this.type,
+              latitude: this.latitude,
+              longitude: this.longitude,
+              username: this.username,
+              password: this.password,
+            }
+          );
+          if (response.status === 201) {
+            // Mostra il dialogo di successo
+            this.successDialog = true;
+          }
+        } catch (error) {
+          // Memorizza il messaggio di errore e mostra il dialogo di errore
+          this.errorMessage =
+            error.response.data.message ||
+            "Errore durante l'inserimento del partner.";
+          this.errorDialog = true;
+        }
       }
     },
     redirectToDashboard() {
       this.$router.push("/dashboard");
     },
+    updateLatLong(event) {
+      this.latitude = event.latlng.lat;
+      this.longitude = event.latlng.lng;
+      this.formattedLatitude = this.latitude.toFixed(6);
+      this.formattedLongitude = this.longitude.toFixed(6);
+    },
   },
-};
+  mounted() {
+    const map = L.map("map").setView([this.latitude, this.longitude], 13);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    const marker = L.marker([this.latitude, this.longitude]).addTo(map);
+
+    map.on("click", (event) => {
+      this.updateLatLong(event);
+      marker.setLatLng([this.latitude, this.longitude]);
+    });
+
+    // Aggiungi la barra di ricerca
+    const geocoder = L.Control.Geocoder.nominatim();
+    L.Control.geocoder({
+      defaultMarkGeocode: false,
+      geocoder: geocoder,
+    })
+      .on("markgeocode", (e) => {
+        const bbox = e.geocode.bbox;
+        const center = e.geocode.center;
+        this.latitude = center.lat;
+        this.longitude = center.lng;
+        this.formattedLatitude = this.latitude.toFixed(6);
+        this.formattedLongitude = this.longitude.toFixed(6);
+        marker.setLatLng([this.latitude, this.longitude]);
+        map.fitBounds(bbox);
+      })
+      .addTo(map);
+  },
+});
 </script>
 
 <style scoped>
-/* Aggiungi qui eventuali stili personalizzati */
+@import "leaflet/dist/leaflet.css";
+@import "leaflet-control-geocoder/dist/Control.Geocoder.css";
+
+#map {
+  height: 400px; /* Imposta l'altezza della mappa */
+  margin-bottom: 20px;
+}
 </style>

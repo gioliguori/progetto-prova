@@ -130,20 +130,28 @@ export default {
         message: "Fetching data...",
       });
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/admin/data",
-          {
-            params: { username: this.username },
-          }
-        );
+        const [partnersResponse, revenuesResponse] = await Promise.all([
+          axios.get("http://localhost:3000/api/admin/partners"),
+          axios.get("http://localhost:3000/api/admin/revenues"),
+        ]);
+
         Loading.hide();
-        if (response.data.success) {
-          this.partners = response.data.partners;
-          this.revenues = response.data.revenues;
+
+        if (partnersResponse.data.success) {
+          this.partners = partnersResponse.data.partners;
         } else {
           this.$q.notify({
             type: "negative",
-            message: "Failed to fetch data",
+            message: "Failed to fetch partners",
+          });
+        }
+
+        if (revenuesResponse.data.success) {
+          this.revenues = revenuesResponse.data.revenues;
+        } else {
+          this.$q.notify({
+            type: "negative",
+            message: "Failed to fetch revenues",
           });
         }
       } catch (error) {
@@ -157,8 +165,12 @@ export default {
     },
     async deletePartner(partnerId) {
       try {
-        await axios.delete(`http://localhost:3000/api/admin/partner/${partnerId}`);
-        this.partners = this.partners.filter(partner => partner.partner_id !== partnerId);
+        await axios.delete(
+          `http://localhost:3000/api/admin/partner/${partnerId}`
+        );
+        this.partners = this.partners.filter(
+          (partner) => partner.partner_id !== partnerId
+        );
         this.$q.notify({
           type: "positive",
           message: "Partner deleted successfully",
