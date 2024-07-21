@@ -4,14 +4,14 @@
       <h2>INSERISCI BICI</h2>
     </div>
     <q-form @submit="submitForm">
-      <q-select
+      <q-input
         v-model="type"
         label="Tipo"
-        :options="typeOptions"
+        maxlength="100"
         outlined
         required
         class="q-mb-md"
-      ></q-select>
+      ></q-input>
 
       <q-input
         v-model="batteryLevel"
@@ -21,15 +21,6 @@
         required
         class="q-mb-md"
       ></q-input>
-
-      <q-select
-        v-model="status"
-        label="Stato"
-        :options="statusOptions"
-        outlined
-        required
-        class="q-mb-md"
-      ></q-select>
 
       <q-btn type="submit" label="Invia" color="primary"></q-btn>
     </q-form>
@@ -83,23 +74,8 @@ export default {
     return {
       type: "",
       batteryLevel: null,
-      status: "",
       successDialog: false,
       errorDialog: false,
-      typeOptions: [
-        { label: "City bike elettrica", value: "city bike elettrica" },
-        { label: "MTB elettrica", value: "mtb elettrica" },
-        { label: "Pieghevole elettrica", value: "pieghevole elettrica" },
-        { label: "Bici da città", value: "bici da città" },
-        { label: "Bici per bambino", value: "bici per bambino" },
-        { label: "Mountain bike", value: "mountain bike" },
-      ],
-      statusOptions: [
-        { label: "In noleggio", value: "in noleggio" },
-        { label: "Disponibile", value: "disponibile" },
-        { label: "Riservata", value: "riservata" },
-        { label: "Dismessa", value: "dismessa" },
-      ],
     };
   },
   methods: {
@@ -123,23 +99,21 @@ export default {
       const isBatteryLevelUnsafe = this.containsUnsafeTerms(
         this.batteryLevel.toString()
       );
-      const isStatusUnsafe = this.containsUnsafeTerms(this.status);
 
-      if (isTypeUnsafe || isBatteryLevelUnsafe || isStatusUnsafe) {
+      if (isTypeUnsafe || isBatteryLevelUnsafe) {
         // Mostra il dialogo di errore se l'input è non sicuro
         this.errorDialog = true;
       } else {
         // Logica per la gestione del form
         console.log("Tipo:", this.type);
         console.log("Livello batteria:", this.batteryLevel);
-        console.log("Stato:", this.status);
 
         // Mostra il dialogo di successo
         this.successDialog = true;
       }
     },
     redirectToDashboard() {
-      this.$router.push("/dashboard");
+      this.$router.push("/dashboard1");
     },
   },
 };

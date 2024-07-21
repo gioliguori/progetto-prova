@@ -6,7 +6,8 @@ CREATE TABLE partners (
     latitude DECIMAL(10, 8),                           -- Latitudine
     longitude DECIMAL(11, 8),                          -- Longitudine
     count_bike INT DEFAULT 0,                          -- Conteggio delle bici
-    profile_pic VARCHAR(255)                           -- Percorso dell'immagine del profilo
+    profile_pic VARCHAR(255),                          -- Percorso dell'immagine del profilo
+    is_deleted BOOLEAN DEFAULT FALSE                   -- Cancellazione logica
 );
 
 -- Crea la tabella "bikes"
@@ -19,6 +20,7 @@ CREATE TABLE bikes (
     partner_id CHAR(36),                               -- UUID del partner (chiave esterna)
     state ENUM('disponibile', 'in noleggio', 'riservata', 'dismessa') DEFAULT 'disponibile',  -- Stato della bici
     count_run INT DEFAULT 0,                           -- Conteggio delle corse
+    is_deleted BOOLEAN DEFAULT FALSE,                  -- Cancellazione logica
     FOREIGN KEY (partner_id) REFERENCES partners(partner_id) -- Chiave esterna
 );
 
@@ -47,7 +49,7 @@ CREATE TABLE partner_auth (
     password VARCHAR(255) NOT NULL
 );
 
--- Crea di nuovo la tabella "reservations" con una chiave primaria composta
+-- Crea la tabella "reservations"
 CREATE TABLE reservations (
     reservation_id CHAR(36) PRIMARY KEY DEFAULT (UUID()), -- UUID come ID univoco per ogni prenotazione
     user_id CHAR(36) NOT NULL,                           -- UUID dell'utente (chiave esterna)
@@ -60,10 +62,10 @@ CREATE TABLE reservations (
     FOREIGN KEY (bike_id) REFERENCES bikes(bike_id)      -- Chiave esterna
 );
 
-
+-- Abilita l'event scheduler
 SET GLOBAL event_scheduler = ON;
 
-
+-- Crea l'evento per annullare le prenotazioni scadute
 CREATE EVENT IF NOT EXISTS expire_reservations_event
 ON SCHEDULE EVERY 1 MINUTE
 DO
@@ -71,7 +73,6 @@ DO
   SET status = 'cancelled'
   WHERE status = 'active'
     AND expiration_date <= NOW();
-
 
 -- Crea la tabella "rentals"
 CREATE TABLE rentals (

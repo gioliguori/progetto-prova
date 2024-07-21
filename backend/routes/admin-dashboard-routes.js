@@ -48,4 +48,20 @@ router.get("/api/admin/data", async (req, res) => {
   }
 });
 
+// Route per eliminare un partner
+router.delete("/api/admin/partner/:id", async (req, res) => {
+  const partnerId = req.params.id;
+  console.log("Richiesta di eliminazione del partner:", partnerId);
+
+  try {
+    await knex("partners").where({ partner_id: partnerId }).del();
+    res.json({
+      success: true,
+      message: "Partner deleted successfully",
+    });
+  } catch (error) {
+    console.error("Errore durante l'eliminazione del partner:", error);
+    res.status(500).send("Errore del server");
+  }
+});
 module.exports = router;
