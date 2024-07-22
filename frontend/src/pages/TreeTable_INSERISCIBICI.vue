@@ -4,14 +4,14 @@
       <h2>INSERISCI BICI</h2>
     </div>
     <q-form @submit="submitForm">
-      <q-input
+      <q-select
         v-model="type"
         label="Tipo"
-        maxlength="100"
+        :options="bikeTypes"
         outlined
         required
         class="q-mb-md"
-      ></q-input>
+      ></q-select>
 
       <q-input
         v-model="batteryLevel"
@@ -19,6 +19,7 @@
         type="number"
         outlined
         required
+        :rules="[validaLivelloBatteria]"
         class="q-mb-md"
       ></q-input>
 
@@ -56,8 +57,7 @@
         </q-card-section>
 
         <q-card-section>
-          Input non valido. Per favore, evita di usare parole riservate come
-          "DROP TABLE".
+          Si è verificato un errore durante l'inserimento della bici.
         </q-card-section>
 
         <q-card-actions align="right">
@@ -76,49 +76,73 @@ export default {
       batteryLevel: null,
       successDialog: false,
       errorDialog: false,
+      bikeTypes: [
+        { label: "City Bike Elettrica", value: "City Bike Elettrica" },
+        { label: "Mtb Elettrica", value: "Mtb Elettrica" },
+        { label: "Pieghevole Elettrica", value: "Pieghevole Elettrica" },
+        { label: "Bici Da Città", value: "Bici Da Città" },
+        { label: "Bici Per Bambini", value: "Bici Per Bambini" },
+        { label: "Mountain Bike", value: "Mountain Bike" },
+      ],
     };
   },
   methods: {
-    containsUnsafeTerms(input) {
-      const blacklist = [
-        "DROP TABLE",
-        "SELECT *",
-        "DELETE FROM",
-        "INSERT INTO",
-        "UPDATE",
-        "--",
-        ";",
-        "/*",
-        "*/",
-      ];
-      return blacklist.some((term) => input.toUpperCase().includes(term));
-    },
-    submitForm() {
-      // Verifica se gli input contengono termini pericolosi
-      const isTypeUnsafe = this.containsUnsafeTerms(this.type);
-      const isBatteryLevelUnsafe = this.containsUnsafeTerms(
-        this.batteryLevel.toString()
-      );
-
-      if (isTypeUnsafe || isBatteryLevelUnsafe) {
-        // Mostra il dialogo di errore se l'input è non sicuro
-        this.errorDialog = true;
-      } else {
-        // Logica per la gestione del form
-        console.log("Tipo:", this.type);
-        console.log("Livello batteria:", this.batteryLevel);
-
-        // Mostra il dialogo di successo
-        this.successDialog = true;
+    validaLivelloBatteria(value) {
+      if (value < 0 || value > 100) {
+        return "Il livello della batteria deve essere compreso tra 0 e 100.";
       }
+      return true;
+    },
+    submitForm(event) {
+      event.preventDefault();
+
+      // Ottieni i dettagli del partner da localStorage
+      const partner_id = localStorage.getItem("partner_id");
+
+      // Verifica che i dettagli del partner siano presenti
+      if (!partner_id) {
+        this.$q.notify({
+          type: "negative",
+          message:
+            "Dettagli del partner non trovati. Per favore, effettua di nuovo il login.",
+        });
+        return;
+      }
+
+      // Logica per la gestione del form
+      const payload = {
+        bike_type: this.type.value,
+        battery_level: this.batteryLevel,
+        partner_id,
+      };
+
+      // Effettua la chiamata al backend per inserire la bici
+      fetch("http://localhost:3000/api/bikes/insert", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Errore nella risposta del server");
+          }
+          return response.json();
+        })
+        .then(() => {
+          // Mostra il dialogo di successo
+          this.successDialog = true;
+        })
+        .catch((error) => {
+          console.error("Errore durante l'invio della richiesta:", error);
+          // Mostra il dialogo di errore
+          this.errorDialog = true;
+        });
     },
     redirectToDashboard() {
-      this.$router.push("/dashboard1");
+      this.$router.push("/DashboardPartner");
     },
   },
 };
 </script>
-
-<style scoped>
-/* Aggiungi qui eventuali stili personalizzati */
-</style>
