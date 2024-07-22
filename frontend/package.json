@@ -15,6 +15,7 @@
     "@quasar/extras": "^1.16.11",
     "@quasar/quasar-ui-qcalendar": "^4.0.0-beta.19",
     "@vue/runtime-dom": "^3.4.33",
+    "@webex/webex-core": "^3.3.1",
     "axios": "^1.7.2",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -29,7 +30,8 @@
     "vue-echarts": "^6.5.4",
     "vue-i18n": "^9.0.0",
     "vue-router": "^4.0.0",
-    "vuedraggable": "^2.24.3"
+    "vuedraggable": "^2.24.3",
+    "webex": "^3.3.1"
   },
   "devDependencies": {
     "@intlify/vite-plugin-vue-i18n": "^3.3.1",

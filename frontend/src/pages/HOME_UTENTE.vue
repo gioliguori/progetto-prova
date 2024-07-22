@@ -29,10 +29,10 @@ export default defineComponent({
 
       // Definisci i marker e le rispettive pagine a cui devono rimandare
       const markers = [
-        { position: [40.8522, 14.2681], name: "Partner1", page: "/page1", id: 1 },
-        { position: [40.86, 14.29], name: "Partner2", page: "/page2", id: 2 },
-        { position: [40.845, 14.25], name: "Partner3", page: "/page3", id: 3 },
-        { position: [40.835, 14.28], name: "Partner4", page: "/page4", id: 4 },
+        { position: [40.8522, 14.2681], name: "Hotel Bella Vista", page: "/page1", id: "3397a676-3b87-11ef-9df2-a4bfcecd978d" },
+        { position: [40.86, 14.29], name: "Partner2", page: "/page2", id: "2" },
+        { position: [40.845, 14.25], name: "Partner3", page: "/page3", id: "3" },
+        { position: [40.835, 14.28], name: "Partner4", page: "/page4", id: "4" },
       ];
 
       // Funzione per generare il contenuto del popup con le biciclette disponibili
