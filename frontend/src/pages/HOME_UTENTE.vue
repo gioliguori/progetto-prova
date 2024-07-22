@@ -8,7 +8,8 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import { useRouter } from "vue-router";
-import 'leaflet-control-geocoder';
+import "leaflet-control-geocoder";
+import axios from "axios"; // Assicurati di avere axios installato
 
 export default defineComponent({
   name: "MapComponent",
@@ -28,23 +29,74 @@ export default defineComponent({
 
       // Definisci i marker e le rispettive pagine a cui devono rimandare
       const markers = [
-        { position: [40.8522, 14.2681], name: "Partner1", page: "/page1" },
-        { position: [40.86, 14.29], name: "Partner2", page: "/page2" },
-        { position: [40.845, 14.25], name: "Partner3", page: "/page3" },
-        { position: [40.835, 14.28], name: "Partner4", page: "/page4" },
+        { position: [40.8522, 14.2681], name: "Partner1", page: "/page1", id: 1 },
+        { position: [40.86, 14.29], name: "Partner2", page: "/page2", id: 2 },
+        { position: [40.845, 14.25], name: "Partner3", page: "/page3", id: 3 },
+        { position: [40.835, 14.28], name: "Partner4", page: "/page4", id: 4 },
       ];
+
+      // Funzione per generare il contenuto del popup con le biciclette disponibili
+      const createPopupContent = async (marker) => {
+        const container = document.createElement("div");
+        container.style.width = "300px"; // Imposta la larghezza del popup
+        container.style.height = "200px"; // Imposta l'altezza del popup
+
+        const title = document.createElement("h3");
+        title.innerText = marker.name;
+        container.appendChild(title);
+
+        const bikeList = document.createElement("ul");
+
+        try {
+          const response = await axios.get(`/api/partners/${marker.id}/bikes`);
+          const bikes = response.data;
+          bikes.forEach(bike => {
+            const listItem = document.createElement("li");
+            listItem.innerText = `ID: ${bike.id}, Tipo: ${bike.type}, Stato: ${bike.state}`;
+            bikeList.appendChild(listItem);
+          });
+        } catch (error) {
+          console.error("Errore nel recuperare le biciclette:", error);
+          const errorItem = document.createElement("li");
+          errorItem.innerText = "Errore nel recuperare le biciclette.";
+          bikeList.appendChild(errorItem);
+        }
+
+        container.appendChild(bikeList);
+
+        const button1 = document.createElement("button");
+        button1.innerText = "Azione 1";
+        button1.addEventListener("click", () => {
+          router.push(marker.page); // Naviga alla pagina specificata
+        });
+        container.appendChild(button1);
+
+        const button2 = document.createElement("button");
+        button2.innerText = "Azione 2";
+        button2.addEventListener("click", () => {
+          alert(`Azione 2 per ${marker.name}`);
+        });
+        container.appendChild(button2);
+
+        // Aggiungi altri bottoni come necessario
+
+        return container;
+      };
 
       markers.forEach((marker) => {
         L.marker(marker.position)
           .addTo(map)
-          .bindPopup(marker.name) // Mostra il popup al clic
           .bindTooltip(marker.name, {
             permanent: true,
             direction: "top",
             className: "marker-tooltip",
           }) // Mostra il tooltip
-          .on("click", () => {
-            router.push(marker.page); // Naviga alla pagina specificata
+          .on("click", async (e) => {
+            const popupContent = await createPopupContent(marker);
+            const popup = L.popup()
+              .setLatLng(e.latlng)
+              .setContent(popupContent)
+              .openOn(map);
           });
       });
 
@@ -110,5 +162,20 @@ export default defineComponent({
   font-size: 12px; /* Dimensione del testo */
   font-weight: bold; /* Grassetto per il testo */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Ombra per la nuvoletta */
+}
+
+button {
+  display: block;
+  margin: 5px 0;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
 }
 </style>

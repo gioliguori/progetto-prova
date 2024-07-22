@@ -31,6 +31,11 @@
         </q-td>
       </template>
     </q-table>
+    <q-btn
+      label="Apporta modifiche"
+      color="primary"
+      @click="submitChanges"
+    ></q-btn>
   </q-page>
 </template>
 
@@ -51,6 +56,7 @@ export default {
         { label: 'Noleggiato', value: 'noleggiato' },
         { label: 'Dismesso', value: 'dismesso' },
       ],
+      modifiedBikes: [],
     };
   },
   methods: {
@@ -73,29 +79,42 @@ export default {
       */
     },
     updateBikeState(bike) {
-      // Simulazione di chiamata API per aggiornare lo stato della bici
-      console.log(`Aggiornare bici ID ${bike.id} a stato ${bike.state}`);
-      // Sostituire la parte sopra con una chiamata API reale
-      /*
-      this.$axios.put(`/api/bikes/${bike.id}`, { state: bike.state })
-        .then(response => {
-          console.log(response.data);
-        })
-        .catch(error => {
-          console.error(error);
-        });
-      */
+      // Aggiungi la bici alla lista delle bici modificate
+      const existingBikeIndex = this.modifiedBikes.findIndex(b => b.id === bike.id);
+      if (existingBikeIndex !== -1) {
+        this.modifiedBikes[existingBikeIndex].state = bike.state;
+      } else {
+        this.modifiedBikes.push({ ...bike });
+      }
     },
     deleteBike(id) {
       // Simulazione di chiamata API per eliminare la bici
       console.log(`Eliminare bici ID ${id}`);
       // Rimuovi la bici dalla lista localmente
       this.bikes = this.bikes.filter(bike => bike.id !== id);
+      // Rimuovi la bici anche dalla lista delle modifiche, se presente
+      this.modifiedBikes = this.modifiedBikes.filter(bike => bike.id !== id);
       // Sostituire la parte sopra con una chiamata API reale
       /*
       this.$axios.delete(`/api/bikes/${id}`)
         .then(response => {
           this.bikes = this.bikes.filter(bike => bike.id !== id);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+      */
+    },
+    submitChanges() {
+      // Simulazione di chiamata API per inviare tutte le modifiche
+      console.log('Inviare le seguenti modifiche:', this.modifiedBikes);
+      // Sostituire la parte sopra con una chiamata API reale
+      /*
+      this.$axios.put('/api/bikes', { bikes: this.modifiedBikes })
+        .then(response => {
+          console.log(response.data);
+          // Pulisci la lista delle bici modificate
+          this.modifiedBikes = [];
         })
         .catch(error => {
           console.error(error);

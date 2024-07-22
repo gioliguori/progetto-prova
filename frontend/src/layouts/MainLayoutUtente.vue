@@ -27,7 +27,7 @@
         <q-btn flat round color="primary" @click="navigateTo('Movimenti')">
           <q-icon name="credit_card" />
         </q-btn>
-        <div class="footer-label">Movimenti</div>
+        <div class="footer-label">Noleggi</div>
       </div>
       <div class="footer-btn">
         <q-btn flat round color="primary" @click="navigateTo('HOME_UTENTE')">
