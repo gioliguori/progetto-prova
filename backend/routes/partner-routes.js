@@ -13,7 +13,6 @@ router.get("/partner-details", async (req, res) => {
       .select(
         "partner_auth.username as user_name",
         "partners.email",
-        "partners.address",
         "partners.partner_name as first_name"
       )
       .first();
@@ -40,13 +39,12 @@ router.get("/partner-details", async (req, res) => {
 
 // Route per aggiornare i dettagli del partner
 router.put("/update-partner", async (req, res) => {
-  const { partner_id, user_name, email, first_name, address } = req.body;
+  const { partner_id, user_name, email, first_name } = req.body;
 
   try {
     await knex("partners").where("partner_id", partner_id).update({
       partner_name: first_name,
       email,
-      address,
     });
 
     await knex("partner_auth").where("uuid", partner_id).update({
@@ -149,6 +147,43 @@ router.put("/update-state/bikes", async (req, res) => {
     });
   } catch (error) {
     console.error("Errore durante l'aggiornamento delle bici:", error);
+    res.status(500).send("Errore del server");
+  }
+});
+
+// Route per aggiornare la password del partner senza crittografia
+router.put("/update-password", async (req, res) => {
+  const { partner_id, current_password, new_password } = req.body;
+
+  try {
+    const partnerAuth = await knex("partner_auth")
+      .where("uuid", partner_id)
+      .first();
+
+    if (!partnerAuth) {
+      return res.status(404).json({
+        success: false,
+        message: "Partner non trovato",
+      });
+    }
+
+    if (partnerAuth.password !== current_password) {
+      return res.status(400).json({
+        success: false,
+        message: "Password corrente errata",
+      });
+    }
+
+    await knex("partner_auth").where("uuid", partner_id).update({
+      password: new_password,
+    });
+
+    res.json({
+      success: true,
+      message: "Password aggiornata con successo",
+    });
+  } catch (error) {
+    console.error("Errore durante l'aggiornamento della password:", error);
     res.status(500).send("Errore del server");
   }
 });
