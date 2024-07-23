@@ -36,6 +36,7 @@
 
 <script>
 import axios from "axios";
+import { Dialog } from "quasar";
 
 export default {
   data() {
@@ -87,21 +88,24 @@ export default {
     async fetchBikes() {
       try {
         const partnerId = localStorage.getItem("partner_id");
-        const response = await axios.get(
-          `http://localhost:3000/api/partners/bikes?partner_id=${partnerId}`
+        const response = await axios.post(
+          "http://localhost:3000/api/partners/bikes",
+          {
+            partnerId: partnerId,
+          }
         );
         if (response.data.success) {
           this.bikes = response.data.bikes;
         } else {
-          this.$q.notify({
-            type: "negative",
+          Dialog.create({
+            title: "Errore",
             message: "Failed to fetch bikes",
           });
         }
       } catch (error) {
         console.error("Error fetching data:", error);
-        this.$q.notify({
-          type: "negative",
+        Dialog.create({
+          title: "Errore",
           message: "An error occurred while fetching data",
         });
       }
@@ -118,46 +122,59 @@ export default {
     },
     async deleteBike(bikeId) {
       try {
-        await axios.delete(`http://localhost:3000/api/partners/bike/${bikeId}`);
+        const partnerId = localStorage.getItem("partner_id");
+        await axios.delete(
+          `http://localhost:3000/api/partners/bike/${bikeId}`,
+          {
+            data: {
+              partnerId: partnerId,
+            },
+          }
+        );
         this.bikes = this.bikes.filter((bike) => bike.bike_id !== bikeId);
         this.modifiedBikes = this.modifiedBikes.filter(
           (bike) => bike.bike_id !== bikeId
         );
-        this.$q.notify({
-          type: "positive",
+        Dialog.create({
+          title: "Successo",
           message: "Bike deleted successfully",
         });
       } catch (error) {
         console.error("Error deleting bike:", error);
-        this.$q.notify({
-          type: "negative",
+        Dialog.create({
+          title: "Errore",
           message: "An error occurred while deleting the bike",
         });
       }
     },
     async submitChanges() {
       try {
+        const partnerId = localStorage.getItem("partner_id");
+        const modifiedBikesPayload = this.modifiedBikes.map((bike) => ({
+          bike_id: bike.bike_id,
+          state: bike.state.value ? bike.state.value : bike.state,
+        }));
         const response = await axios.put(
-          "http://localhost:3000/api/partners/bikes",
-          { bikes: this.modifiedBikes }
+          "http://localhost:3000/api/partners/update-state/bikes",
+          { partnerId: partnerId, bikes: modifiedBikesPayload }
         );
         if (response.data.success) {
-          this.$q.notify({
-            type: "positive",
-            message: "Changes submitted successfully",
+          Dialog.create({
+            title: "Successo",
+            message: "Cambiamenti avvenuti!",
           });
           this.modifiedBikes = [];
           this.fetchBikes();
         } else {
-          this.$q.notify({
-            type: "negative",
-            message: "Failed to submit changes",
+          Dialog.create({
+            title: "Errore",
+            message: "Errore!",
           });
         }
       } catch (error) {
         console.error("Error submitting changes:", error);
-        this.$q.notify({
-          type: "negative",
+        Dialog.create({
+          title: "Errore",
           message: "An error occurred while submitting changes",
         });
       }

@@ -1,28 +1,19 @@
 const express = require("express");
 const router = express.Router();
+const knex = require("../knexfile");
 
 // Route per ottenere le bici di un partner specifico
-router.get("/bikes", async (req, res) => {
-  const partnerId = req.query.partner_id;
-
-  if (!partnerId) {
-    return res
-      .status(400)
-      .json({ error: "partner_id query parameter is required" });
-  }
-
-  console.log(`Richiesta dati bici per il partner ID: ${partnerId}`);
+router.post("/bikes", async (req, res) => {
+  const { partnerId } = req.body;
+  console.log("Richiesta dati bici per partner:", partnerId);
 
   try {
-    const bikes = await req
-      .db("bikes")
-      .join("partners", "bikes.partner_id", "partners.partner_id")
-      .where("bikes.is_deleted", false)
-      .andWhere("bikes.partner_id", partnerId)
+    const bikes = await knex("bikes")
+      .where("bikes.partner_id", partnerId)
+      .andWhere("bikes.is_deleted", false)
       .select(
         "bikes.bike_id",
         "bikes.bike_type",
-        "partners.partner_name",
         "bikes.state",
         "bikes.battery_level",
         "bikes.count_run"
@@ -38,14 +29,30 @@ router.get("/bikes", async (req, res) => {
   }
 });
 
-// Route per eliminare una bici
+// Route per eliminare una bici per un partner specifico
 router.delete("/bike/:id", async (req, res) => {
   const bikeId = req.params.id;
-  console.log("Richiesta di eliminazione della bici:", bikeId);
+  const { partnerId } = req.body;
+  console.log(
+    "Richiesta di eliminazione della bici:",
+    bikeId,
+    "per il partner:",
+    partnerId
+  );
 
   try {
-    await req
-      .db("bikes")
+    const bike = await knex("bikes")
+      .where({ bike_id: bikeId, partner_id: partnerId })
+      .first();
+
+    if (!bike) {
+      return res.status(404).json({
+        success: false,
+        message: "Bike not found or does not belong to the partner",
+      });
+    }
+
+    await knex("bikes")
       .where({ bike_id: bikeId })
       .update({ is_deleted: true, state: "dismessa" });
 
@@ -59,21 +66,16 @@ router.delete("/bike/:id", async (req, res) => {
   }
 });
 
-// Route per aggiornare lo stato delle bici
-router.put("/bikes", async (req, res) => {
-  const { bikes } = req.body;
-
-  if (!bikes || !Array.isArray(bikes)) {
-    return res.status(400).json({ error: "Invalid bikes data" });
-  }
-
-  console.log("Richiesta di aggiornamento delle bici:", bikes);
+// Route per aggiornare gli stati delle bici di un partner
+router.put("/update-state/bikes", async (req, res) => {
+  const { partnerId, bikes } = req.body;
+  console.log("Richiesta di aggiornamento stato bici per partner:", partnerId);
+  console.log("Bikes da aggiornare:", bikes);
 
   try {
     for (const bike of bikes) {
-      await req
-        .db("bikes")
-        .where({ bike_id: bike.bike_id })
+      await knex("bikes")
+        .where({ bike_id: bike.bike_id, partner_id: partnerId })
         .update({ state: bike.state });
     }
 

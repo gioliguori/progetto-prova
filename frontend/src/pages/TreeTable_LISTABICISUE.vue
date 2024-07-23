@@ -38,6 +38,7 @@ export default {
   data() {
     return {
       username: localStorage.getItem("username") || "Partner",
+      partnerId: localStorage.getItem("partner_id") || "",
       bikes: [],
       columns: [
         {
@@ -85,9 +86,11 @@ export default {
         message: "Fetching data...",
       });
       try {
-        const partnerId = localStorage.getItem("partner_id");
-        const bikesResponse = await axios.get(
-          `http://localhost:3000/api/partners/bikes?partner_id=${partnerId}`
+        const bikesResponse = await axios.post(
+          "http://localhost:3000/api/partners/bikes",
+          {
+            partnerId: this.partnerId,
+          }
         );
 
         Loading.hide();
@@ -111,8 +114,14 @@ export default {
     },
     async deleteBike(bikeId) {
       try {
-        const partnerId = localStorage.getItem("partner_id");
-        await axios.delete(`http://localhost:3000/api/partners/bike/${bikeId}`);
+        await axios.delete(
+          `http://localhost:3000/api/partners/bike/${bikeId}`,
+          {
+            data: {
+              partnerId: this.partnerId,
+            },
+          }
+        );
         this.bikes = this.bikes.filter((bike) => bike.bike_id !== bikeId);
         this.$q.notify({
           type: "positive",
