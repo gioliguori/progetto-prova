@@ -13,7 +13,6 @@ router.get("/partner-details", async (req, res) => {
       .select(
         "partner_auth.username as user_name",
         "partners.email",
-        "partners.address",
         "partners.partner_name as first_name"
       )
       .first();
@@ -40,13 +39,12 @@ router.get("/partner-details", async (req, res) => {
 
 // Route per aggiornare i dettagli del partner
 router.put("/update-partner", async (req, res) => {
-  const { partner_id, user_name, email, first_name, address } = req.body;
+  const { partner_id, user_name, email, first_name } = req.body;
 
   try {
     await knex("partners").where("partner_id", partner_id).update({
       partner_name: first_name,
       email,
-      address,
     });
 
     await knex("partner_auth").where("uuid", partner_id).update({

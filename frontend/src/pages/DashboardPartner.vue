@@ -59,25 +59,13 @@
                   />
                 </q-item-section>
               </q-item>
-              <q-item class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <q-item-section>
-                  <q-input
-                    dark
-                    color="white"
-                    autogrow
-                    dense
-                    v-model="user_details.address"
-                    label="Indirizzo"
-                  />
-                </q-item-section>
-              </q-item>
             </q-list>
           </q-card-section>
           <q-card-actions align="right">
             <q-btn
               class="text-capitalize bg-info text-white"
               @click="updateUserInfo"
-              >Update User Info</q-btn
+              >Aggiorna Informazioni</q-btn
             >
           </q-card-actions>
         </q-card>
@@ -167,7 +155,6 @@ export default defineComponent({
       user_name: "",
       email: "",
       first_name: "",
-      address: "",
     });
 
     const password_dict = ref({
@@ -198,10 +185,6 @@ export default defineComponent({
         );
       }
     };
-
-    onMounted(() => {
-      getPartnerDetails();
-    });
 
     const updateUserInfo = async () => {
       const partnerId = localStorage.getItem("partner_id"); // Ottieni l'ID del partner dal local storage
@@ -250,6 +233,10 @@ export default defineComponent({
         console.error("Errore durante l'aggiornamento della password:", error);
       }
     };
+
+    onMounted(() => {
+      getPartnerDetails();
+    });
 
     return {
       user_details,
