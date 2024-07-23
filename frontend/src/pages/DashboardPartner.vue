@@ -82,6 +82,76 @@
           </q-card-actions>
         </q-card>
       </div>
+
+      <div class="col-lg-4 col-md-4 col-xs-12 col-sm-12"></div>
+
+      <div class="col-lg-8 col-md-8 col-xs-12 col-sm-12">
+        <q-card class="card-bg text-white no-shadow" bordered>
+          <q-card-section class="text-h6 q-pa-sm">
+            <div class="text-h6">Modifica Password</div>
+          </q-card-section>
+          <q-card-section class="q-pa-sm row">
+            <q-item class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+              <q-item-section> Password corrente </q-item-section>
+            </q-item>
+            <q-item class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+              <q-item-section>
+                <q-input
+                  type="password"
+                  dark
+                  dense
+                  outlined
+                  color="white"
+                  round
+                  v-model="password_dict.current_password"
+                  label="Password Corrente"
+                />
+              </q-item-section>
+            </q-item>
+            <q-item class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+              <q-item-section> Nuova password </q-item-section>
+            </q-item>
+            <q-item class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+              <q-item-section>
+                <q-input
+                  type="password"
+                  dark
+                  dense
+                  outlined
+                  color="white"
+                  round
+                  v-model="password_dict.new_password"
+                  label="Nuova password"
+                />
+              </q-item-section>
+            </q-item>
+            <q-item class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+              <q-item-section> Conferma nuova password </q-item-section>
+            </q-item>
+            <q-item class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+              <q-item-section>
+                <q-input
+                  type="password"
+                  dark
+                  dense
+                  outlined
+                  round
+                  color="white"
+                  v-model="password_dict.confirm_new_password"
+                  label="Conferma nuova password"
+                />
+              </q-item-section>
+            </q-item>
+          </q-card-section>
+          <q-card-actions align="right">
+            <q-btn
+              class="text-capitalize bg-info text-white"
+              @click="updatePassword"
+              >Cambia password</q-btn
+            >
+          </q-card-actions>
+        </q-card>
+      </div>
     </div>
   </q-page>
 </template>
@@ -98,6 +168,12 @@ export default defineComponent({
       email: "",
       first_name: "",
       address: "",
+    });
+
+    const password_dict = ref({
+      current_password: "",
+      new_password: "",
+      confirm_new_password: "",
     });
 
     const getPartnerDetails = async () => {
@@ -148,9 +224,38 @@ export default defineComponent({
       }
     };
 
+    const updatePassword = async () => {
+      const partnerId = localStorage.getItem("partner_id"); // Ottieni l'ID del partner dal local storage
+      if (!partnerId) {
+        console.error("Partner ID non trovato nel local storage");
+        return;
+      }
+
+      if (
+        password_dict.value.new_password !==
+        password_dict.value.confirm_new_password
+      ) {
+        alert("La nuova password e la conferma non coincidono");
+        return;
+      }
+
+      try {
+        await axios.put("http://localhost:3000/api/partners/update-password", {
+          partner_id: partnerId,
+          current_password: password_dict.value.current_password,
+          new_password: password_dict.value.new_password,
+        });
+        alert("Password aggiornata con successo");
+      } catch (error) {
+        console.error("Errore durante l'aggiornamento della password:", error);
+      }
+    };
+
     return {
       user_details,
+      password_dict,
       updateUserInfo,
+      updatePassword,
     };
   },
 });
