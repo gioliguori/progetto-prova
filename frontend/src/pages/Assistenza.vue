@@ -1,102 +1,113 @@
 <template>
-  <div>
-    <h1>Webex Chat</h1>
-    <div>
-      <input v-model="messageInput" placeholder="Scrivi un messaggio" />
-      <button @click="sendMessage">Invia</button>
+  <q-page class="flex flex-center">
+    <div class="chat-container">
+      <div class="chat-box">
+        <div class="chat-messages">
+          <div v-for="(message, index) in messages" :key="index" class="message">
+            <strong>{{ message.sender }}:</strong> 
+            <span v-if="message.isLink"><a :href="message.text" target="_blank">{{ message.text }}</a></span>
+            <span v-else>{{ message.text }}</span>
+          </div>
+        </div>
+        <div class="chat-input">
+          <q-input
+            v-model="newMessage"
+            @keyup.enter="sendMessage"
+            placeholder="Scrivi un messaggio..."
+            autofocus
+            dense
+          />
+          <q-btn @click="sendMessage" color="primary" label="Invia" />
+        </div>
+      </div>
     </div>
-    <div v-if="messages.length">
-      <h2>Messaggi</h2>
-      <ul>
-        <li v-for="message in messages" :key="message.id">
-          {{ message.text }}
-        </li>
-      </ul>
-    </div>
-  </div>
+  </q-page>
 </template>
 
 <script>
 import axios from 'axios';
-import Webex from '@webex/webex-core';
 
 export default {
   data() {
     return {
-      webex: null,
-      messageInput: '',
+      newMessage: '',
       messages: [],
-      roomId: null // L'ID della stanza sarà impostato dinamicamente
     };
   },
-  async created() {
-    await this.initializeWebex();
-    await this.createRoom(); // Crea una stanza al caricamento
-  },
   methods: {
-    async initializeWebex() {
-      this.webex = Webex.init({
-        credentials: {
-          access_token: 'OGFiNzlkOTgtOWQ4ZC00MGMzLTg3ZDgtZGRiNjQ3MTgxMzg3OWZlZmRhYWYtYmQz_P0A1_9db452ae-a8fa-4c45-ad97-a9c6809f2db1'
-        }
-      });
-
-      try {
-        await this.webex.ready();
-        console.log('Webex is ready');
-        this.listenForMessages();
-      } catch (error) {
-        console.error('Error initializing Webex:', error);
-      }
-    },
-    async createRoom() {
-      try {
-        const response = await axios.post('http://localhost:3000/create-room', {
-          title: 'Chat con il Bot'
-        });
-        this.roomId = response.data.roomId;
-        console.log('Room created with ID:', this.roomId);
-      } catch (error) {
-        console.error('Error creating room:', error);
-      }
-    },
     async sendMessage() {
-      if (this.messageInput.trim() === '') return;
-      if (!this.roomId) {
-        console.error('Room ID is not set');
-        return;
-      }
-
-      try {
-        const message = await this.webex.messages.create({
-          roomId: this.roomId,
-          text: this.messageInput
+      if (this.newMessage.trim()) {
+        this.messages.push({
+          sender: 'Utente',
+          text: this.newMessage,
         });
-        console.log('Message sent:', message);
-        this.messageInput = ''; // Clear the input field
-      } catch (error) {
-        console.error('Error sending message:', error);
+
+        try {
+          const response = await axios.post('http://localhost:3000/webex/messages', {
+            text: this.newMessage,
+          });
+
+          this.newMessage = '';
+
+          // Simula una risposta automatica
+          const isLink = response.data.text.startsWith('https://web.webex.com/spaces/');
+          this.messages.push({
+            sender: 'Supporto',
+            text: response.data.text,
+            isLink
+          });
+        } catch (error) {
+          console.error('Errore nell\'invio del messaggio:', error);
+        }
       }
     },
-    async listenForMessages() {
-      if (!this.roomId) {
-        console.error('Room ID is not set');
-        return;
-      }
-
-      try {
-        await this.webex.messages.listen();
-        this.webex.messages.on('created', (event) => {
-          this.messages.push(event.data);
-        });
-      } catch (error) {
-        console.error('Error listening for messages:', error);
-      }
-    }
-  }
+  },
 };
 </script>
 
 <style scoped>
-/* Aggiungi il tuo CSS personalizzato qui */
+.chat-container {
+  width: 400px;
+  max-width: 100%;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f9f9f9;
+}
+
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.chat-input {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-top: 1px solid #ccc;
+  background: #fff;
+}
+
+.message {
+  margin-bottom: 8px;
+}
+
+.message a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.message a:hover {
+  text-decoration: underline;
+}
 </style>

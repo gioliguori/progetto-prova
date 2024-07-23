@@ -81,6 +81,16 @@ const routes = [
         component: () => import("pages/Assistenza.vue"),
         name: "Assistenza",
       },
+      {
+        path: "QReader",
+        component: () => import("pages/QReader.vue"),
+        name: "QReader",
+      },
+      {
+      path: "IstruzioniNoleggio",
+      component: () => import("pages/IstruzioniNoleggio.vue"),
+      name: "IstruzioniNoleggio",
+    },
     ],
   },
 
