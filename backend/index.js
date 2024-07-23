@@ -19,7 +19,7 @@ const partnerRoutes = require("./routes/partner-routes");
 // Utilizza i router
 app.use(bikesRoutes);
 app.use(authRoutes);
-app.use(adminDashboardRoutes);
+app.use("/api/admin", adminDashboardRoutes);
 app.use(userRoutes);
 app.use("/api/partners", partnerRoutes);
 

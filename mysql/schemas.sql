@@ -5,10 +5,14 @@ CREATE TABLE partners (
     partner_type ENUM('hotel', 'ristorante', 'altro') NOT NULL,  -- Tipo di partner
     latitude DECIMAL(10, 8),                           -- Latitudine
     longitude DECIMAL(11, 8),                          -- Longitudine
+    address VARCHAR(255),                              -- Indirizzo
+    email VARCHAR(100) NOT NULL,                       -- Email del partner
     count_bike INT DEFAULT 0,                          -- Conteggio delle bici
     profile_pic VARCHAR(255),                          -- Percorso dell'immagine del profilo
     is_deleted BOOLEAN DEFAULT FALSE                   -- Cancellazione logica
 );
+
+
 
 -- Crea la tabella "bikes"
 CREATE TABLE bikes (

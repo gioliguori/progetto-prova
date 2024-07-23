@@ -2,6 +2,70 @@ const express = require("express");
 const router = express.Router();
 const knex = require("../knexfile");
 
+// Route per ottenere i dettagli del partner
+router.get("/partner-details", async (req, res) => {
+  const { partnerId } = req.query;
+
+  try {
+    const partner = await knex("partners")
+      .join("partner_auth", "partners.partner_id", "=", "partner_auth.uuid")
+      .where("partners.partner_id", partnerId)
+      .select(
+        "partner_auth.username as user_name",
+        "partners.email",
+        "partners.address",
+        "partners.partner_name as first_name"
+      )
+      .first();
+
+    if (partner) {
+      res.json({
+        success: true,
+        partner,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "Partner non trovato",
+      });
+    }
+  } catch (error) {
+    console.error(
+      "Errore durante il recupero dei dettagli del partner:",
+      error
+    );
+    res.status(500).send("Errore del server");
+  }
+});
+
+// Route per aggiornare i dettagli del partner
+router.put("/update-partner", async (req, res) => {
+  const { partner_id, user_name, email, first_name, address } = req.body;
+
+  try {
+    await knex("partners").where("partner_id", partner_id).update({
+      partner_name: first_name,
+      email,
+      address,
+    });
+
+    await knex("partner_auth").where("uuid", partner_id).update({
+      username: user_name,
+    });
+
+    res.json({
+      success: true,
+      message: "Informazioni aggiornate con successo",
+    });
+  } catch (error) {
+    console.error(
+      "Errore durante l'aggiornamento delle informazioni del partner:",
+      error
+    );
+    res.status(500).send("Errore del server");
+  }
+});
+
 // Route per ottenere le bici di un partner specifico
 router.post("/bikes", async (req, res) => {
   const { partnerId } = req.body;

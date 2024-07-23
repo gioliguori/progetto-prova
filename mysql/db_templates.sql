@@ -1,9 +1,9 @@
 -- Inserisci tre nuovi partner
-INSERT INTO partners (partner_id, partner_name, partner_type, latitude, longitude, count_bike, profile_pic)
+INSERT INTO partners (partner_id, partner_name, partner_type, latitude, longitude, address, email, count_bike, profile_pic)
 VALUES 
-('3397a676-3b87-11ef-9df2-a4bfcecd978d', 'Hotel Bella Vista', 'hotel', 45.464211, 9.191383, 1, 'rosso.jpg'),
-('3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'Ristorante La Pergola', 'ristorante', 45.465421, 9.192593, 1, 'giallo.jpg'),
-('3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'Altro', 'altro', 45.463001, 9.190173, 1, 'verde.jpg');
+('3397a676-3b87-11ef-9df2-a4bfcecd978d', 'Hotel Bella Vista', 'hotel', 40.851798, 14.268120, 'Via Toledo, 323, 80134 Napoli NA, Italia', 'info@hotelbellavista.it', 1, 'rosso.jpg'),
+('3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'Ristorante La Pergola', 'ristorante', 40.851224, 14.263697, 'Via Chiaia, 216, 80121 Napoli NA, Italia', 'info@ristorantelapergola.it', 1, 'giallo.jpg'),
+('3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'Altro', 'altro', 40.846760, 14.256930, 'Via Santa Lucia, 17, 80132 Napoli NA, Italia', 'info@altro.it', 1, 'verde.jpg');
 
 -- Inserisci tre nuove bici associate ai partner
 INSERT INTO bikes (bike_id, bike_type, battery_level, latitude, longitude, partner_id, state, count_run)
