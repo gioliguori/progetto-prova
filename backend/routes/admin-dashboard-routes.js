@@ -4,7 +4,7 @@ const knex = require("../knexfile"); // Assicurati che la configurazione di Knex
 const { v4: uuidv4 } = require("uuid");
 
 // Route per ottenere i partner attivi
-router.get("/api/admin/partners", async (req, res) => {
+router.get("/partners", async (req, res) => {
   console.log("Richiesta lista partner attivi");
 
   try {
@@ -23,7 +23,7 @@ router.get("/api/admin/partners", async (req, res) => {
 });
 
 // Route per ottenere i ricavi settimanali, mensili e annuali dei partner attivi
-router.get("/api/admin/revenues", async (req, res) => {
+router.get("/revenues", async (req, res) => {
   console.log("Richiesta ricavi partner attivi");
 
   try {
@@ -65,7 +65,7 @@ router.get("/api/admin/revenues", async (req, res) => {
 });
 
 // Route per eliminare un partner
-router.delete("/api/admin/partner/:id", async (req, res) => {
+router.delete("/partner/:id", async (req, res) => {
   const partnerId = req.params.id;
   console.log("Richiesta di eliminazione del partner:", partnerId);
 
@@ -85,7 +85,7 @@ router.delete("/api/admin/partner/:id", async (req, res) => {
 });
 
 // Route per ottenere i dati delle bici
-router.get("/api/admin/bikes", async (req, res) => {
+router.get("/bikes", async (req, res) => {
   console.log("Richiesta dati bici");
 
   try {
@@ -112,7 +112,7 @@ router.get("/api/admin/bikes", async (req, res) => {
 });
 
 // Route per eliminare una bici
-router.delete("/api/admin/bike/:id", async (req, res) => {
+router.delete("/bike/:id", async (req, res) => {
   const bikeId = req.params.id;
   console.log("Richiesta di eliminazione della bici:", bikeId);
 
@@ -132,11 +132,20 @@ router.delete("/api/admin/bike/:id", async (req, res) => {
 });
 
 // Route per aggiungere un nuovo partner
-router.post("/api/admin/partner/insert", async (req, res) => {
+router.post("/insert/partner", async (req, res) => {
   try {
     console.log("Dati ricevuti dal client:", req.body); // Log dei dati ricevuti
 
-    const { name, type, latitude, longitude, username, password } = req.body;
+    const {
+      name,
+      type,
+      email,
+      latitude,
+      longitude,
+      address,
+      username,
+      password,
+    } = req.body;
 
     // Genera UUID per il nuovo partner
     const partnerId = uuidv4();
@@ -148,9 +157,11 @@ router.post("/api/admin/partner/insert", async (req, res) => {
       await trx("partners").insert({
         partner_id: partnerId,
         partner_name: name,
-        partner_type: type.value, // Utilizza il valore effettivo del tipo
+        partner_type: type, // Utilizza il valore effettivo del tipo
+        email: email, // Aggiungi l'email
         latitude: latitude,
         longitude: longitude,
+        address: address, // Aggiungi l'indirizzo
       });
 
       // Inserisci nella tabella partner_auth

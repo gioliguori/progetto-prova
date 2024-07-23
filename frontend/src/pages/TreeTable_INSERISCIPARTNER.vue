@@ -22,6 +22,15 @@
         class="q-mb-md"
       ></q-select>
 
+      <q-input
+        v-model="email"
+        label="Email"
+        type="email"
+        outlined
+        required
+        class="q-mb-md"
+      ></q-input>
+
       <!-- Mappa per selezionare latitudine e longitudine -->
       <div id="map" style="height: 400px" class="q-mb-md"></div>
 
@@ -37,6 +46,15 @@
       <q-input
         v-model="formattedLongitude"
         label="Longitudine"
+        type="text"
+        outlined
+        readonly
+        class="q-mb-md"
+      ></q-input>
+
+      <q-input
+        v-model="address"
+        label="Indirizzo"
         type="text"
         outlined
         readonly
@@ -60,7 +78,7 @@
       <q-input
         v-model="password"
         label="Password"
-        type="text"
+        type="password"
         maxlength="50"
         outlined
         required
@@ -130,7 +148,7 @@
 </template>
 
 <script>
-import { defineComponent, onMounted } from "vue";
+import { defineComponent } from "vue";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-control-geocoder/dist/Control.Geocoder.css";
@@ -143,10 +161,12 @@ export default defineComponent({
     return {
       name: "",
       type: null,
+      email: "", // Aggiunto il campo email
       latitude: 40.8522, // Default latitude
       longitude: 14.2681, // Default longitude
       formattedLatitude: "40.852200", // Default formatted latitude
       formattedLongitude: "14.268100", // Default formatted longitude
+      address: "", // New property for address
       username: "",
       password: "",
       typeOptions: [
@@ -164,6 +184,16 @@ export default defineComponent({
     isPasswordValid(password) {
       return /\d/.test(password); // Controlla se la password contiene almeno un numero
     },
+    async fetchAddress(latitude, longitude) {
+      try {
+        const response = await axios.get(
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`
+        );
+        this.address = response.data.display_name || "Indirizzo non trovato";
+      } catch (error) {
+        this.address = "Errore nel recupero dell'indirizzo";
+      }
+    },
     async submitForm() {
       if (!this.isPasswordValid(this.password)) {
         // Mostra il dialogo di errore se la password non è valida
@@ -171,12 +201,14 @@ export default defineComponent({
       } else {
         try {
           const response = await axios.post(
-            "http://localhost:3000/api/admin/partner/insert",
+            "http://localhost:3000/api/admin/insert/partner",
             {
               name: this.name,
-              type: this.type,
+              type: this.type.value, // Utilizza il valore effettivo del tipo
+              email: this.email, // Include l'email nella richiesta
               latitude: this.latitude,
               longitude: this.longitude,
+              address: this.address, // Include l'indirizzo
               username: this.username,
               password: this.password,
             }
@@ -202,6 +234,7 @@ export default defineComponent({
       this.longitude = event.latlng.lng;
       this.formattedLatitude = this.latitude.toFixed(6);
       this.formattedLongitude = this.longitude.toFixed(6);
+      this.fetchAddress(this.latitude, this.longitude); // Fetch the address when coordinates are updated
     },
   },
   mounted() {
@@ -235,18 +268,12 @@ export default defineComponent({
         this.formattedLongitude = this.longitude.toFixed(6);
         marker.setLatLng([this.latitude, this.longitude]);
         map.fitBounds(bbox);
+        this.fetchAddress(this.latitude, this.longitude); // Fetch the address when coordinates are updated
       })
       .addTo(map);
+
+    // Fetch initial address
+    this.fetchAddress(this.latitude, this.longitude);
   },
 });
 </script>
-
-<style scoped>
-@import "leaflet/dist/leaflet.css";
-@import "leaflet-control-geocoder/dist/Control.Geocoder.css";
-
-#map {
-  height: 400px; /* Imposta l'altezza della mappa */
-  margin-bottom: 20px;
-}
-</style>
