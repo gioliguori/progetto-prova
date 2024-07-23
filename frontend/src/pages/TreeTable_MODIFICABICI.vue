@@ -3,12 +3,7 @@
     <div class="q-mb-lg">
       <h2>MODIFICA BICI</h2>
     </div>
-    <q-table
-      :rows="bikes"
-      :columns="columns"
-      row-key="id"
-      class="q-mb-md"
-    >
+    <q-table :rows="bikes" :columns="columns" row-key="bike_id" class="q-mb-md">
       <template v-slot:body-cell-state="props">
         <q-td :props="props">
           <q-select
@@ -26,7 +21,7 @@
             flat
             icon="delete"
             color="negative"
-            @click="deleteBike(props.row.id)"
+            @click="deleteBike(props.row.bike_id)"
           ></q-btn>
         </q-td>
       </template>
@@ -40,86 +35,149 @@
 </template>
 
 <script>
+import axios from "axios";
+import { Dialog } from "quasar";
+
 export default {
   data() {
     return {
       bikes: [],
       columns: [
-        { name: 'id', required: true, label: 'ID', align: 'left', field: row => row.id, format: val => `${val}`, sortable: true },
-        { name: 'type', align: 'left', label: 'Tipo', field: 'type', sortable: true },
-        { name: 'battery_level', align: 'left', label: 'Livello Batteria', field: 'battery_level', sortable: true },
-        { name: 'state', align: 'left', label: 'Stato', field: 'state', sortable: true },
-        { name: 'actions', align: 'center', label: 'Azioni', field: 'actions' },
+        {
+          name: "bike_id",
+          required: true,
+          label: "ID",
+          align: "left",
+          field: (row) => row.bike_id,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "bike_type",
+          align: "left",
+          label: "Tipo",
+          field: "bike_type",
+          sortable: true,
+        },
+        {
+          name: "battery_level",
+          align: "left",
+          label: "Livello Batteria",
+          field: "battery_level",
+          sortable: true,
+        },
+        {
+          name: "state",
+          align: "left",
+          label: "Stato",
+          field: "state",
+          sortable: true,
+        },
+        { name: "actions", align: "center", label: "Azioni", field: "actions" },
       ],
       stateOptions: [
-        { label: 'Attivo', value: 'attivo' },
-        { label: 'Noleggiato', value: 'noleggiato' },
-        { label: 'Dismesso', value: 'dismesso' },
+        { label: "Disponibile", value: "disponibile" },
+        { label: "In noleggio", value: "in noleggio" },
+        { label: "Riservata", value: "riservata" },
+        { label: "Dismessa", value: "dismessa" },
       ],
       modifiedBikes: [],
     };
   },
   methods: {
-    fetchBikes() {
-      // Simulazione di chiamata API
-      this.bikes = [
-        { id: 1, type: 'Elettrica', battery_level: 80, state: 'attivo' },
-        { id: 2, type: 'Mountain Bike', battery_level: 50, state: 'noleggiato' },
-        // Aggiungi altre biciclette qui
-      ];
-      // Sostituire la parte sopra con una chiamata API reale
-      /*
-      this.$axios.get('/api/bikes')
-        .then(response => {
-          this.bikes = response.data;
-        })
-        .catch(error => {
-          console.error(error);
+    async fetchBikes() {
+      try {
+        const partnerId = localStorage.getItem("partner_id");
+        const response = await axios.post(
+          "http://localhost:3000/api/partners/bikes",
+          {
+            partnerId: partnerId,
+          }
+        );
+        if (response.data.success) {
+          this.bikes = response.data.bikes;
+        } else {
+          Dialog.create({
+            title: "Errore",
+            message: "Failed to fetch bikes",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        Dialog.create({
+          title: "Errore",
+          message: "An error occurred while fetching data",
         });
-      */
+      }
     },
     updateBikeState(bike) {
-      // Aggiungi la bici alla lista delle bici modificate
-      const existingBikeIndex = this.modifiedBikes.findIndex(b => b.id === bike.id);
+      const existingBikeIndex = this.modifiedBikes.findIndex(
+        (b) => b.bike_id === bike.bike_id
+      );
       if (existingBikeIndex !== -1) {
         this.modifiedBikes[existingBikeIndex].state = bike.state;
       } else {
         this.modifiedBikes.push({ ...bike });
       }
     },
-    deleteBike(id) {
-      // Simulazione di chiamata API per eliminare la bici
-      console.log(`Eliminare bici ID ${id}`);
-      // Rimuovi la bici dalla lista localmente
-      this.bikes = this.bikes.filter(bike => bike.id !== id);
-      // Rimuovi la bici anche dalla lista delle modifiche, se presente
-      this.modifiedBikes = this.modifiedBikes.filter(bike => bike.id !== id);
-      // Sostituire la parte sopra con una chiamata API reale
-      /*
-      this.$axios.delete(`/api/bikes/${id}`)
-        .then(response => {
-          this.bikes = this.bikes.filter(bike => bike.id !== id);
-        })
-        .catch(error => {
-          console.error(error);
+    async deleteBike(bikeId) {
+      try {
+        const partnerId = localStorage.getItem("partner_id");
+        await axios.delete(
+          `http://localhost:3000/api/partners/bike/${bikeId}`,
+          {
+            data: {
+              partnerId: partnerId,
+            },
+          }
+        );
+        this.bikes = this.bikes.filter((bike) => bike.bike_id !== bikeId);
+        this.modifiedBikes = this.modifiedBikes.filter(
+          (bike) => bike.bike_id !== bikeId
+        );
+        Dialog.create({
+          title: "Successo",
+          message: "Bike deleted successfully",
         });
-      */
+      } catch (error) {
+        console.error("Error deleting bike:", error);
+        Dialog.create({
+          title: "Errore",
+          message: "An error occurred while deleting the bike",
+        });
+      }
     },
-    submitChanges() {
-      // Simulazione di chiamata API per inviare tutte le modifiche
-      console.log('Inviare le seguenti modifiche:', this.modifiedBikes);
-      // Sostituire la parte sopra con una chiamata API reale
-      /*
-      this.$axios.put('/api/bikes', { bikes: this.modifiedBikes })
-        .then(response => {
-          console.log(response.data);
-          // Pulisci la lista delle bici modificate
+    async submitChanges() {
+      try {
+        const partnerId = localStorage.getItem("partner_id");
+        const modifiedBikesPayload = this.modifiedBikes.map((bike) => ({
+          bike_id: bike.bike_id,
+          state: bike.state.value ? bike.state.value : bike.state,
+        }));
+        const response = await axios.put(
+          "http://localhost:3000/api/partners/update-state/bikes",
+          { partnerId: partnerId, bikes: modifiedBikesPayload }
+        );
+        if (response.data.success) {
+          Dialog.create({
+            title: "Successo",
+            message: "Cambiamenti avvenuti!",
+          });
           this.modifiedBikes = [];
-        })
-        .catch(error => {
-          console.error(error);
+          this.fetchBikes();
+        } else {
+          Dialog.create({
+            title: "Errore",
+            message: "Errore!",
+          });
+        }
+      } catch (error) {
+        console.error("Error submitting changes:", error);
+        Dialog.create({
+          title: "Errore",
+          message: "An error occurred while submitting changes",
         });
-      */
+      }
     },
   },
   created() {
