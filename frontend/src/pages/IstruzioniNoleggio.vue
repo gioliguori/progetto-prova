@@ -28,6 +28,7 @@
   });
   </script>
   
+  
   <style scoped>
   .container {
     max-width: 800px; /* Imposta una larghezza massima per il contenitore centrale */
