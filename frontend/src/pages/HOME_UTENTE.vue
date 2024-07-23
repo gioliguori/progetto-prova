@@ -9,37 +9,26 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import { useRouter } from "vue-router";
 import "leaflet-control-geocoder";
-import axios from "axios"; // Assicurati di avere axios installato
+import axios from "axios";
 
 export default defineComponent({
   name: "MapComponent",
   setup() {
-    const router = useRouter(); // Usa Vue Router per la navigazione
+    const router = useRouter();
 
-    onMounted(() => {
-      // Inizializza la mappa e imposta la vista iniziale su Napoli
+    onMounted(async () => {
       const map = L.map("map").setView([40.8522, 14.2681], 13);
 
-      // Aggiungi il layer delle tile della mappa
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map);
 
-      // Definisci i marker e le rispettive pagine a cui devono rimandare
-      const markers = [
-        { position: [40.8522, 14.2681], name: "Hotel Bella Vista", page: "/page1", id: "3397a676-3b87-11ef-9df2-a4bfcecd978d" },
-        { position: [40.86, 14.29], name: "Partner2", page: "/page2", id: "2" },
-        { position: [40.845, 14.25], name: "Partner3", page: "/page3", id: "3" },
-        { position: [40.835, 14.28], name: "Partner4", page: "/page4", id: "4" },
-      ];
-
-      // Funzione per generare il contenuto del popup con le biciclette disponibili
       const createPopupContent = async (marker) => {
         const container = document.createElement("div");
-        container.style.width = "300px"; // Imposta la larghezza del popup
-        container.style.height = "200px"; // Imposta l'altezza del popup
+        container.style.width = "300px";
+        container.style.height = "200px";
 
         const title = document.createElement("h3");
         title.innerText = marker.name;
@@ -48,11 +37,13 @@ export default defineComponent({
         const bikeList = document.createElement("ul");
 
         try {
-          const response = await axios.get(`/api/partners/${marker.id}/bikes`);
+          const response = await axios.get(
+            `http://localhost:3000/api/admin/partners/${marker.id}/bikes`
+          );
           const bikes = response.data;
-          bikes.forEach(bike => {
+          bikes.forEach((bike) => {
             const listItem = document.createElement("li");
-            listItem.innerText = `ID: ${bike.id}, Tipo: ${bike.type}, Stato: ${bike.state}`;
+            listItem.innerText = `ID: ${bike.bike_id}, Tipo: ${bike.bike_type}, Stato: ${bike.state}`;
             bikeList.appendChild(listItem);
           });
         } catch (error) {
@@ -67,7 +58,7 @@ export default defineComponent({
         const button1 = document.createElement("button");
         button1.innerText = "Azione 1";
         button1.addEventListener("click", () => {
-          router.push(marker.page); // Naviga alla pagina specificata
+          router.push(marker.page);
         });
         container.appendChild(button1);
 
@@ -78,29 +69,42 @@ export default defineComponent({
         });
         container.appendChild(button2);
 
-        // Aggiungi altri bottoni come necessario
-
         return container;
       };
 
-      markers.forEach((marker) => {
-        L.marker(marker.position)
-          .addTo(map)
-          .bindTooltip(marker.name, {
-            permanent: true,
-            direction: "top",
-            className: "marker-tooltip",
-          }) // Mostra il tooltip
-          .on("click", async (e) => {
-            const popupContent = await createPopupContent(marker);
-            const popup = L.popup()
-              .setLatLng(e.latlng)
-              .setContent(popupContent)
-              .openOn(map);
-          });
-      });
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/admin/partners"
+        );
+        const partners = response.data.partners;
 
-      // Ottenere la posizione in tempo reale dell'utente
+        partners.forEach((partner) => {
+          const marker = {
+            position: [partner.latitude, partner.longitude],
+            name: partner.partner_name,
+            page: `/page${partner.partner_id}`,
+            id: partner.partner_id,
+          };
+
+          L.marker(marker.position)
+            .addTo(map)
+            .bindTooltip(marker.name, {
+              permanent: true,
+              direction: "top",
+              className: "marker-tooltip",
+            })
+            .on("click", async (e) => {
+              const popupContent = await createPopupContent(marker);
+              const popup = L.popup()
+                .setLatLng(e.latlng)
+                .setContent(popupContent)
+                .openOn(map);
+            });
+        });
+      } catch (error) {
+        console.error("Errore nel recuperare i partner:", error);
+      }
+
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -109,7 +113,6 @@ export default defineComponent({
               position.coords.longitude,
             ];
 
-            // Aggiungi un marker per la posizione dell'utente
             L.marker(userLocation)
               .addTo(map)
               .bindPopup("TU SEI QUI!")
@@ -119,7 +122,6 @@ export default defineComponent({
                 className: "marker-tooltip",
               });
 
-            // Centra la mappa sulla posizione dell'utente
             map.setView(userLocation, 13);
           },
           (error) => {
@@ -130,7 +132,6 @@ export default defineComponent({
         console.error("Geolocation non è supportato da questo browser.");
       }
 
-      // Aggiungi la barra di ricerca
       const geocoder = L.Control.Geocoder.nominatim();
       L.Control.geocoder({
         defaultMarkGeocode: false,
@@ -151,17 +152,17 @@ export default defineComponent({
 
 <style scoped>
 #map {
-  height: 100vh; /* Imposta l'altezza della mappa per occupare tutta la viewport */
+  height: 100vh;
 }
 
 .marker-tooltip {
-  background: white; /* Colore di sfondo della nuvoletta */
-  color: black; /* Colore del testo */
-  border-radius: 4px; /* Angoli arrotondati */
-  padding: 4px; /* Spaziatura interna */
-  font-size: 12px; /* Dimensione del testo */
-  font-weight: bold; /* Grassetto per il testo */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Ombra per la nuvoletta */
+  background: white;
+  color: black;
+  border-radius: 4px;
+  padding: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 button {
