@@ -136,14 +136,14 @@ export default {
 
         if (response.data.success) {
           console.log("Registration successful");
-          localStorage.setItem("username", username.value);
           Notify.create({
             type: "positive",
-            message: "Registrazione completata con successo!",
+            message: "Registrazione completata con successo! Sarai reindirizzato alla pagina di login.",
           });
-          router.push({ name: "HOME_UTENTE" }); // Naviga alla pagina HOME_UTENTE
+          // Naviga alla pagina di login
+          router.push({ name: "LoginUtente" });
         } else {
-          console.log("Registration failed:", response.data.message);
+          // Solo notifica di errore se la risposta del server indica un fallimento
           Notify.create({
             type: "negative",
             message: response.data.message,
@@ -152,6 +152,7 @@ export default {
       } catch (error) {
         Loading.hide();
         console.error("Errore durante la registrazione:", error);
+        // Mostra solo la notifica di errore
         Notify.create({
           type: "negative",
           message: `Si è verificato un errore durante la registrazione: ${error.message}`,
