@@ -17,28 +17,31 @@
                 v-model="username"
                 label="Nome Utente"
                 lazy-rules
-                :rules="[val => !!val || 'Il nome utente è obbligatorio']"
+                :rules="[(val) => !!val || 'Il nome utente è obbligatorio']"
               />
               <q-input
                 filled
                 v-model="email"
                 label="Email"
                 lazy-rules
-                :rules="[val => !!val || 'L\'email è obbligatoria']"
+                :rules="[
+                  (val) => !!val || 'L\'email è obbligatoria',
+                  (val) => /.+@.+\..+/.test(val) || 'Email non valida',
+                ]"
               />
               <q-input
                 filled
                 v-model="firstName"
                 label="Nome"
                 lazy-rules
-                :rules="[val => !!val || 'Il nome è obbligatorio']"
+                :rules="[(val) => !!val || 'Il nome è obbligatorio']"
               />
               <q-input
                 filled
                 v-model="lastName"
                 label="Cognome"
                 lazy-rules
-                :rules="[val => !!val || 'Il cognome è obbligatorio']"
+                :rules="[(val) => !!val || 'Il cognome è obbligatorio']"
               />
               <q-input
                 type="password"
@@ -46,7 +49,12 @@
                 v-model="password"
                 label="Password"
                 lazy-rules
-                :rules="[val => !!val || 'La password è obbligatoria']"
+                :rules="[
+                  (val) => !!val || 'La password è obbligatoria',
+                  (val) =>
+                    /\d/.test(val) ||
+                    'La password deve contenere almeno un numero',
+                ]"
               />
               <div>
                 <q-btn
@@ -66,25 +74,33 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { Loading, QSpinnerGears } from 'quasar';
-import { computed, ref } from 'vue';
+import axios from "axios";
+import { Loading, QSpinnerGears, Notify } from "quasar";
+import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
 
 export default {
-  name: 'RegisterPage',
+  name: "RegisterPage",
   setup() {
-    const username = ref('');
-    const email = ref('');
-    const firstName = ref('');
-    const lastName = ref('');
-    const password = ref('');
+    const router = useRouter();
+    const username = ref("");
+    const email = ref("");
+    const firstName = ref("");
+    const lastName = ref("");
+    const password = ref("");
 
     const isFormValid = computed(() => {
-      return username.value && email.value && firstName.value && lastName.value && password.value;
+      return (
+        username.value &&
+        email.value &&
+        firstName.value &&
+        lastName.value &&
+        password.value
+      );
     });
 
     const register = async () => {
-      console.log('Attempting registration with:', {
+      console.log("Attempting registration with:", {
         username: username.value,
         email: email.value,
         firstName: firstName.value,
@@ -93,48 +109,52 @@ export default {
       });
 
       if (!isFormValid.value) {
-        this.$q.notify({
-          type: 'negative',
-          message: 'Per favore, compila tutti i campi.',
+        Notify.create({
+          type: "negative",
+          message: "Per favore, compila tutti i campi.",
         });
         return;
       }
 
       Loading.show({
         spinner: QSpinnerGears,
-        message: 'Registrazione in corso...',
+        message: "Registrazione in corso...",
       });
 
       try {
-        const response = await axios.post('http://localhost:3000/api/register', {
-          username: username.value,
-          email: email.value,
-          firstName: firstName.value,
-          lastName: lastName.value,
-          password: password.value,
-        });
+        const response = await axios.post(
+          "http://localhost:3000/api/user/register",
+          {
+            username: username.value,
+            email: email.value,
+            firstName: firstName.value,
+            lastName: lastName.value,
+            password: password.value,
+          }
+        );
         Loading.hide();
 
         if (response.data.success) {
-          console.log('Registration successful');
-          this.$q.notify({
-            type: 'positive',
-            message: 'Registrazione completata con successo!',
+          console.log("Registration successful");
+          localStorage.setItem("username", username.value);
+          Notify.create({
+            type: "positive",
+            message: "Registrazione completata con successo!",
           });
-          this.$router.push({ name: 'LoginUtente' }); // Naviga alla pagina di login
+          router.push({ name: "HOME_UTENTE" }); // Naviga alla pagina HOME_UTENTE
         } else {
-          console.log('Registration failed:', response.data.message);
-          this.$q.notify({
-            type: 'negative',
-            message: 'Errore nella registrazione, riprova.',
+          console.log("Registration failed:", response.data.message);
+          Notify.create({
+            type: "negative",
+            message: response.data.message,
           });
         }
       } catch (error) {
         Loading.hide();
-        console.error('Errore durante la registrazione:', error);
-        this.$q.notify({
-          type: 'negative',
-          message: 'Si è verificato un errore durante la registrazione.',
+        console.error("Errore durante la registrazione:", error);
+        Notify.create({
+          type: "negative",
+          message: `Si è verificato un errore durante la registrazione: ${error.message}`,
         });
       }
     };
