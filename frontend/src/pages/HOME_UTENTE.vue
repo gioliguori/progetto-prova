@@ -6,9 +6,9 @@
         <button class="close-button" @click="closeModal">X</button>
         <h3>{{ modalContent.name }}</h3>
         <ul>
-          <li v-for="bike in modalContent.bikes" :key="bike.bike_id">
-            Tipo: {{ bike.bike_type }}, Batteria: {{ bike.battery_level }}%
-            <button @click="handleBikeAction(bike.bike_id)">Noleggia</button>
+          <li v-for="bike in modalContent.bikes" :key="bike.bike_id" class="bike-item">
+            <span>Tipo: {{ bike.bike_type }}, Batteria: {{ bike.battery_level }}%</span>
+            <button @click="handleBikeAction(bike.bike_id)" class="rent-button">Noleggia</button>
           </li>
         </ul>
       </div>
@@ -208,10 +208,17 @@ export default defineComponent({
   cursor: pointer;
 }
 
-button {
-  display: block;
-  margin: 5px 0;
-  padding: 10px 15px;
+.bike-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.rent-button {
+  margin-left: 10px;
+  padding: 5px 10px;
   background-color: #007bff;
   color: white;
   border: none;
@@ -219,7 +226,7 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+.rent-button:hover {
   background-color: #0056b3;
 }
 </style>
