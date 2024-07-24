@@ -227,7 +227,7 @@ export default defineComponent({
       }
     },
     redirectToDashboard() {
-      this.$router.push("/dashboard");
+      this.$router.push("/TreeTable_INSERISCIPARTNER");
     },
     updateLatLong(event) {
       this.latitude = event.latlng.lat;
