@@ -50,7 +50,8 @@ CREATE TABLE admin (
 CREATE TABLE partner_auth (
     uuid CHAR(36) PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    is_deleted BOOLEAN DEFAULT FALSE                   -- Cancellazione logica
 );
 
 -- Crea la tabella "reservations"
