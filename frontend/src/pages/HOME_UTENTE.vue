@@ -1,9 +1,23 @@
 <template>
-  <div id="map" style="height: 100vh"></div>
+  <div>
+    <div id="map" style="height: 100vh"></div>
+    <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
+      <div class="modal-content">
+        <button class="close-button" @click="closeModal">X</button>
+        <h3>{{ modalContent.name }}</h3>
+        <ul>
+          <li v-for="bike in modalContent.bikes" :key="bike.bike_id">
+            Tipo: {{ bike.bike_type }}, Batteria: {{ bike.battery_level }}%
+            <button @click="handleBikeAction(bike.bike_id)">Noleggia</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-control-geocoder/dist/Control.Geocoder.css";
@@ -15,6 +29,22 @@ export default defineComponent({
   name: "MapComponent",
   setup() {
     const router = useRouter();
+    const showModal = ref(false);
+    const modalContent = ref({ name: "", bikes: [], page: "" });
+
+    const openModal = (content) => {
+      modalContent.value = content;
+      showModal.value = true;
+    };
+
+    const closeModal = () => {
+      showModal.value = false;
+    };
+
+    const handleBikeAction = (bikeId) => {
+      localStorage.setItem("selectedBikeId", bikeId);
+      router.push("/IstruzioniNoleggio");
+    };
 
     onMounted(async () => {
       const map = L.map("map").setView([40.8522, 14.2681], 13);
@@ -26,50 +56,23 @@ export default defineComponent({
       }).addTo(map);
 
       const createPopupContent = async (marker) => {
-        const container = document.createElement("div");
-        container.style.width = "300px";
-        container.style.height = "200px";
-
-        const title = document.createElement("h3");
-        title.innerText = marker.name;
-        container.appendChild(title);
-
-        const bikeList = document.createElement("ul");
+        const content = {
+          name: marker.name,
+          bikes: [],
+          page: marker.page,
+        };
 
         try {
-          const response = await axios.get(
-            `http://localhost:3000/api/admin/partners/${marker.id}/bikes`
+          const response = await axios.post(
+            "http://localhost:3000/api/user/bikes",
+            { partnerId: marker.id }
           );
-          const bikes = response.data;
-          bikes.forEach((bike) => {
-            const listItem = document.createElement("li");
-            listItem.innerText = `ID: ${bike.bike_id}, Tipo: ${bike.bike_type}, Stato: ${bike.state}`;
-            bikeList.appendChild(listItem);
-          });
+          content.bikes = response.data.bikes;
         } catch (error) {
           console.error("Errore nel recuperare le biciclette:", error);
-          const errorItem = document.createElement("li");
-          errorItem.innerText = "Errore nel recuperare le biciclette.";
-          bikeList.appendChild(errorItem);
         }
 
-        container.appendChild(bikeList);
-
-        const button1 = document.createElement("button");
-        button1.innerText = "Azione 1";
-        button1.addEventListener("click", () => {
-          router.push(marker.page);
-        });
-        container.appendChild(button1);
-
-        const button2 = document.createElement("button");
-        button2.innerText = "Azione 2";
-        button2.addEventListener("click", () => {
-          alert(`Azione 2 per ${marker.name}`);
-        });
-        container.appendChild(button2);
-
-        return container;
+        return content;
       };
 
       try {
@@ -93,12 +96,9 @@ export default defineComponent({
               direction: "top",
               className: "marker-tooltip",
             })
-            .on("click", async (e) => {
-              const popupContent = await createPopupContent(marker);
-              const popup = L.popup()
-                .setLatLng(e.latlng)
-                .setContent(popupContent)
-                .openOn(map);
+            .on("click", async () => {
+              const content = await createPopupContent(marker);
+              openModal(content);
             });
         });
       } catch (error) {
@@ -145,7 +145,12 @@ export default defineComponent({
         .addTo(map);
     });
 
-    return {};
+    return {
+      showModal,
+      modalContent,
+      closeModal,
+      handleBikeAction,
+    };
   },
 });
 </script>
@@ -163,6 +168,44 @@ export default defineComponent({
   font-size: 12px;
   font-weight: bold;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  cursor: pointer;
 }
 
 button {
