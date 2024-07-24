@@ -22,9 +22,6 @@
           </template>
         </q-table>
       </q-card-section>
-      <q-card-section>
-        <q-btn @click="logout" color="primary" label="Logout" />
-      </q-card-section>
     </q-card>
   </q-page>
 </template>
@@ -134,11 +131,6 @@ export default {
           message: "An error occurred while deleting the bike",
         });
       }
-    },
-    logout() {
-      localStorage.removeItem("username");
-      localStorage.removeItem("partner_id");
-      this.$router.push({ name: "LoginPage" });
     },
   },
 };
