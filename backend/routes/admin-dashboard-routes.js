@@ -70,9 +70,18 @@ router.delete("/partner/:id", async (req, res) => {
   console.log("Richiesta di eliminazione del partner:", partnerId);
 
   try {
-    await knex("partners")
-      .where({ partner_id: partnerId })
-      .update({ is_deleted: true });
+    // Avvia una transazione per garantire la consistenza dei dati
+    await knex.transaction(async (trx) => {
+      // Aggiorna il campo is_deleted nella tabella partners
+      await trx("partners")
+        .where({ partner_id: partnerId })
+        .update({ is_deleted: true });
+
+      // Aggiorna il campo is_deleted nella tabella partner_auth
+      await trx("partner_auth")
+        .where({ uuid: partnerId })
+        .update({ is_deleted: true });
+    });
 
     res.json({
       success: true,
