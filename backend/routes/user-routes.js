@@ -59,4 +59,50 @@ router.post("/api/user/bikes", async (req, res) => {
   }
 });
 
+// Funzione per creare un nuovo utente
+router.post("/api/user/register", async (req, res) => {
+  const { username, email, firstName, lastName, password } = req.body;
+  console.log("Tentativo di registrazione con:", {
+    username,
+    email,
+    firstName,
+    lastName,
+  });
+
+  try {
+    // Controlla se l'username o l'email sono già presenti nel database
+    const existingUser = await knex("users")
+      .where("username", username)
+      .orWhere("email", email)
+      .first();
+
+    if (existingUser) {
+      return res.json({
+        success: false,
+        message: "Username o email già presenti.",
+      });
+    }
+
+    // Inserisce il nuovo utente nel database
+    await knex("users").insert({
+      username,
+      email,
+      first_name: firstName,
+      last_name: lastName,
+      password, // Salva la password come testo in chiaro
+    });
+
+    res.json({
+      success: true,
+      message: "Registrazione completata con successo!",
+    });
+  } catch (error) {
+    console.error("Errore durante l'inserimento dell'utente:", error);
+    res.status(500).json({
+      success: false,
+      message: "Errore del server durante la registrazione.",
+    });
+  }
+});
+
 module.exports = router; // Esporta il router
