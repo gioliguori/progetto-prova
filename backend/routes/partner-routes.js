@@ -103,24 +103,30 @@ router.delete("/bike/:id", async (req, res) => {
   );
 
   try {
-    const bike = await knex("bikes")
-      .where({ bike_id: bikeId, partner_id: partnerId })
-      .first();
+    await knex.transaction(async (trx) => {
+      const bike = await trx("bikes")
+        .where({ bike_id: bikeId, partner_id: partnerId })
+        .first();
 
-    if (!bike) {
-      return res.status(404).json({
-        success: false,
-        message: "Bike not found or does not belong to the partner",
+      if (!bike) {
+        return res.status(404).json({
+          success: false,
+          message: "Bike not found or does not belong to the partner",
+        });
+      }
+
+      await trx("bikes")
+        .where({ bike_id: bikeId })
+        .update({ is_deleted: true, state: "dismessa" });
+
+      await trx("partners")
+        .where({ partner_id: partnerId })
+        .decrement("count_bike", 1);
+
+      res.json({
+        success: true,
+        message: "Bike deleted successfully",
       });
-    }
-
-    await knex("bikes")
-      .where({ bike_id: bikeId })
-      .update({ is_deleted: true, state: "dismessa" });
-
-    res.json({
-      success: true,
-      message: "Bike deleted successfully",
     });
   } catch (error) {
     console.error("Errore durante l'eliminazione della bici:", error);

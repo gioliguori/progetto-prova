@@ -13,6 +13,28 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Nuova rotta per ottenere i dati combinati di bici e partner
+router.get("/localization", async (req, res) => {
+  try {
+    const results = await knex("bikes")
+      .join("partners", "bikes.partner_id", "=", "partners.partner_id")
+      .select(
+        "bikes.bike_id",
+        "bikes.bike_type",
+        "bikes.battery_level",
+        "bikes.latitude",
+        "bikes.longitude",
+        "bikes.state",
+        "bikes.bike_id_partner",
+        "partners.partner_name"
+      );
+    res.json(results);
+  } catch (error) {
+    console.error("Errore durante l'esecuzione della query: " + error.stack);
+    res.status(500).send("Errore del server");
+  }
+});
+
 // Rotta per ottenere i conteggi delle bici
 router.get("/count", async (req, res) => {
   try {
@@ -59,24 +81,30 @@ router.post("/insert", async (req, res) => {
     }
 
     await knex.transaction(async (trx) => {
-      // Recupera latitudine e longitudine del partner
+      // Recupera latitudine, longitudine e count_bike del partner
       const partner = await trx("partners")
         .where("partner_id", partner_id)
-        .select("latitude", "longitude")
+        .select("latitude", "longitude", "count_bike")
         .first();
 
       if (!partner) {
         throw new Error("Partner non trovato");
       }
 
+      // Assegna il nuovo bike_id_partner
+      const newBikeIdPartner = partner.count_bike + 1;
+
+      // Inserisci la nuova bici
       await trx("bikes").insert({
         bike_type,
         battery_level,
         partner_id,
         latitude: partner.latitude,
         longitude: partner.longitude,
+        bike_id_partner: newBikeIdPartner,
       });
 
+      // Incrementa count_bike del partner
       await trx("partners")
         .where("partner_id", partner_id)
         .increment("count_bike", 1);

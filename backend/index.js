@@ -15,12 +15,14 @@ const authRoutes = require("./routes/auth-routes");
 const adminDashboardRoutes = require("./routes/admin-dashboard-routes");
 const userRoutes = require("./routes/user-routes");
 const partnerRoutes = require("./routes/partner-routes");
+const gpsRoutes = require("./routes/gps-routes");
 
 // Utilizza i router
 app.use("/api/bikes", bikesRoutes);
 app.use(authRoutes);
 app.use("/api/admin", adminDashboardRoutes);
 app.use(userRoutes);
+app.use("/api/gps", gpsRoutes);
 app.use("/api/partners", partnerRoutes);
 
 app.listen(port, () => {

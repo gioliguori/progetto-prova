@@ -16,17 +16,19 @@ CREATE TABLE partners (
 
 -- Crea la tabella "bikes"
 CREATE TABLE bikes (
-    bike_id CHAR(36) PRIMARY KEY DEFAULT (UUID()),     -- UUID come ID univoco per ogni bici
-    bike_type ENUM('City Bike Elettrica', 'Mtb Elettrica', 'Pieghevole Elettrica', 'Bici Da Città', 'Bici Per Bambini', 'Mountain Bike') NOT NULL,  -- Tipo di bici
-    battery_level INT,                                 -- Livello della batteria
-    latitude DECIMAL(10, 8),                           -- Latitudine
-    longitude DECIMAL(11, 8),                          -- Longitudine
-    partner_id CHAR(36),                               -- UUID del partner (chiave esterna)
-    state ENUM('disponibile', 'in noleggio', 'riservata', 'dismessa') DEFAULT 'disponibile',  -- Stato della bici
-    count_run INT DEFAULT 0,                           -- Conteggio delle corse
-    is_deleted BOOLEAN DEFAULT FALSE,                  -- Cancellazione logica
-    FOREIGN KEY (partner_id) REFERENCES partners(partner_id) -- Chiave esterna
+    bike_id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    bike_type ENUM('City Bike Elettrica', 'Mtb Elettrica', 'Pieghevole Elettrica', 'Bici Da Città', 'Bici Per Bambini', 'Mountain Bike') NOT NULL,
+    battery_level INT,
+    latitude DECIMAL(10, 8),
+    longitude DECIMAL(11, 8),
+    partner_id CHAR(36),
+    state ENUM('disponibile', 'in noleggio', 'riservata', 'dismessa') DEFAULT 'disponibile',
+    count_run INT DEFAULT 0,
+    is_deleted BOOLEAN DEFAULT FALSE,
+    bike_id_partner INT,
+    FOREIGN KEY (partner_id) REFERENCES partners(partner_id)
 );
+
 
 -- Crea la tabella "users"
 CREATE TABLE users (
