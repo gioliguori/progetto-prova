@@ -25,7 +25,6 @@
           >
           </q-btn>
 
-          <!-- Modifica: Aggiunto un q-btn che naviga alla schermata di login -->
           <q-btn round flat @click="goToLogin">
             <q-avatar size="26px">
               <img src="src/assets/shutdown.png" />
@@ -42,10 +41,7 @@
       class="bg-primary text-white"
     >
       <q-list>
-        <q-item
-          to="/DashboardPartner"
-          active-class="q-item-no-link-highlighting"
-        >
+        <q-item to="/DashboardPartner" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
             <q-icon name="dashboard" />
           </q-item-section>
@@ -90,12 +86,13 @@
           </q-item-section>
         </q-item>
 
-        <q-item to="/Mail" active-class="q-item-no-link-highlighting">
+        <!-- Modified WEBEX item with custom icon -->
+        <q-item clickable @click="redirectToWebex" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
-            <q-icon name="email" />
+            <q-img src="src/assets/Webex.png" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>WEBEX</q-item-label>
+            <q-item-label>ASSISTENZA (WEBEX)</q-item-label>
           </q-item-section>
         </q-item>
 
@@ -115,21 +112,14 @@
     </q-page-container>
   </q-layout>
 </template>
-<script>
-import EssentialLink from "components/EssentialLink.vue";
-import Messages from "./Messages.vue";
 
+<script>
 import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "MainLayout",
-
-  components: {
-    EssentialLink,
-    Messages,
-  },
 
   setup() {
     const leftDrawerOpen = ref(false);
@@ -140,6 +130,19 @@ export default defineComponent({
       router.push("/Login-1");
     };
 
+    const redirectToWebex = () => {
+      $q.dialog({
+        title: 'ATTENZIONE!',
+        message: 'Sarai reindirizzato alla pagina di login di webex!',
+        ok: {
+          label: 'OK',
+          color: 'primary'
+        },
+      }).onOk(() => {
+        window.location.href = 'https://signin.webex.com/signin?surl=https%3A%2F%2Fsignin.webex.com%2Fcollabs%2Fauth%3F';
+      });
+    };
+
     return {
       $q,
       leftDrawerOpen,
@@ -147,6 +150,7 @@ export default defineComponent({
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
       goToLogin,
+      redirectToWebex
     };
   },
 });
