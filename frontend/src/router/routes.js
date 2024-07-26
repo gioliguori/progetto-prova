@@ -23,6 +23,11 @@ const routes = [
         component: () => import("pages/TreeTable_LISTAPARTNER.vue"),
         name: "TreeTable_LISTAPARTNER",
       },
+      {
+        path: "PosizioneBici",
+        component: () => import("pages/PosizioneBici.vue"),
+        name: "PosizioneBici",
+      },
     ],
   },
   {
@@ -87,13 +92,12 @@ const routes = [
         name: "QReader",
       },
       {
-      path: "IstruzioniNoleggio",
-      component: () => import("pages/IstruzioniNoleggio.vue"),
-      name: "IstruzioniNoleggio",
-    },
+        path: "IstruzioniNoleggio",
+        component: () => import("pages/IstruzioniNoleggio.vue"),
+        name: "IstruzioniNoleggio",
+      },
     ],
   },
-
 
   {
     path: "/LoginUtente",

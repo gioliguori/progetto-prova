@@ -86,8 +86,20 @@
           </q-item-section>
         </q-item>
 
+        <q-item to="/PosizioneBici" active-class="q-item-no-link-highlighting">
+          <q-item-section avatar>
+            <q-icon name="list" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>POSIZIONI BICI</q-item-label>
+          </q-item-section>
+        </q-item>
         <!-- Modified WEBEX item with custom icon -->
-        <q-item clickable @click="redirectToWebex" active-class="q-item-no-link-highlighting">
+        <q-item
+          clickable
+          @click="redirectToWebex"
+          active-class="q-item-no-link-highlighting"
+        >
           <q-item-section avatar>
             <q-img src="src/assets/Webex.png" />
           </q-item-section>
@@ -125,21 +137,22 @@ export default defineComponent({
     const leftDrawerOpen = ref(false);
     const $q = useQuasar();
     const router = useRouter();
-    
+
     const goToLogin = () => {
       router.push("/LoginAdmin");
     };
 
     const redirectToWebex = () => {
       $q.dialog({
-        title: 'ATTENZIONE!',
-        message: 'Sarai reindirizzato alla pagina di login di webex!',
+        title: "ATTENZIONE!",
+        message: "Sarai reindirizzato alla pagina di login di webex!",
         ok: {
-          label: 'OK',
-          color: 'primary'
+          label: "OK",
+          color: "primary",
         },
       }).onOk(() => {
-        window.location.href = 'https://signin.webex.com/signin?surl=https%3A%2F%2Fsignin.webex.com%2Fcollabs%2Fauth%3F';
+        window.location.href =
+          "https://signin.webex.com/signin?surl=https%3A%2F%2Fsignin.webex.com%2Fcollabs%2Fauth%3F";
       });
     };
 
@@ -150,7 +163,7 @@ export default defineComponent({
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
       goToLogin,
-      redirectToWebex
+      redirectToWebex,
     };
   },
 });

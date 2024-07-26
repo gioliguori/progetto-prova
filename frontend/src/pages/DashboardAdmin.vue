@@ -28,6 +28,12 @@
           <q-btn
             class="q-mb-md"
             color="primary"
+            label="Posizioni Bici"
+            @click="goToPage('PosizioneBici')"
+          />
+          <q-btn
+            class="q-mb-md"
+            color="primary"
             label="Webex"
             @click="goToPage('Webex')"
           />
