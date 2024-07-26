@@ -4,23 +4,22 @@ VALUES
 ('3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'Ristorante La Pergola', 'ristorante', 40.8365949, 14.2465048, 'Via Chiaia, 216, 80121 Napoli NA, Italia', 'info@ristorantelapergola.it', 1, 'giallo.jpg'),
 ('3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'Altro', 'altro', 40.8336958, 14.2500108, 'Via Santa Lucia, 17, 80132 Napoli NA, Italia', 'info@altro.it', 1, 'verde.jpg');
 
--- Inserisci tre nuove bici associate ai partner
-INSERT INTO bikes (bike_id, bike_type, battery_level, latitude, longitude, partner_id, state, count_run)
-VALUES 
-('3398d99c-3b87-11ef-9df2-a4bfcecd978d', 'City Bike Elettrica', 80, 45.464200, 9.191370, '3397a676-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0),
-('3398a3e6-3b87-11ef-9df2-a4bfcecd978d', 'Mtb Elettrica', 75, 45.465400, 9.192580, '3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0),
-('3398a5f8-3b87-11ef-9df2-a4bfcecd978d', 'Pieghevole Elettrica', 90, 45.463000, 9.190160, '3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0);
 
--- Inserisci altre bici associate ai partner
-INSERT INTO bikes (bike_id, bike_type, battery_level, latitude, longitude, partner_id, state, count_run)
+-- Inserisci tre nuove bici associate ai partner con coordinate corrette
+INSERT INTO bikes (bike_id, bike_type, battery_level, latitude, longitude, partner_id, state, count_run, bike_id_partner)
 VALUES 
-(UUID(), 'City Bike Elettrica', 85, 45.464210, 9.191375, '3397a676-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0),
-(UUID(), 'Mtb Elettrica', 70, 45.465410, 9.192585, '3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0),
-(UUID(), 'Pieghevole Elettrica', 95, 45.463010, 9.190165, '3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0),
-(UUID(), 'Bici Da Città', 90, 45.464215, 9.191380, '3397a676-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0),
-(UUID(), 'Bici Per Bambini', 75, 45.465415, 9.192590, '3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0),
-(UUID(), 'Mountain Bike', 80, 45.463015, 9.190170, '3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0);
+('3398d99c-3b87-11ef-9df2-a4bfcecd978d', 'City Bike Elettrica', 80, 40.8417163, 14.2486235, '3397a676-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0, 1),
+('3398a3e6-3b87-11ef-9df2-a4bfcecd978d', 'Mtb Elettrica', 75, 40.8365949, 14.2465048, '3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0, 1),
+('3398a5f8-3b87-11ef-9df2-a4bfcecd978d', 'Pieghevole Elettrica', 90, 40.8336958, 14.2500108, '3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0, 1);
 
+INSERT INTO bikes (bike_id, bike_type, battery_level, latitude, longitude, partner_id, state, count_run, bike_id_partner)
+VALUES 
+(UUID(), 'City Bike Elettrica', 85, 40.8417163, 14.2486235, '3397a676-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0, 2),
+(UUID(), 'Mtb Elettrica', 70, 40.8365949, 14.2465048, '3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0, 2),
+(UUID(), 'Pieghevole Elettrica', 95, 40.8336958, 14.2500108, '3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0, 2),
+(UUID(), 'Bici Da Città', 90, 40.8417163, 14.2486235, '3397a676-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0, 3),
+(UUID(), 'Bici Per Bambini', 75, 40.8365949, 14.2465048, '3397ab8a-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0, 3),
+(UUID(), 'Mountain Bike', 80, 40.8336958, 14.2500108, '3397ac98-3b87-11ef-9df2-a4bfcecd978d', 'disponibile', 0, 3);
 -- Aggiorna il conteggio delle bici per ciascun partner
 UPDATE partners
 SET count_bike = (
