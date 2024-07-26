@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const knex = require("../knexfile"); // Assicurati che la configurazione di Knex sia corretta
 
-app.post("/api/update-location", async (req, res) => {
+app.post("/update-location", async (req, res) => {
   try {
     const { bike_id, latitude, longitude } = req.body;
 
