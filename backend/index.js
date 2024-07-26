@@ -21,7 +21,7 @@ const gpsRoutes = require("./routes/gps-routes");
 app.use("/api/bikes", bikesRoutes);
 app.use(authRoutes);
 app.use("/api/admin", adminDashboardRoutes);
-app.use(userRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api/gps", gpsRoutes);
 app.use("/api/partners", partnerRoutes);
 
