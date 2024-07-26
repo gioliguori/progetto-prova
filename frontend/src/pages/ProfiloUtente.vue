@@ -9,12 +9,7 @@
       </q-card-section>
       <q-card-section>
         <q-btn @click="goToEditProfile" label="MODIFICA PROFILO" color="primary" class="full-width q-mb-sm" />
-        
-        <!-- Pulsante ASSISTENZA modificato per aprire la chat con schianogo@webex.bot -->
         <q-btn @click="goToHelp" label="ASSISTENZA (WEBEX)" color="primary" class="full-width q-mb-sm" />
-
-
-        <!-- Pulsante CONTATTACI -->
         <q-btn @click="contactUs" label="PARLA CON UN OPERATORE (WEBEX)" color="primary" class="full-width q-mb-sm" />
         <q-btn @click="logout" label="LOGOUT" color="negative" class="full-width" />
       </q-card-section>
@@ -39,18 +34,22 @@ export default defineComponent({
     const goToHelp = () => {
       // URL per aprire la chat con il bot su Webex
       const webexChatUrl = 'webex://chat?to=schianogo@webex.bot';
+      const fallbackUrl = 'https://webex.com';
 
-      // Tenta di aprire l'app Webex
-      window.location.href = webexChatUrl;
+      // Crea un iframe invisibile per tentare di aprire l'app Webex
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = webexChatUrl;
+      document.body.appendChild(iframe);
 
       // Mostra un messaggio se l'app non è installata
       setTimeout(() => {
-        // Se la finestra del browser ha il focus dopo il tentativo di apertura dell'app,
-        // significa che l'app non è stata aperta (e.g., non è installata)
-        if (!document.hasFocus()) {
+        // Verifica se la finestra ha il focus. Se no, mostra un messaggio di avviso
+        if (document.hasFocus()) {
           alert('PER CHATTARE CON IL BOT È NECESSARIO INSTALLARE L\'APP WEBEX');
+          window.open(fallbackUrl, '_blank'); // Reindirizza all'URL di fallback
         }
-      }, 2000); // Aumenta il tempo di attesa per gestire eventuali ritardi
+      }, 1000); // Attendi un momento per il tentativo di apertura dell'app
     };
 
     const contactUs = () => {
