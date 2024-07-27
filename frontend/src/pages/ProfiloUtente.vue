@@ -9,9 +9,30 @@
       </q-card-section>
       <q-card-section>
         <q-btn @click="goToEditProfile" label="MODIFICA PROFILO" color="primary" class="full-width q-mb-sm" />
-        <q-btn @click="goToHelp" label="ASSISTENZA (WEBEX)" color="primary" class="full-width q-mb-sm" />
-        <q-btn @click="contactUs" label="PARLA CON UN OPERATORE (WEBEX)" color="primary" class="full-width q-mb-sm" />
+        
+        <q-btn @click="goToHelp" label="ASSISTENZA" color="primary" class="full-width q-mb-sm">
+          <template v-slot:append>
+            <q-icon>
+              <img src="src/assets/Webex.png" alt="Assistenza" class="icon" />
+            </q-icon>
+          </template>
+        </q-btn>
+        
+        <q-btn @click="contactUs" label="PARLA CON UN OPERATORE" color="primary" class="full-width q-mb-sm">
+          <template v-slot:append>
+            <q-icon>
+              <img src="src/assets/operator-icon.png" alt="Operatore" class="icon" />
+            </q-icon>
+          </template>
+        </q-btn>
+        
         <q-btn @click="logout" label="LOGOUT" color="negative" class="full-width" />
+      </q-card-section>
+      <q-card-section class="text-center q-mt-md">
+        <div class="powered-by">
+          <span class="powered-by-text">Powered by</span>
+          <img src="src/assets/Webex.png" alt="Webex" class="powered-by-icon" />
+        </div>
       </q-card-section>
     </q-card>
   </q-page>
@@ -20,6 +41,8 @@
 <script>
 import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
+import helpIcon from 'src/assets/help-icon.png';
+import operatorIcon from 'src/assets/operator-icon.png';
 
 export default defineComponent({
   name: 'UserProfile',
@@ -97,5 +120,31 @@ export default defineComponent({
 
 .q-mb-md {
   margin-bottom: 20px;
+}
+
+.q-mt-md {
+  margin-top: 20px;
+}
+
+.powered-by {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.powered-by-text {
+  margin-right: 8px;
+}
+
+.powered-by-icon {
+  width: 50px;
+  height: 36px;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
 }
 </style>

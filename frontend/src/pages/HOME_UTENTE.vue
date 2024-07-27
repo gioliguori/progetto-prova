@@ -8,7 +8,10 @@
         <ul>
           <li v-for="bike in modalContent.bikes" :key="bike.bike_id" class="bike-item">
             <span>Tipo: {{ bike.bike_type }}, Batteria: {{ bike.battery_level }}%</span>
-            <button @click="handleBikeAction(bike.bike_id)" class="rent-button">Noleggia</button>
+            <div class="buttons-container">
+              <button @click="handleBikeAction(bike.bike_id)" class="rent-button">Noleggia</button>
+              <button @click="handleBikeReservation(bike.bike_id)" class="reserve-button">Prenota</button>
+            </div>
           </li>
         </ul>
       </div>
@@ -44,6 +47,12 @@ export default defineComponent({
     const handleBikeAction = (bikeId) => {
       localStorage.setItem("selectedBikeId", bikeId);
       router.push("/IstruzioniNoleggio");
+    };
+
+    const handleBikeReservation = (bikeId) => {
+      localStorage.setItem("selectedBikeId", bikeId);
+      console.log("AVVENUTA PRENOTAZIONE!"); // Log message to console
+      router.push("/Movimenti");
     };
 
     onMounted(async () => {
@@ -150,6 +159,7 @@ export default defineComponent({
       modalContent,
       closeModal,
       handleBikeAction,
+      handleBikeReservation,
     };
   },
 });
@@ -216,8 +226,16 @@ export default defineComponent({
   border-bottom: 1px solid #ddd;
 }
 
-.rent-button {
-  margin-left: 10px;
+.bike-item span {
+  flex: 1; /* Ensures the text takes up remaining space */
+}
+
+.buttons-container {
+  display: flex;
+  gap: 10px; /* Space between buttons */
+}
+
+.rent-button, .reserve-button {
   padding: 5px 10px;
   background-color: #007bff;
   color: white;
@@ -226,7 +244,7 @@ export default defineComponent({
   cursor: pointer;
 }
 
-.rent-button:hover {
+.rent-button:hover, .reserve-button:hover {
   background-color: #0056b3;
 }
 </style>
