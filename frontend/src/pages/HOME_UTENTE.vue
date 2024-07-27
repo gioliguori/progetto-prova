@@ -6,14 +6,42 @@
         <button class="close-button" @click="closeModal">X</button>
         <h3>{{ modalContent.name }}</h3>
         <ul>
-          <li v-for="bike in modalContent.bikes" :key="bike.bike_id" class="bike-item">
-            <span>Tipo: {{ bike.bike_type }}, Batteria: {{ bike.battery_level }}%</span>
+          <li
+            v-for="bike in modalContent.bikes"
+            :key="bike.bike_id"
+            class="bike-item"
+          >
+            <span
+              >Tipo: {{ bike.bike_type }}, Batteria:
+              {{ bike.battery_level }}%</span
+            >
             <div class="buttons-container">
-              <button @click="handleBikeAction(bike.bike_id)" class="rent-button">Noleggia</button>
-              <button @click="handleBikeReservation(bike.bike_id)" class="reserve-button">Prenota</button>
+              <button
+                @click="handleBikeAction(bike.bike_id)"
+                class="rent-button"
+              >
+                Noleggia
+              </button>
+              <button
+                @click="handleBikeReservation(bike.bike_id)"
+                class="reserve-button"
+              >
+                Prenota
+              </button>
             </div>
           </li>
         </ul>
+      </div>
+    </div>
+    <div
+      v-if="showErrorModal"
+      class="modal-overlay"
+      @click.self="closeErrorModal"
+    >
+      <div class="modal-content">
+        <button class="close-button" @click="closeErrorModal">X</button>
+        <h3>Errore</h3>
+        <p>{{ errorMessage }}</p>
       </div>
     </div>
   </div>
@@ -33,7 +61,9 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const showModal = ref(false);
+    const showErrorModal = ref(false);
     const modalContent = ref({ name: "", bikes: [], page: "" });
+    const errorMessage = ref("");
 
     const openModal = (content) => {
       modalContent.value = content;
@@ -44,15 +74,41 @@ export default defineComponent({
       showModal.value = false;
     };
 
+    const closeErrorModal = () => {
+      showErrorModal.value = false;
+    };
+
     const handleBikeAction = (bikeId) => {
       localStorage.setItem("selectedBikeId", bikeId);
       router.push("/IstruzioniNoleggio");
     };
 
-    const handleBikeReservation = (bikeId) => {
-      localStorage.setItem("selectedBikeId", bikeId);
-      console.log("AVVENUTA PRENOTAZIONE!"); // Log message to console
-      router.push("/Movimenti");
+    const handleBikeReservation = async (bikeId) => {
+      const username = localStorage.getItem("username");
+
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/api/rental/create-reservation",
+          {
+            username,
+            bikeId,
+          }
+        );
+
+        if (response.data.success) {
+          console.log("Prenotazione avvenuta con successo!");
+          router.push("/Movimenti");
+        } else {
+          console.error("Errore nella prenotazione:", response.data.message);
+        }
+      } catch (error) {
+        console.error(
+          "Errore nella richiesta di prenotazione:",
+          error.response.data.message
+        );
+        errorMessage.value = error.response.data.message;
+        showErrorModal.value = true;
+      }
     };
 
     onMounted(async () => {
@@ -156,8 +212,11 @@ export default defineComponent({
 
     return {
       showModal,
+      showErrorModal,
       modalContent,
+      errorMessage,
       closeModal,
+      closeErrorModal,
       handleBikeAction,
       handleBikeReservation,
     };
@@ -235,7 +294,8 @@ export default defineComponent({
   gap: 10px; /* Space between buttons */
 }
 
-.rent-button, .reserve-button {
+.rent-button,
+.reserve-button {
   padding: 5px 10px;
   background-color: #007bff;
   color: white;
@@ -244,7 +304,8 @@ export default defineComponent({
   cursor: pointer;
 }
 
-.rent-button:hover, .reserve-button:hover {
+.rent-button:hover,
+.reserve-button:hover {
   background-color: #0056b3;
 }
 </style>

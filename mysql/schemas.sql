@@ -63,8 +63,7 @@ CREATE TABLE reservations (
     bike_id CHAR(36) NOT NULL,                           -- UUID della bici (chiave esterna)
     reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,-- Data di prenotazione
     expiration_date TIMESTAMP,                           -- Data di scadenza della prenotazione
-    status ENUM('active', 'cancelled') DEFAULT 'active', -- Stato della prenotazione
-    UNIQUE (user_id, bike_id),                           -- Chiave unica composta
+    status ENUM('active', 'expired') DEFAULT 'active', -- Stato della prenotazione
     FOREIGN KEY (user_id) REFERENCES users(user_id),     -- Chiave esterna
     FOREIGN KEY (bike_id) REFERENCES bikes(bike_id)      -- Chiave esterna
 );
@@ -72,14 +71,27 @@ CREATE TABLE reservations (
 -- Abilita l'event scheduler
 SET GLOBAL event_scheduler = ON;
 
--- Crea l'evento per annullare le prenotazioni scadute
+-- Crea l'evento per annullare le prenotazioni scadute e aggiornare lo stato della bici
 CREATE EVENT IF NOT EXISTS expire_reservations_event
 ON SCHEDULE EVERY 1 MINUTE
 DO
-  UPDATE reservations
-  SET status = 'cancelled'
-  WHERE status = 'active'
-    AND expiration_date <= NOW();
+  BEGIN
+    -- Aggiorna lo stato delle prenotazioni a 'expired'
+    UPDATE reservations
+    SET status = 'expired'
+    WHERE status = 'active'
+      AND expiration_date <= NOW();
+    
+    -- Aggiorna lo stato delle bici a 'disponibile'
+    UPDATE bikes
+    SET state = 'disponibile'
+    WHERE bike_id IN (
+      SELECT bike_id
+      FROM reservations
+      WHERE status = 'expired'
+        AND expiration_date <= NOW()
+    );
+  END;
 
 -- Crea la tabella "rentals"
 CREATE TABLE rentals (
