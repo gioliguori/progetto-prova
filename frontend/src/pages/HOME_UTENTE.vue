@@ -11,10 +11,7 @@
             :key="bike.bike_id"
             class="bike-item"
           >
-            <span
-              >Tipo: {{ bike.bike_type }}, Batteria:
-              {{ bike.battery_level }}%</span
-            >
+            <span>Tipo: {{ bike.bike_type }}, Batteria: {{ bike.battery_level }}%</span>
             <div class="buttons-container">
               <button
                 @click="handleBikeAction(bike.bike_id)"
@@ -223,7 +220,6 @@ export default defineComponent({
   },
 });
 </script>
-
 <style scoped>
 #map {
   height: 100vh;
@@ -245,15 +241,16 @@ export default defineComponent({
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  backdrop-filter: blur(5px);
 }
 
 .modal-content {
-  background: white;
+  background: #fff;
   padding: 20px;
   border-radius: 10px;
   max-width: 500px;
@@ -261,13 +258,28 @@ export default defineComponent({
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
+  transform: translateY(0);
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  font-size: 24px;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+}
+
+.modal-content ul {
+  list-style: none;
+  padding: 0;
 }
 
 .close-button {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: red;
+  background: #ff5f5f;
   color: white;
   border: none;
   border-radius: 50%;
@@ -275,6 +287,13 @@ export default defineComponent({
   height: 30px;
   font-size: 18px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  background: #ff3f3f;
 }
 
 .bike-item {
@@ -287,6 +306,7 @@ export default defineComponent({
 
 .bike-item span {
   flex: 1; /* Ensures the text takes up remaining space */
+  font-size: 16px;
 }
 
 .buttons-container {
@@ -302,10 +322,36 @@ export default defineComponent({
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .rent-button:hover,
 .reserve-button:hover {
   background-color: #0056b3;
+}
+
+.error-modal-content {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.error-modal-content h3 {
+  margin-top: 0;
+  font-size: 24px;
+  border-bottom: 2px solid #721c24;
+  padding-bottom: 10px;
+}
+
+.error-modal-content p {
+  font-size: 16px;
 }
 </style>
