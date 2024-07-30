@@ -8,24 +8,38 @@
         <q-table
           :rows="rentals"
           :columns="rentalColumns"
-          row-key="id"
+          row-key="rental_id"
           no-data-label="Nessun noleggio trovato"
         />
         <div v-if="activeRental">
-          <q-btn @click="showPaymentPopup" label="Termina Noleggio" color="negative" class="q-mt-md" />
+          <q-btn
+            @click="showPaymentPopup"
+            label="Termina Noleggio"
+            color="negative"
+            class="q-mt-md"
+          />
         </div>
       </div>
 
       <div>
         <h3>La tua Prenotazione</h3>
-        <div v-if="reservation">
+        <div v-if="reservation.length">
           <q-table
-            :rows="[reservation]"
+            :rows="reservation"
             :columns="reservationColumns"
-            row-key="id"
+            row-key="reservation_id"
             no-data-label="Nessuna prenotazione trovata"
-          />
-          <q-btn @click="rentBike(reservation.bikeId)" label="Avvia Noleggio" color="primary" class="q-mt-md" />
+          >
+            <template v-slot:body-cell-actions="props">
+              <q-td :props="props">
+                <q-btn
+                  @click="rentBike(props.row.bike_id)"
+                  label="Avvia Noleggio"
+                  color="primary"
+                />
+              </q-td>
+            </template>
+          </q-table>
         </div>
         <div v-else>
           <p>Nessuna prenotazione trovata.</p>
@@ -39,9 +53,24 @@
           </q-card-section>
 
           <q-card-section class="q-pt-none">
-            <q-btn @click="redirectTo('creditCard')" label="Carta di Credito" color="primary" class="q-mt-md" />
-            <q-btn @click="redirectTo('paypal')" label="PayPal" color="primary" class="q-mt-md" />
-            <q-btn @click="redirectTo('bankTransfer')" label="Bonifico" color="primary" class="q-mt-md" />
+            <q-btn
+              @click="redirectTo('creditCard')"
+              label="Carta di Credito"
+              color="primary"
+              class="q-mt-md"
+            />
+            <q-btn
+              @click="redirectTo('paypal')"
+              label="PayPal"
+              color="primary"
+              class="q-mt-md"
+            />
+            <q-btn
+              @click="redirectTo('bankTransfer')"
+              label="Bonifico"
+              color="primary"
+              class="q-mt-md"
+            />
           </q-card-section>
 
           <q-card-actions align="right">
@@ -54,52 +83,127 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { QTable, QBtn, QDialog, QCard, QCardSection, QCardActions } from 'quasar';
-import axios from 'axios';
+import { defineComponent, ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import {
+  QTable,
+  QBtn,
+  QDialog,
+  QCard,
+  QCardSection,
+  QCardActions,
+  QTd,
+} from "quasar";
+import axios from "axios";
 
 export default defineComponent({
-  name: 'RentalsAndReservations',
+  name: "RentalsAndReservations",
   components: {
     QTable,
     QBtn,
     QDialog,
     QCard,
     QCardSection,
-    QCardActions
+    QCardActions,
+    QTd,
   },
   setup() {
     const router = useRouter();
     const rentals = ref([]);
-    const reservation = ref(null);
+    const reservation = ref([]);
     const activeRental = ref(null);
     const paymentDialog = ref(false);
+    const username = localStorage.getItem("username"); // Recupera l'username dal local storage
 
     const rentalColumns = [
-      { name: 'id', align: 'left', label: 'ID Noleggio', field: 'id' },
-      { name: 'bikeId', align: 'left', label: 'ID Bici', field: 'bikeId' },
-      { name: 'userId', align: 'left', label: 'ID Utente', field: 'userId' },
-      { name: 'startDate', align: 'left', label: 'Data Inizio', field: 'startDate' },
-      { name: 'endDate', align: 'left', label: 'Data Fine', field: 'endDate' }
+      {
+        name: "bike_type",
+        align: "left",
+        label: "Tipo Bici",
+        field: "bike_type",
+      },
+      {
+        name: "partner_name",
+        align: "left",
+        label: "Nome Partner",
+        field: "partner_name",
+      },
+      {
+        name: "rental_start",
+        align: "left",
+        label: "Data Inizio",
+        field: "rental_start",
+      },
+      {
+        name: "rental_end",
+        align: "left",
+        label: "Data Fine",
+        field: "rental_end",
+      },
+      { name: "amount", align: "left", label: "Importo (€)", field: "amount" },
     ];
 
     const reservationColumns = [
-      { name: 'id', align: 'left', label: 'ID Prenotazione', field: 'id' },
-      { name: 'bikeId', align: 'left', label: 'ID Bici', field: 'bikeId' },
-      { name: 'userId', align: 'left', label: 'ID Utente', field: 'userId' },
-      { name: 'reservationDate', align: 'left', label: 'Data Prenotazione', field: 'reservationDate' }
+      {
+        name: "bike_id_partner",
+        align: "left",
+        label: "ID Bici",
+        field: "bike_id_partner",
+      },
+      {
+        name: "partner_name",
+        align: "left",
+        label: "Nome Partner",
+        field: "partner_name",
+      },
+      {
+        name: "reservation_date",
+        align: "left",
+        label: "Data Inizio Prenotazione",
+        field: "reservation_date",
+      },
+      {
+        name: "expiration_date",
+        align: "left",
+        label: "Data Scadenza",
+        field: "expiration_date",
+      },
+      {
+        name: "actions",
+        align: "right",
+        label: "Azioni",
+        field: "actions",
+        sortable: false,
+        style: "padding-right: 20px;",
+      },
     ];
 
     onMounted(async () => {
       try {
-        const rentalsResponse = await axios.get('/api/rentals');
+        console.log(`Username: ${username}`);
+
+        const rentalsResponse = await axios.get(
+          "http://localhost:3000/api/rental/user-rentals",
+          {
+            params: { username },
+          }
+        );
+        console.log("Rentals Response:", rentalsResponse.data);
         rentals.value = rentalsResponse.data;
 
-        const reservationResponse = await axios.get('/api/reservation');
-        reservation.value = reservationResponse.data || null;
+        const reservationResponse = await axios.get(
+          "http://localhost:3000/api/rental/user-reservations",
+          {
+            params: { username },
+          }
+        );
+        console.log("Reservation Response:", reservationResponse.data);
+        reservation.value = reservationResponse.data
+          ? [reservationResponse.data]
+          : [];
 
-        activeRental.value = rentals.value.find(rental => !rental.endDate);
+        activeRental.value = rentals.value.find((rental) => !rental.rental_end);
+        console.log("Active Rental:", activeRental.value);
       } catch (error) {
         console.error("Errore nel recupero dei dati:", error);
       }
@@ -107,7 +211,7 @@ export default defineComponent({
 
     const rentBike = (bikeId) => {
       console.log(`Avvio noleggio per la bici con ID: ${bikeId}`);
-      router.push({ path: '/istruzioni-noleggio', query: { bikeId } });
+      router.push({ path: "/istruzioni-noleggio", query: { bikeId } });
     };
 
     const showPaymentPopup = () => {
@@ -115,16 +219,16 @@ export default defineComponent({
     };
 
     const redirectTo = (method) => {
-      let url = '';
+      let url = "";
       switch (method) {
-        case 'creditCard':
-          url = '/pagamento/carta-di-credito';
+        case "creditCard":
+          url = "/pagamento/carta-di-credito";
           break;
-        case 'paypal':
-          url = '/pagamento/paypal';
+        case "paypal":
+          url = "/pagamento/paypal";
           break;
-        case 'bankTransfer':
-          url = '/pagamento/bonifico';
+        case "bankTransfer":
+          url = "/pagamento/bonifico";
           break;
       }
       console.log(`Redirecting to: ${url}`);
@@ -140,9 +244,9 @@ export default defineComponent({
       activeRental,
       paymentDialog,
       showPaymentPopup,
-      redirectTo
+      redirectTo,
     };
-  }
+  },
 });
 </script>
 
@@ -153,7 +257,8 @@ export default defineComponent({
   padding: 2rem;
 }
 
-h2, h3 {
+h2,
+h3 {
   font-weight: bold;
 }
 
