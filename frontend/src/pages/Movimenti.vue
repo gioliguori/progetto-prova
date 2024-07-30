@@ -1,106 +1,167 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-card class="q-pa-md" style="width: 800px">
-      <q-card-section class="text-center">
-        <div class="text-h5">LISTA NOLEGGI</div>
-      </q-card-section>
-      <q-card-section>
+  <q-page class="flex flex-center q-pa-md">
+    <div class="container text-center">
+      <h2 class="q-mb-md">Noleggi e Prenotazioni</h2>
+
+      <div class="q-mb-md">
+        <h3>Noleggi</h3>
         <q-table
           :rows="rentals"
-          :columns="columns"
-          row-key="rental_id"
-          class="q-mt-md"
-        >
-        </q-table>
-      </q-card-section>
-    </q-card>
+          :columns="rentalColumns"
+          row-key="id"
+          no-data-label="Nessun noleggio trovato"
+        />
+        <div v-if="activeRental">
+          <q-btn @click="showPaymentPopup" label="Termina Noleggio" color="negative" class="q-mt-md" />
+        </div>
+      </div>
+
+      <div>
+        <h3>La tua Prenotazione</h3>
+        <div v-if="reservation">
+          <q-table
+            :rows="[reservation]"
+            :columns="reservationColumns"
+            row-key="id"
+            no-data-label="Nessuna prenotazione trovata"
+          />
+          <q-btn @click="rentBike(reservation.bikeId)" label="Avvia Noleggio" color="primary" class="q-mt-md" />
+        </div>
+        <div v-else>
+          <p>Nessuna prenotazione trovata.</p>
+        </div>
+      </div>
+
+      <q-dialog v-model="paymentDialog">
+        <q-card>
+          <q-card-section>
+            <div class="text-h6">Come vuoi pagare?</div>
+          </q-card-section>
+
+          <q-card-section class="q-pt-none">
+            <q-btn @click="redirectTo('creditCard')" label="Carta di Credito" color="primary" class="q-mt-md" />
+            <q-btn @click="redirectTo('paypal')" label="PayPal" color="primary" class="q-mt-md" />
+            <q-btn @click="redirectTo('bankTransfer')" label="Bonifico" color="primary" class="q-mt-md" />
+          </q-card-section>
+
+          <q-card-actions align="right">
+            <q-btn flat label="Annulla" color="primary" v-close-popup />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+    </div>
   </q-page>
 </template>
 
 <script>
-import axios from "axios";
-import { Loading, QSpinnerGears } from "quasar";
+import { defineComponent, ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { QTable, QBtn, QDialog, QCard, QCardSection, QCardActions } from 'quasar';
+import axios from 'axios';
 
-export default {
-  name: "DashboardAdmin",
-  data() {
-    return {
-      username: localStorage.getItem("username") || "Admin",
-      rentals: [],
-      columns: [
-        {
-          name: "bike_type",
-          label: "Bike Type",
-          align: "left",
-          field: "bike_type",
-        },
-        {
-          name: "rental_type",
-          label: "Rental Type",
-          align: "left",
-          field: "rental_type",
-        },
-        {
-          name: "rental_start",
-          label: "Start Date",
-          align: "left",
-          field: "rental_start",
-          format: (val) => new Date(val).toLocaleString(),
-        },
-        {
-          name: "rental_end",
-          label: "End Date",
-          align: "left",
-          field: "rental_end",
-          format: (val) => (val ? new Date(val).toLocaleString() : "N/A"),
-        },
-        {
-          name: "amount",
-          label: "Amount",
-          align: "left",
-          field: "amount",
-        },
-      ],
-    };
+export default defineComponent({
+  name: 'RentalsAndReservations',
+  components: {
+    QTable,
+    QBtn,
+    QDialog,
+    QCard,
+    QCardSection,
+    QCardActions
   },
-  created() {
-    this.fetchData();
-  },
-  methods: {
-    async fetchData() {
-      const userId = "USER_ID"; // Sostituisci con l'ID dell'utente desiderato
-      Loading.show({
-        spinner: QSpinnerGears,
-        message: "Fetching data...",
-      });
+  setup() {
+    const router = useRouter();
+    const rentals = ref([]);
+    const reservation = ref(null);
+    const activeRental = ref(null);
+    const paymentDialog = ref(false);
+
+    const rentalColumns = [
+      { name: 'id', align: 'left', label: 'ID Noleggio', field: 'id' },
+      { name: 'bikeId', align: 'left', label: 'ID Bici', field: 'bikeId' },
+      { name: 'userId', align: 'left', label: 'ID Utente', field: 'userId' },
+      { name: 'startDate', align: 'left', label: 'Data Inizio', field: 'startDate' },
+      { name: 'endDate', align: 'left', label: 'Data Fine', field: 'endDate' }
+    ];
+
+    const reservationColumns = [
+      { name: 'id', align: 'left', label: 'ID Prenotazione', field: 'id' },
+      { name: 'bikeId', align: 'left', label: 'ID Bici', field: 'bikeId' },
+      { name: 'userId', align: 'left', label: 'ID Utente', field: 'userId' },
+      { name: 'reservationDate', align: 'left', label: 'Data Prenotazione', field: 'reservationDate' }
+    ];
+
+    onMounted(async () => {
       try {
-        const rentalsResponse = await axios.get(
-          `http://localhost:3000/api/admin/user-rentals/${userId}`
-        );
+        const rentalsResponse = await axios.get('/api/rentals');
+        rentals.value = rentalsResponse.data;
 
-        Loading.hide();
+        const reservationResponse = await axios.get('/api/reservation');
+        reservation.value = reservationResponse.data || null;
 
-        if (rentalsResponse.data.success) {
-          this.rentals = rentalsResponse.data.rentals;
-        } else {
-          this.$q.notify({
-            type: "negative",
-            message: "Failed to fetch rentals",
-          });
-        }
+        activeRental.value = rentals.value.find(rental => !rental.endDate);
       } catch (error) {
-        Loading.hide();
-        console.error("Error fetching data:", error);
-        this.$q.notify({
-          type: "negative",
-          message: "An error occurred while fetching data",
-        });
+        console.error("Errore nel recupero dei dati:", error);
       }
-    },
-  },
-};
+    });
+
+    const rentBike = (bikeId) => {
+      console.log(`Avvio noleggio per la bici con ID: ${bikeId}`);
+      router.push({ path: '/istruzioni-noleggio', query: { bikeId } });
+    };
+
+    const showPaymentPopup = () => {
+      paymentDialog.value = true;
+    };
+
+    const redirectTo = (method) => {
+      let url = '';
+      switch (method) {
+        case 'creditCard':
+          url = '/pagamento/carta-di-credito';
+          break;
+        case 'paypal':
+          url = '/pagamento/paypal';
+          break;
+        case 'bankTransfer':
+          url = '/pagamento/bonifico';
+          break;
+      }
+      console.log(`Redirecting to: ${url}`);
+      router.push(url);
+    };
+
+    return {
+      rentals,
+      reservation,
+      rentalColumns,
+      reservationColumns,
+      rentBike,
+      activeRental,
+      paymentDialog,
+      showPaymentPopup,
+      redirectTo
+    };
+  }
+});
 </script>
 
 <style scoped>
-/* Add any additional styling if needed */
+.container {
+  max-width: 800px;
+  width: 100%;
+  padding: 2rem;
+}
+
+h2, h3 {
+  font-weight: bold;
+}
+
+.q-mb-md {
+  margin-bottom: 1rem;
+}
+
+.q-mt-md {
+  margin-top: 1rem;
+}
 </style>

@@ -3,10 +3,11 @@
     <div class="container text-center">
       <h2 class="q-mb-md">Scansione QR</h2>
       <qrcode-stream @decode="onDecode" @error="onError" />
-      <qrcode-capture @decode="onDecode" @error="onError" />
+      <q-btn @click="startRental" label="Avvia Noleggio" color="primary" class="q-mt-md" />
       <div v-if="decodedId">
         <p>Scansione completata!</p>
         <p>ID della bici: {{ decodedId }}</p>
+        <q-btn @click="startRental" label="Avvia Noleggio" color="primary" class="q-mt-md" />
       </div>
     </div>
   </q-page>
@@ -15,13 +16,14 @@
 <script>
 import { defineComponent, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { QrcodeStream, QrcodeCapture } from 'vue-qrcode-reader'; // Importa i componenti QR
+import { QrcodeStream } from 'vue-qrcode-reader'; // Importa i componenti QR
+import { QBtn } from 'quasar'; // Importa il componente del pulsante
 
 export default defineComponent({
   name: 'QReader',
   components: {
     QrcodeStream,
-    QrcodeCapture
+    QBtn
   },
   setup() {
     const router = useRouter();
@@ -47,10 +49,16 @@ export default defineComponent({
       console.error("Errore nella scansione QR:", error);
     };
 
+    const startRental = () => {
+      console.log("Reindirizzamento alla pagina Movimenti");
+      router.push('/movimenti');
+    };
+
     return {
       decodedId,
       onDecode,
-      onError
+      onError,
+      startRental
     };
   }
 });
