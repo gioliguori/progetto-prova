@@ -11,7 +11,10 @@
             :key="bike.bike_id"
             class="bike-item"
           >
-            <span>Tipo: {{ bike.bike_type }}, Batteria: {{ bike.battery_level }}%</span>
+            <span
+              >Tipo: {{ bike.bike_type }}, Batteria:
+              {{ bike.battery_level }}%</span
+            >
             <div class="buttons-container">
               <button
                 @click="handleBikeAction(bike.bike_id)"
