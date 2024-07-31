@@ -54,11 +54,11 @@ router.post("/create-reservation", async (req, res) => {
   }
 });
 
-router.post("/start-rental", async (req, res) => {
-  const { username, bikeId, rentalType } = req.body;
+router.post("/create-rental", async (req, res) => {
+  const { username, bikeId, reservationId } = req.body;
 
   console.log(
-    `Richiesta di noleggio ricevuta: username=${username}, bikeId=${bikeId}, rentalType=${rentalType}`
+    `Richiesta di noleggio ricevuta: username=${username}, bikeId=${bikeId}, reservationId=${reservationId}`
   );
 
   try {
@@ -72,41 +72,43 @@ router.post("/start-rental", async (req, res) => {
 
     const activeRental = await knex("rentals")
       .where("user_id", user.user_id)
-      .andWhereNull("rental_end")
+      .andWhere("rental_end", null)
       .first();
 
     if (activeRental) {
       console.log(
-        `Noleggio attivo trovato per l'utente: username=${username}, rental_id=${activeRental.rental_id}`
+        `Esiste già un noleggio attivo per l'utente: username=${username}`
       );
       return res
         .status(400)
         .json({ success: false, message: "Hai già un noleggio attivo." });
     }
 
-    const bike = await knex("bikes").where("bike_id", bikeId).first();
-    if (!bike || bike.state !== "disponibile") {
-      console.log(`Bici non disponibile: bikeId=${bikeId}`);
-      return res
-        .status(400)
-        .json({ success: false, message: "Bici non disponibile." });
-    }
-
-    await knex("rentals").insert({
+    const rental = {
       user_id: user.user_id,
       bike_id: bikeId,
-      rental_type: rentalType,
-    });
+      rental_type: "hourly", // Predefinito
+      reservation_id: reservationId || null,
+      amount: 0, // Puoi aggiornare l'importo se necessario
+    };
 
+    await knex("rentals").insert(rental);
     await knex("bikes")
       .where("bike_id", bikeId)
       .update({ state: "in noleggio" });
+
+    if (reservationId) {
+      await knex("reservations")
+        .where("reservation_id", reservationId)
+        .update({ status: "expired" });
+      console.log(`Prenotazione ${reservationId} impostata come expired.`);
+    }
 
     console.log(
       `Noleggio creato per l'utente ${username} e la bici ${bikeId}.`
     );
 
-    res.json({ success: true, message: "Noleggio avvenuto con successo." });
+    res.json({ success: true, message: "Noleggio avviato con successo." });
   } catch (error) {
     console.error("Errore durante la creazione del noleggio:", error);
     res.status(500).json({ success: false, message: "Errore del server." });

@@ -82,7 +82,7 @@ export default defineComponent({
     const handleBikeAction = (bikeId) => {
       localStorage.setItem("bikeId", bikeId);
       console.log("Bike ID salvato nel local storage:", bikeId);
-      router.push({ path: "/IstruzioniNoleggio", query: { bikeId } });
+      router.push({ path: "/IstruzioniNoleggio" });
     };
 
     const handleBikeReservation = async (bikeId) => {

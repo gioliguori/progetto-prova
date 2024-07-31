@@ -27,37 +27,32 @@
 
 <script>
 import { defineComponent, ref, onMounted, watch } from "vue";
-import { useRouter, useRoute } from "vue-router"; // Importa useRouter e useRoute
-import imageSrc from "src/assets/istruzioni.png"; // Importa l'immagine direttamente
+import { useRouter, useRoute } from "vue-router";
+import imageSrc from "src/assets/istruzioni.png";
 
 export default defineComponent({
   name: "RentalInstructions",
   setup() {
     const bikeId = ref("");
     const reservationId = ref("");
-    const router = useRouter(); // Ottieni l'oggetto del router
-    const route = useRoute(); // Ottieni l'oggetto del route
+    const router = useRouter();
+    const route = useRoute();
 
     onMounted(() => {
-      // Recupera l'ID della bici e l'ID della prenotazione dalla query string
-      bikeId.value = route.query.bikeId || "";
-      reservationId.value = route.query.reservationId || "";
+      bikeId.value = localStorage.getItem("bikeId") || "";
+      reservationId.value = localStorage.getItem("reservationId") || "";
 
-      if (reservationId.value) {
-        console.log(
-          `Salvo l'ID della prenotazione nel local storage: ${reservationId.value}`
+      if (!bikeId.value || !reservationId.value) {
+        console.error(
+          "ID della bici o ID della prenotazione non trovati nel local storage"
         );
-        localStorage.setItem("reservationId", reservationId.value);
-        localStorage.setItem("bikeId", bikeId.value);
       }
     });
 
     const handleNoleggia = () => {
-      // Reindirizza alla pagina "QReader" senza passare parametri di query
       router.push({ name: "QReader" });
     };
 
-    // Watch for route changes to remove reservationId and bikeId from local storage if navigating away from this component
     watch(
       () => route.name,
       (newRouteName) => {
@@ -75,17 +70,13 @@ export default defineComponent({
       }
     );
 
-    // //Listen for page unload to remove reservationId and bikeId from local storage if navigating away manually
-    // window.addEventListener("beforeunload", (event) => {
-    //   // If navigating away (not refreshing), clear local storage
-    //   if (!event.currentTarget.location.pathname.includes("QReader")) {
-    //     console.log(
-    //       "Navigazione manuale, rimuovo l'ID della prenotazione e l'ID della bici dal local storage"
-    //     );
-    //     localStorage.removeItem("reservationId");
-    //     localStorage.removeItem("bikeId");
-    //   }
-    // });
+    window.addEventListener("beforeunload", () => {
+      console.log(
+        "Pagina ricaricata o navigazione manuale, rimuovo l'ID della prenotazione e l'ID della bici dal local storage"
+      );
+      localStorage.removeItem("reservationId");
+      localStorage.removeItem("bikeId");
+    });
 
     return {
       imageSrc,
@@ -99,9 +90,9 @@ export default defineComponent({
 
 <style scoped>
 .container {
-  max-width: 800px; /* Imposta una larghezza massima per il contenitore centrale */
-  width: 100%; /* Assicura che il contenitore occupi tutta la larghezza possibile fino al max-width */
-  padding: 2rem; /* Aggiungi padding per dare spazio interno al contenitore */
+  max-width: 800px;
+  width: 100%;
+  padding: 2rem;
 }
 
 .center-image {
@@ -110,19 +101,19 @@ export default defineComponent({
 }
 
 h2 {
-  font-size: 2rem; /* Ingrandisce la dimensione del font del titolo */
-  font-weight: bold; /* Metti il titolo in grassetto */
+  font-size: 2rem;
+  font-weight: bold;
 }
 
 .q-mb-md {
-  margin-bottom: 1rem; /* Spaziatura inferiore per l'immagine e il titolo */
+  margin-bottom: 1rem;
 }
 
 .q-mt-md {
-  margin-top: 1rem; /* Spaziatura superiore per il pulsante */
+  margin-top: 1rem;
 }
 
 .q-input {
-  max-width: 300px; /* Imposta una larghezza massima per l'input */
+  max-width: 300px;
 }
 </style>
