@@ -64,6 +64,7 @@ export default defineComponent({
     const showErrorModal = ref(false);
     const modalContent = ref({ name: "", bikes: [], page: "" });
     const errorMessage = ref("");
+    localStorage.removeItem("reservationId");
 
     const openModal = (content) => {
       modalContent.value = content;
@@ -79,8 +80,9 @@ export default defineComponent({
     };
 
     const handleBikeAction = (bikeId) => {
-      localStorage.setItem("selectedBikeId", bikeId);
-      router.push("/IstruzioniNoleggio");
+      localStorage.setItem("bikeId", bikeId);
+      console.log("Bike ID salvato nel local storage:", bikeId);
+      router.push({ path: "/IstruzioniNoleggio", query: { bikeId } });
     };
 
     const handleBikeReservation = async (bikeId) => {
@@ -223,6 +225,7 @@ export default defineComponent({
   },
 });
 </script>
+
 <style scoped>
 #map {
   height: 100vh;

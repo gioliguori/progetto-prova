@@ -49,12 +49,16 @@ import axios from "axios";
 import { Loading, QSpinnerGears } from "quasar";
 
 export default {
-  name: "LoginAdmin",
+  name: "LoginUtente",
   data() {
     return {
       username: "",
       password: "",
     };
+  },
+  created() {
+    console.log("Resetting localStorage username");
+    localStorage.removeItem("username");
   },
   methods: {
     async login() {

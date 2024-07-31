@@ -15,57 +15,85 @@
         readonly
         class="q-mb-md"
       />
-      <q-btn @click="handleNoleggia" label="Noleggia" color="primary" class="q-mt-md" />
+      <q-btn
+        @click="handleNoleggia"
+        label="Noleggia"
+        color="primary"
+        class="q-mt-md"
+      />
     </div>
   </q-page>
 </template>
 
 <script>
-import { defineComponent, ref, onMounted, watch } from 'vue';
-import { useRouter, useRoute } from 'vue-router'; // Importa useRouter e useRoute
-import imageSrc from 'src/assets/istruzioni.png'; // Importa l'immagine direttamente
+import { defineComponent, ref, onMounted, watch } from "vue";
+import { useRouter, useRoute } from "vue-router"; // Importa useRouter e useRoute
+import imageSrc from "src/assets/istruzioni.png"; // Importa l'immagine direttamente
 
 export default defineComponent({
-  name: 'RentalInstructions',
+  name: "RentalInstructions",
   setup() {
-    const bikeId = ref('');
-    const reservationId = ref('');
+    const bikeId = ref("");
+    const reservationId = ref("");
     const router = useRouter(); // Ottieni l'oggetto del router
     const route = useRoute(); // Ottieni l'oggetto del route
 
     onMounted(() => {
       // Recupera l'ID della bici e l'ID della prenotazione dalla query string
-      bikeId.value = route.query.bikeId || '';
-      reservationId.value = route.query.reservationId || '';
+      bikeId.value = route.query.bikeId || "";
+      reservationId.value = route.query.reservationId || "";
 
       if (reservationId.value) {
-        console.log(`Salvo l'ID della prenotazione nel local storage: ${reservationId.value}`);
-        localStorage.setItem('reservationId', reservationId.value);
+        console.log(
+          `Salvo l'ID della prenotazione nel local storage: ${reservationId.value}`
+        );
+        localStorage.setItem("reservationId", reservationId.value);
+        localStorage.setItem("bikeId", bikeId.value);
       }
     });
 
     const handleNoleggia = () => {
-      // Reindirizza alla pagina "QReader" passando l'ID della bici e l'ID della prenotazione come parametri di query
-      router.push({ name: 'QReader', query: { bikeId: bikeId.value, reservationId: reservationId.value } });
+      // Reindirizza alla pagina "QReader" senza passare parametri di query
+      router.push({ name: "QReader" });
     };
 
-    // Watch for route changes to remove reservationId from local storage if navigating away from this component
-    watch(() => route.name, (newRouteName) => {
-      if (newRouteName !== 'QReader') {
-        console.log('Navigazione verso una pagina diversa da QReader, rimuovo l\'ID della prenotazione dal local storage');
-        localStorage.removeItem('reservationId');
-      } else {
-        console.log('Navigazione verso QReader, mantengo l\'ID della prenotazione nel local storage');
+    // Watch for route changes to remove reservationId and bikeId from local storage if navigating away from this component
+    watch(
+      () => route.name,
+      (newRouteName) => {
+        if (newRouteName !== "QReader") {
+          console.log(
+            "Navigazione verso una pagina diversa da QReader, rimuovo l'ID della prenotazione e l'ID della bici dal local storage"
+          );
+          localStorage.removeItem("reservationId");
+          localStorage.removeItem("bikeId");
+        } else {
+          console.log(
+            "Navigazione verso QReader, mantengo l'ID della prenotazione e l'ID della bici nel local storage"
+          );
+        }
       }
-    });
+    );
+
+    // //Listen for page unload to remove reservationId and bikeId from local storage if navigating away manually
+    // window.addEventListener("beforeunload", (event) => {
+    //   // If navigating away (not refreshing), clear local storage
+    //   if (!event.currentTarget.location.pathname.includes("QReader")) {
+    //     console.log(
+    //       "Navigazione manuale, rimuovo l'ID della prenotazione e l'ID della bici dal local storage"
+    //     );
+    //     localStorage.removeItem("reservationId");
+    //     localStorage.removeItem("bikeId");
+    //   }
+    // });
 
     return {
       imageSrc,
       bikeId,
       reservationId,
-      handleNoleggia
+      handleNoleggia,
     };
-  }
+  },
 });
 </script>
 
