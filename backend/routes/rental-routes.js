@@ -190,6 +190,7 @@ router.get("/user-reservations", async (req, res) => {
       .join("partners", "bikes.partner_id", "partners.partner_id")
       .select(
         "reservations.reservation_id",
+        "bikes.bike_id",
         "bikes.bike_id_partner",
         "partners.partner_name",
         "reservations.reservation_date",

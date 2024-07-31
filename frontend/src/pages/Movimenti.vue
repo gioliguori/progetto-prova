@@ -33,7 +33,7 @@
             <template v-slot:body-cell-actions="props">
               <q-td :props="props">
                 <q-btn
-                  @click="rentBike(props.row.bike_id_partner, props.row.reservation_id)"
+                  @click="rentBike(props.row.bike_id, props.row.reservation_id)"
                   label="Avvia Noleggio"
                   color="primary"
                 />
@@ -210,8 +210,13 @@ export default defineComponent({
     });
 
     const rentBike = (bikeId, reservationId) => {
-      console.log(`Avvio noleggio per la bici con ID: ${bikeId} e prenotazione con ID: ${reservationId}`);
-      router.push({ path: "/IstruzioniNoleggio", query: { bikeId, reservationId } });
+      console.log(
+        `Avvio noleggio per la bici con ID: ${bikeId} e prenotazione con ID: ${reservationId}`
+      );
+      router.push({
+        path: "/IstruzioniNoleggio",
+        query: { bikeId, reservationId },
+      });
     };
 
     const showPaymentPopup = () => {
@@ -249,24 +254,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-.container {
-  max-width: 800px;
-  width: 100%;
-  padding: 2rem;
-}
-
-h2,
-h3 {
-  font-weight: bold;
-}
-
-.q-mb-md {
-  margin-bottom: 1rem;
-}
-
-.q-mt-md {
-  margin-top: 1rem;
-}
-</style>
