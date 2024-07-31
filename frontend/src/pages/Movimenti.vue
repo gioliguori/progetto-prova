@@ -113,7 +113,7 @@ export default defineComponent({
     const reservation = ref([]);
     const activeRental = ref(null);
     const paymentDialog = ref(false);
-    const username = localStorage.getItem("username"); // Recupera l'username dal local storage
+    const username = localStorage.getItem("username");
 
     const rentalColumns = [
       {
@@ -213,10 +213,9 @@ export default defineComponent({
       console.log(
         `Avvio noleggio per la bici con ID: ${bikeId} e prenotazione con ID: ${reservationId}`
       );
-      router.push({
-        path: "/IstruzioniNoleggio",
-        query: { bikeId, reservationId },
-      });
+      localStorage.setItem("bikeId", bikeId);
+      localStorage.setItem("reservationId", reservationId);
+      router.push({ path: "/IstruzioniNoleggio" });
     };
 
     const showPaymentPopup = () => {
