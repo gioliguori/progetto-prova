@@ -115,6 +115,80 @@ router.post("/create-rental", async (req, res) => {
   }
 });
 
+// Endpoint per terminare il noleggio
+router.post("/end-rental", async (req, res) => {
+  const { username, rentalId, paymentMethod } = req.body;
+
+  console.log(
+    `Richiesta di chiusura noleggio ricevuta: username=${username}, rentalId=${rentalId}, paymentMethod=${paymentMethod}`
+  );
+
+  const trx = await knex.transaction();
+
+  try {
+    const user = await trx("users").where("username", username).first();
+    if (!user) {
+      console.log(`Utente non trovato: username=${username}`);
+      await trx.rollback();
+      return res
+        .status(404)
+        .json({ success: false, message: "Utente non trovato." });
+    }
+
+    const rental = await trx("rentals")
+      .where("rental_id", rentalId)
+      .andWhere("user_id", user.user_id)
+      .andWhere("rental_end", null)
+      .first();
+
+    if (!rental) {
+      console.log(
+        `Noleggio attivo non trovato per l'utente: username=${username}`
+      );
+      await trx.rollback();
+      return res
+        .status(404)
+        .json({ success: false, message: "Noleggio attivo non trovato." });
+    }
+
+    const rentalEnd = new Date();
+    const rentalStart = new Date(rental.rental_start);
+    const durationMinutes = Math.ceil((rentalEnd - rentalStart) / (1000 * 60));
+    const amount = 1 + 0.1 * durationMinutes;
+
+    await trx("rentals").where("rental_id", rentalId).update({
+      rental_end: rentalEnd,
+      amount: amount,
+    });
+
+    const finalPaymentMethod =
+      paymentMethod === "bank_transfer" ? "other" : paymentMethod;
+
+    await trx("payments").insert({
+      rental_id: rentalId,
+      user_id: user.user_id,
+      amount: amount,
+      payment_method: finalPaymentMethod,
+    });
+
+    await trx.commit();
+
+    console.log(
+      `Noleggio terminato per l'utente ${username}. Importo: €${amount}`
+    );
+
+    res.json({
+      success: true,
+      message: "Noleggio terminato con successo.",
+      amount,
+    });
+  } catch (error) {
+    console.error("Errore durante la chiusura del noleggio:", error);
+    await trx.rollback();
+    res.status(500).json({ success: false, message: "Errore del server." });
+  }
+});
+
 // Funzione di formattazione delle date
 const formatDate = (date) => {
   const d = new Date(date);

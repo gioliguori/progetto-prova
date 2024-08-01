@@ -54,19 +54,19 @@
 
           <q-card-section class="q-pt-none">
             <q-btn
-              @click="redirectTo('creditCard')"
+              @click="() => endRental('credit_card')"
               label="Carta di Credito"
               color="primary"
               class="q-mt-md"
             />
             <q-btn
-              @click="redirectTo('paypal')"
+              @click="() => endRental('paypal')"
               label="PayPal"
               color="primary"
               class="q-mt-md"
             />
             <q-btn
-              @click="redirectTo('bankTransfer')"
+              @click="() => endRental('bank_transfer')"
               label="Bonifico"
               color="primary"
               class="q-mt-md"
@@ -222,21 +222,41 @@ export default defineComponent({
       paymentDialog.value = true;
     };
 
-    const redirectTo = (method) => {
-      let url = "";
-      switch (method) {
-        case "creditCard":
-          url = "/pagamento/carta-di-credito";
-          break;
-        case "paypal":
-          url = "/pagamento/paypal";
-          break;
-        case "bankTransfer":
-          url = "/pagamento/bonifico";
-          break;
+    const endRental = async (paymentMethod) => {
+      if (!activeRental.value) return;
+
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/api/rental/end-rental",
+          {
+            username,
+            rentalId: activeRental.value.rental_id,
+            paymentMethod,
+          }
+        );
+
+        if (response.data.success) {
+          console.log(
+            "Noleggio terminato con successo. Importo: €" + response.data.amount
+          );
+          paymentDialog.value = false;
+          router.push("/movimenti");
+        } else {
+          console.error(
+            "Errore nel terminare il noleggio:",
+            response.data.message
+          );
+        }
+      } catch (error) {
+        console.error(
+          "Errore nella chiamata API per terminare il noleggio:",
+          error
+        );
       }
-      console.log(`Redirecting to: ${url}`);
-      router.push(url);
+    };
+
+    const redirectTo = (method) => {
+      endRental(method);
     };
 
     return {
@@ -248,8 +268,30 @@ export default defineComponent({
       activeRental,
       paymentDialog,
       showPaymentPopup,
+      endRental,
       redirectTo,
     };
   },
 });
 </script>
+
+<style scoped>
+.container {
+  max-width: 800px;
+  width: 100%;
+  padding: 2rem;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.q-mb-md {
+  margin-bottom: 1rem;
+}
+
+.q-mt-md {
+  margin-top: 1rem;
+}
+</style>
