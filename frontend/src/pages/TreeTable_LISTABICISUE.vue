@@ -89,7 +89,10 @@ export default {
         });
       } catch (error) {
         console.error("Error deleting bike:", error);
-        this.$q.notify({ type: "negative", message: "An error occurred while deleting the bike" });
+        this.$q.notify({
+          type: "negative",
+          message: "An error occurred while deleting the bike",
+        });
       }
     },
   },
