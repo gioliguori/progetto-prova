@@ -67,7 +67,6 @@ export default {
       });
       try {
         const bikesResponse = await axios.get(`${apiUrl}/admin/bikes`);
-        
         Loading.hide();
 
         if (bikesResponse.data.success) {
