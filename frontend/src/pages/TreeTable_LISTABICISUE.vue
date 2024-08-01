@@ -58,11 +58,8 @@ export default {
         message: "Fetching data...",
       });
       try {
-        const bikesResponse = await axios.post(
-          "http://localhost:3000/api/partners/bikes",
-          {
-            partnerId: localStorage.getItem("partner_id"),
-          }
+        const bikesResponse = await axios.post(`${apiUrl}/partners/bikes`, {
+          partnerId: this.partnerId,
         );
 
         Loading.hide();
@@ -80,14 +77,16 @@ export default {
     },
     async deleteBike(bikeId) {
       try {
-        await axios.delete(
-          `http://localhost:3000/api/partners/bike/${bikeId}`,
-          {
-            data: { partnerId: localStorage.getItem("partner_id") },
-          }
-        );
+        await axios.delete(`${apiUrl}/partners/bike/${bikeId}`, {
+          data: {
+            partnerId: this.partnerId,
+          },
+        });
         this.bikes = this.bikes.filter((bike) => bike.bike_id !== bikeId);
-        this.$q.notify({ type: "positive", message: "Bike deleted successfully" });
+        this.$q.notify({
+          type: "positive",
+          message: "Bike deleted successfully",
+        });
       } catch (error) {
         console.error("Error deleting bike:", error);
         this.$q.notify({ type: "negative", message: "An error occurred while deleting the bike" });
