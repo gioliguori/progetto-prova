@@ -95,6 +95,7 @@ import {
   QTd,
 } from "quasar";
 import axios from "axios";
+import apiUrl from "src/api-config";
 
 export default defineComponent({
   name: "RentalsAndReservations",
@@ -183,7 +184,7 @@ export default defineComponent({
         console.log(`Username: ${username}`);
 
         const rentalsResponse = await axios.get(
-          "http://localhost:3000/api/rental/user-rentals",
+          `${apiUrl}/rental/user-rentals`, // Usa apiUrl qui
           {
             params: { username },
           }
@@ -192,7 +193,7 @@ export default defineComponent({
         rentals.value = rentalsResponse.data;
 
         const reservationResponse = await axios.get(
-          "http://localhost:3000/api/rental/user-reservations",
+          `${apiUrl}/rental/user-reservations`, // Usa apiUrl qui
           {
             params: { username },
           }
@@ -227,7 +228,7 @@ export default defineComponent({
 
       try {
         const response = await axios.post(
-          "http://localhost:3000/api/rental/end-rental",
+          `${apiUrl}/rental/end-rental`, // Usa apiUrl qui
           {
             username,
             rentalId: activeRental.value.rental_id,

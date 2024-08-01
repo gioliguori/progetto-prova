@@ -34,6 +34,7 @@
 import { defineComponent, ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import apiUrl from "src/api-config";
 
 export default defineComponent({
   name: "ModificaProfilo",
@@ -82,7 +83,7 @@ export default defineComponent({
 
       try {
         const response = await axios.post(
-          "http://localhost:3000/api/user/update",
+          `${apiUrl}/user/update`, // Usa apiUrl qui
           {
             oldUsername: oldUsername.value,
             newUsername: newUsername.value,

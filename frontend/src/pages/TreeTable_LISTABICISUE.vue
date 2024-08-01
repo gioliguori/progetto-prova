@@ -29,6 +29,7 @@
 <script>
 import axios from "axios";
 import { Loading, QSpinnerGears } from "quasar";
+import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default {
   name: "DashboardPartner",
@@ -83,12 +84,9 @@ export default {
         message: "Fetching data...",
       });
       try {
-        const bikesResponse = await axios.post(
-          "http://localhost:3000/api/partners/bikes",
-          {
-            partnerId: this.partnerId,
-          }
-        );
+        const bikesResponse = await axios.post(`${apiUrl}/partners/bikes`, {
+          partnerId: this.partnerId,
+        });
 
         Loading.hide();
 
@@ -111,14 +109,11 @@ export default {
     },
     async deleteBike(bikeId) {
       try {
-        await axios.delete(
-          `http://localhost:3000/api/partners/bike/${bikeId}`,
-          {
-            data: {
-              partnerId: this.partnerId,
-            },
-          }
-        );
+        await axios.delete(`${apiUrl}/partners/bike/${bikeId}`, {
+          data: {
+            partnerId: this.partnerId,
+          },
+        });
         this.bikes = this.bikes.filter((bike) => bike.bike_id !== bikeId);
         this.$q.notify({
           type: "positive",

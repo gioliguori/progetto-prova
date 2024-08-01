@@ -3,9 +3,17 @@
     <div class="chat-container">
       <div class="chat-box">
         <div class="chat-messages">
-          <div v-for="(message, index) in messages" :key="index" class="message">
-            <strong>{{ message.sender }}:</strong> 
-            <span v-if="message.isLink"><a :href="message.text" target="_blank">{{ message.text }}</a></span>
+          <div
+            v-for="(message, index) in messages"
+            :key="index"
+            class="message"
+          >
+            <strong>{{ message.sender }}:</strong>
+            <span v-if="message.isLink"
+              ><a :href="message.text" target="_blank">{{
+                message.text
+              }}</a></span
+            >
             <span v-else>{{ message.text }}</span>
           </div>
         </div>
@@ -25,12 +33,13 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
+import apiUrl from "src/api-config";
 
 export default {
   data() {
     return {
-      newMessage: '',
+      newMessage: "",
       messages: [],
     };
   },
@@ -38,26 +47,31 @@ export default {
     async sendMessage() {
       if (this.newMessage.trim()) {
         this.messages.push({
-          sender: 'Utente',
+          sender: "Utente",
           text: this.newMessage,
         });
 
         try {
-          const response = await axios.post('http://localhost:3000/webex/messages', {
-            text: this.newMessage,
-          });
+          const response = await axios.post(
+            `${apiUrl}/webex/messages`, // Usa apiUrl qui
+            {
+              text: this.newMessage,
+            }
+          );
 
-          this.newMessage = '';
+          this.newMessage = "";
 
           // Simula una risposta automatica
-          const isLink = response.data.text.startsWith('https://web.webex.com/spaces/');
+          const isLink = response.data.text.startsWith(
+            "https://web.webex.com/spaces/"
+          );
           this.messages.push({
-            sender: 'Supporto',
+            sender: "Supporto",
             text: response.data.text,
-            isLink
+            isLink,
           });
         } catch (error) {
-          console.error('Errore nell\'invio del messaggio:', error);
+          console.error("Errore nell'invio del messaggio:", error);
         }
       }
     },

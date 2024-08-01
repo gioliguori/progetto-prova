@@ -69,6 +69,8 @@
 </template>
 
 <script>
+import apiUrl from "src/api-config"; // Importa apiUrl
+
 export default {
   data() {
     return {
@@ -117,7 +119,7 @@ export default {
       };
 
       // Effettua la chiamata al backend per inserire la bici
-      fetch("http://localhost:3000/api/bikes/insert", {
+      fetch(`${apiUrl}/bikes/insert`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

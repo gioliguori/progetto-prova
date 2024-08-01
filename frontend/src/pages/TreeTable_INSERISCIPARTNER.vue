@@ -148,12 +148,7 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import "leaflet-control-geocoder/dist/Control.Geocoder.css";
-import "leaflet-control-geocoder";
-import axios from "axios";
+import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default defineComponent({
   name: "PartnerForm",
@@ -200,19 +195,16 @@ export default defineComponent({
         this.passwordErrorDialog = true;
       } else {
         try {
-          const response = await axios.post(
-            "http://localhost:3000/api/admin/insert/partner",
-            {
-              name: this.name,
-              type: this.type.value, // Utilizza il valore effettivo del tipo
-              email: this.email, // Include l'email nella richiesta
-              latitude: this.latitude,
-              longitude: this.longitude,
-              address: this.address, // Include l'indirizzo
-              username: this.username,
-              password: this.password,
-            }
-          );
+          const response = await axios.post(`${apiUrl}/admin/insert/partner`, {
+            name: this.name,
+            type: this.type.value, // Utilizza il valore effettivo del tipo
+            email: this.email, // Include l'email nella richiesta
+            latitude: this.latitude,
+            longitude: this.longitude,
+            address: this.address, // Include l'indirizzo
+            username: this.username,
+            password: this.password,
+          });
           if (response.status === 201) {
             // Mostra il dialogo di successo
             this.successDialog = true;

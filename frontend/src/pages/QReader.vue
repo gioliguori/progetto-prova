@@ -26,6 +26,7 @@ import { useRouter } from "vue-router";
 import { QrcodeStream } from "vue-qrcode-reader"; // Importa i componenti QR
 import { QBtn } from "quasar"; // Importa il componente del pulsante
 import axios from "axios"; // Importa axios per le chiamate API
+import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default defineComponent({
   name: "QReader",
@@ -69,14 +70,11 @@ export default defineComponent({
 
     const startRental = async () => {
       try {
-        const response = await axios.post(
-          "http://localhost:3000/api/rental/create-rental",
-          {
-            username,
-            bikeId: bikeId.value,
-            reservationId: reservationId.value,
-          }
-        );
+        const response = await axios.post(`${apiUrl}/rental/create-rental`, {
+          username,
+          bikeId: bikeId.value,
+          reservationId: reservationId.value,
+        });
 
         if (response.data.success) {
           console.log("Noleggio avviato con successo.");
