@@ -23,9 +23,10 @@
 <script>
 import { defineComponent, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { QrcodeStream } from "vue-qrcode-reader";
-import { QBtn } from "quasar";
-import axios from "axios";
+import { QrcodeStream } from "vue-qrcode-reader"; // Importa i componenti QR
+import { QBtn } from "quasar"; // Importa il componente del pulsante
+import axios from "axios"; // Importa axios per le chiamate API
+import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default defineComponent({
   name: "QReader",
