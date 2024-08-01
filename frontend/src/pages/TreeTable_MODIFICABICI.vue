@@ -37,6 +37,7 @@
 <script>
 import axios from "axios";
 import { Dialog } from "quasar";
+import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default {
   data() {
@@ -88,12 +89,9 @@ export default {
     async fetchBikes() {
       try {
         const partnerId = localStorage.getItem("partner_id");
-        const response = await axios.post(
-          "http://localhost:3000/api/partners/bikes",
-          {
-            partnerId: partnerId,
-          }
-        );
+        const response = await axios.post(`${apiUrl}/partners/bikes`, {
+          partnerId: partnerId,
+        });
         if (response.data.success) {
           this.bikes = response.data.bikes;
         } else {
@@ -123,14 +121,11 @@ export default {
     async deleteBike(bikeId) {
       try {
         const partnerId = localStorage.getItem("partner_id");
-        await axios.delete(
-          `http://localhost:3000/api/partners/bike/${bikeId}`,
-          {
-            data: {
-              partnerId: partnerId,
-            },
-          }
-        );
+        await axios.delete(`${apiUrl}/partners/bike/${bikeId}`, {
+          data: {
+            partnerId: partnerId,
+          },
+        });
         this.bikes = this.bikes.filter((bike) => bike.bike_id !== bikeId);
         this.modifiedBikes = this.modifiedBikes.filter(
           (bike) => bike.bike_id !== bikeId
@@ -155,7 +150,7 @@ export default {
           state: bike.state.value ? bike.state.value : bike.state,
         }));
         const response = await axios.put(
-          "http://localhost:3000/api/partners/update-state/bikes",
+          `${apiUrl}/partners/update-state/bikes`,
           { partnerId: partnerId, bikes: modifiedBikesPayload }
         );
         if (response.data.success) {

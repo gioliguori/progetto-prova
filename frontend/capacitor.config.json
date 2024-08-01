@@ -1,0 +1,6 @@
+{
+  "appId": "com.gioliguori.progettoprova",
+  "appName": "ProgettoProva",
+  "webDir": "dist/spa",
+  "bundledWebRuntime": false
+}

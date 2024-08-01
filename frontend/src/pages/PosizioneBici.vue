@@ -30,6 +30,7 @@ import "leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import apiUrl from "src/api-config";
 
 export default defineComponent({
   name: "PosizioneBici",
@@ -71,7 +72,7 @@ export default defineComponent({
       const fetchBikeLocations = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:3000/api/bikes/localization"
+            `${apiUrl}/bikes/localization` // Usa apiUrl qui
           );
           const bikes = response.data;
 

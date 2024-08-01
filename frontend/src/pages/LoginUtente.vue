@@ -47,6 +47,7 @@
 <script>
 import axios from "axios";
 import { Loading, QSpinnerGears } from "quasar";
+import apiUrl from "src/api-config";
 
 export default {
   name: "LoginUtente",
@@ -69,7 +70,8 @@ export default {
       });
       try {
         console.log("Tentativo di login per l'utente:", this.username);
-        const response = await axios.post("http://localhost:3000/api/login", {
+        const response = await axios.post(`${apiUrl}/login`, {
+          // Usa apiUrl qui
           username: this.username,
           password: this.password,
         });

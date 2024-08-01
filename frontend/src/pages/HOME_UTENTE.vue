@@ -55,6 +55,7 @@ import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import { useRouter } from "vue-router";
 import "leaflet-control-geocoder";
 import axios from "axios";
+import apiUrl from "src/api-config";
 
 export default defineComponent({
   name: "MapComponent",
@@ -90,7 +91,7 @@ export default defineComponent({
 
       try {
         const response = await axios.post(
-          "http://localhost:3000/api/rental/create-reservation",
+          `${apiUrl}/rental/create-reservation`, // Usa apiUrl qui
           {
             username,
             bikeId,
@@ -131,7 +132,7 @@ export default defineComponent({
 
         try {
           const response = await axios.post(
-            "http://localhost:3000/api/user/bikes",
+            `${apiUrl}/user/bikes`, // Usa apiUrl qui
             { partnerId: marker.id }
           );
           content.bikes = response.data.bikes;
@@ -144,7 +145,7 @@ export default defineComponent({
 
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/admin/partners"
+          `${apiUrl}/admin/partners` // Usa apiUrl qui
         );
         const partners = response.data.partners;
 
