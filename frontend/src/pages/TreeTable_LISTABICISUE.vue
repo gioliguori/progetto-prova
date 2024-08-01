@@ -60,7 +60,7 @@ export default {
       try {
         const bikesResponse = await axios.post(`${apiUrl}/partners/bikes`, {
           partnerId: this.partnerId,
-        );
+      });
 
         Loading.hide();
 

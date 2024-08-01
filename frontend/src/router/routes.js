@@ -81,6 +81,7 @@ const routes = [
         component: () => import("pages/ModificaProfilo.vue"),
         name: "ModificaProfilo",
       },
+      
       {
         path: "QReader",
         component: () => import("pages/QReader.vue"),
