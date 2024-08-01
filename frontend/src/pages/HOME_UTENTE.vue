@@ -11,10 +11,9 @@
             :key="bike.bike_id"
             class="bike-item"
           >
-            <span
-              >Tipo: {{ bike.bike_type }}, Batteria:
-              {{ bike.battery_level }}%</span
-            >
+            <span>
+              Tipo: {{ bike.bike_type }}, Batteria: {{ bike.battery_level }}%
+            </span>
             <div class="buttons-container">
               <button
                 @click="handleBikeAction(bike.bike_id)"
@@ -38,7 +37,7 @@
       class="modal-overlay"
       @click.self="closeErrorModal"
     >
-      <div class="modal-content">
+      <div class="modal-content error-modal-content">
         <button class="close-button" @click="closeErrorModal">X</button>
         <h3>Errore</h3>
         <p>{{ errorMessage }}</p>
@@ -55,7 +54,6 @@ import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import { useRouter } from "vue-router";
 import "leaflet-control-geocoder";
 import axios from "axios";
-import apiUrl from "src/api-config";
 
 export default defineComponent({
   name: "MapComponent",
@@ -91,7 +89,7 @@ export default defineComponent({
 
       try {
         const response = await axios.post(
-          `${apiUrl}/rental/create-reservation`, // Usa apiUrl qui
+          "http://localhost:3000/api/rental/create-reservation",
           {
             username,
             bikeId,
@@ -132,7 +130,7 @@ export default defineComponent({
 
         try {
           const response = await axios.post(
-            `${apiUrl}/user/bikes`, // Usa apiUrl qui
+            "http://localhost:3000/api/user/bikes",
             { partnerId: marker.id }
           );
           content.bikes = response.data.bikes;
@@ -145,7 +143,7 @@ export default defineComponent({
 
       try {
         const response = await axios.get(
-          `${apiUrl}/admin/partners` // Usa apiUrl qui
+          "http://localhost:3000/api/admin/partners"
         );
         const partners = response.data.partners;
 
@@ -232,6 +230,7 @@ export default defineComponent({
   height: 100vh;
 }
 
+/* Tooltip del marker */
 .marker-tooltip {
   background: white;
   color: black;
@@ -242,6 +241,7 @@ export default defineComponent({
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
+/* Modal overlay */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -256,8 +256,10 @@ export default defineComponent({
   backdrop-filter: blur(5px);
 }
 
+/* Modal content */
 .modal-content {
   background: #fff;
+  color: #000; 
   padding: 20px;
   border-radius: 10px;
   max-width: 500px;
@@ -303,6 +305,7 @@ export default defineComponent({
   background: #ff3f3f;
 }
 
+/* Item della bici */
 .bike-item {
   display: flex;
   justify-content: space-between;
@@ -312,13 +315,14 @@ export default defineComponent({
 }
 
 .bike-item span {
-  flex: 1; /* Ensures the text takes up remaining space */
+  flex: 1; 
   font-size: 16px;
 }
 
+/* Contenitore dei bottoni */
 .buttons-container {
   display: flex;
-  gap: 10px; /* Space between buttons */
+  gap: 10px; /* Spazio tra i bottoni */
 }
 
 .rent-button,
@@ -337,6 +341,7 @@ export default defineComponent({
   background-color: #0056b3;
 }
 
+/* Modale di errore */
 .error-modal-content {
   background: #f8d7da;
   color: #721c24;
@@ -360,5 +365,22 @@ export default defineComponent({
 
 .error-modal-content p {
   font-size: 16px;
+}
+
+/* Stili per i pop-up di Leaflet */
+.leaflet-popup {
+  background: #fff;
+  color: #000;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #fff;
+  color: #000;
+}
+
+.leaflet-popup-tip {
+  background: #fff;
 }
 </style>

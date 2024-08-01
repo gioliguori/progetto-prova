@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center q-pa-md">
+  <q-page class="flex flex-center q-pa-md" :class="{ 'dark-mode': $q.dark.isActive }">
     <div class="container text-center">
       <h2 class="q-mb-md">Scansione QR</h2>
       <qrcode-stream @decode="onDecode" @error="onError" />
@@ -59,9 +59,8 @@ export default defineComponent({
     });
 
     const onDecode = (result) => {
-      bikeId.value = result; // Associa il risultato della scansione al bikeId
+      bikeId.value = result;
       console.log(`ID della bici scansionato: ${result}`);
-      // Puoi aggiungere ulteriori logiche qui per gestire l'ID scansionato
     };
 
     const onError = (error) => {
@@ -70,35 +69,32 @@ export default defineComponent({
 
     const startRental = async () => {
       try {
-        const response = await axios.post(`${apiUrl}/rental/create-rental`, {
-          username,
-          bikeId: bikeId.value,
-          reservationId: reservationId.value,
-        });
+        const response = await axios.post(
+          "http://localhost:3000/api/rental/create-rental",
+          {
+            username,
+            bikeId: bikeId.value,
+            reservationId: reservationId.value,
+          }
+        );
 
         if (response.data.success) {
           console.log("Noleggio avviato con successo.");
           router.push("/movimenti");
         } else {
-          console.error(
-            "Errore nell'avvio del noleggio:",
-            response.data.message
-          );
+          console.error("Errore nell'avvio del noleggio:", response.data.message);
           errorMessage.value = response.data.message;
           setTimeout(() => {
             router.push("/movimenti");
-          }, 3000); // Redirect dopo 3 secondi
+          }, 3000);
         }
       } catch (error) {
-        console.error(
-          "Errore nella chiamata API per avviare il noleggio:",
-          error
-        );
+        console.error("Errore nella chiamata API per avviare il noleggio:", error);
         errorMessage.value =
           "Errore durante l'avvio del noleggio. Esiste già un noleggio attivo!";
         setTimeout(() => {
           router.push("/movimenti");
-        }, 3000); // Redirect dopo 3 secondi
+        }, 3000);
       }
     };
 
@@ -115,15 +111,33 @@ export default defineComponent({
 </script>
 
 <style scoped>
+/* Modalità scura */
+.dark-mode {
+  background-color: #000; /* Sfondo nero per la modalità scura */
+  color: #e0e0e0; /* Colore del testo per la modalità scura */
+}
+
 .container {
   max-width: 800px;
   width: 100%;
   padding: 2rem;
+  background-color: #fff; /* Sfondo bianco per la modalità chiara */
+  color: #000; /* Colore del testo per la modalità chiara */
+}
+
+.dark-mode .container {
+  background-color: #000; /* Sfondo nero per la modalità scura */
+  color: #e0e0e0; /* Colore del testo per la modalità scura */
 }
 
 h2 {
   font-size: 2rem;
   font-weight: bold;
+  color: #000; /* Colore del titolo per la modalità chiara */
+}
+
+.dark-mode h2 {
+  color: #1b89ff; /* Colore del titolo per la modalità scura */
 }
 
 .q-mb-md {

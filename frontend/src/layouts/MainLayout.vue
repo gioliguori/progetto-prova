@@ -14,6 +14,16 @@
         <q-space />
 
         <div class="q-gutter-sm row items-center no-wrap">
+          <!-- Pulsante per attivare/disattivare la modalità scura -->
+          <q-btn
+            round
+            dense
+            flat
+            color="white"
+            :icon="$q.dark.isActive ? 'brightness_7' : 'brightness_4'"
+            @click="toggleDarkMode"
+          />
+
           <q-btn
             round
             dense
@@ -156,6 +166,10 @@ export default defineComponent({
       });
     };
 
+    const toggleDarkMode = () => {
+      $q.dark.toggle();
+    };
+
     return {
       $q,
       leftDrawerOpen,
@@ -164,6 +178,7 @@ export default defineComponent({
       },
       goToLogin,
       redirectToWebex,
+      toggleDarkMode
     };
   },
 });

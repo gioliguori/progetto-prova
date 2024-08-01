@@ -1,81 +1,66 @@
 <template>
-  <q-page class="q-pa-md">
-    <div class="q-mb-lg">
-      <h2>MODIFICA BICI</h2>
+  <q-page class="q-pa-md" :class="{ 'dark-mode': $q.dark.isActive }">
+    <div class="q-mb-lg text-center">
+      <h2 class="page-title">MODIFICA BICI</h2>
     </div>
-    <q-table :rows="bikes" :columns="columns" row-key="bike_id" class="q-mb-md">
-      <template v-slot:body-cell-state="props">
-        <q-td :props="props">
-          <q-select
-            v-model="props.row.state"
-            :options="stateOptions"
-            dense
-            outlined
-            @update:model-value="updateBikeState(props.row)"
-          ></q-select>
-        </q-td>
-      </template>
-      <template v-slot:body-cell-actions="props">
-        <q-td :props="props">
-          <q-btn
-            flat
-            icon="delete"
-            color="negative"
-            @click="deleteBike(props.row.bike_id)"
-          ></q-btn>
-        </q-td>
-      </template>
-    </q-table>
-    <q-btn
-      label="Apporta modifiche"
-      color="primary"
-      @click="submitChanges"
-    ></q-btn>
+    <div class="q-pa-md">
+      <div class="table-responsive">
+        <table class="markup-table q-table q-table--flat q-table--square no-shadow">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tipo</th>
+              <th>Livello Batteria</th>
+              <th>Stato</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="bike in bikes" :key="bike.bike_id">
+              <td>{{ bike.bike_id }}</td>
+              <td>{{ bike.bike_type }}</td>
+              <td>{{ bike.battery_level }}</td>
+              <td>
+                <q-select
+                  v-model="bike.state"
+                  :options="stateOptions"
+                  dense
+                  outlined
+                  @update:model-value="updateBikeState(bike)"
+                ></q-select>
+              </td>
+              <td>
+                <q-btn
+                  flat
+                  icon="delete"
+                  color="negative"
+                  @click="deleteBike(bike.bike_id)"
+                ></q-btn>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="text-center">
+      <q-btn
+        label="Apporta modifiche"
+        color="primary"
+        class="submit-btn"
+        @click="submitChanges"
+      ></q-btn>
+    </div>
   </q-page>
 </template>
 
 <script>
 import axios from "axios";
 import { Dialog } from "quasar";
-import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default {
   data() {
     return {
       bikes: [],
-      columns: [
-        {
-          name: "bike_id",
-          required: true,
-          label: "ID",
-          align: "left",
-          field: (row) => row.bike_id,
-          format: (val) => `${val}`,
-          sortable: true,
-        },
-        {
-          name: "bike_type",
-          align: "left",
-          label: "Tipo",
-          field: "bike_type",
-          sortable: true,
-        },
-        {
-          name: "battery_level",
-          align: "left",
-          label: "Livello Batteria",
-          field: "battery_level",
-          sortable: true,
-        },
-        {
-          name: "state",
-          align: "left",
-          label: "Stato",
-          field: "state",
-          sortable: true,
-        },
-        { name: "actions", align: "center", label: "Azioni", field: "actions" },
-      ],
       stateOptions: [
         { label: "Disponibile", value: "disponibile" },
         { label: "In noleggio", value: "in noleggio" },
@@ -89,9 +74,12 @@ export default {
     async fetchBikes() {
       try {
         const partnerId = localStorage.getItem("partner_id");
-        const response = await axios.post(`${apiUrl}/partners/bikes`, {
-          partnerId: partnerId,
-        });
+        const response = await axios.post(
+          "http://localhost:3000/api/partners/bikes",
+          {
+            partnerId: partnerId,
+          }
+        );
         if (response.data.success) {
           this.bikes = response.data.bikes;
         } else {
@@ -121,11 +109,14 @@ export default {
     async deleteBike(bikeId) {
       try {
         const partnerId = localStorage.getItem("partner_id");
-        await axios.delete(`${apiUrl}/partners/bike/${bikeId}`, {
-          data: {
-            partnerId: partnerId,
-          },
-        });
+        await axios.delete(
+          `http://localhost:3000/api/partners/bike/${bikeId}`,
+          {
+            data: {
+              partnerId: partnerId,
+            },
+          }
+        );
         this.bikes = this.bikes.filter((bike) => bike.bike_id !== bikeId);
         this.modifiedBikes = this.modifiedBikes.filter(
           (bike) => bike.bike_id !== bikeId
@@ -150,7 +141,7 @@ export default {
           state: bike.state.value ? bike.state.value : bike.state,
         }));
         const response = await axios.put(
-          `${apiUrl}/partners/update-state/bikes`,
+          "http://localhost:3000/api/partners/update-state/bikes",
           { partnerId: partnerId, bikes: modifiedBikesPayload }
         );
         if (response.data.success) {
@@ -182,5 +173,76 @@ export default {
 </script>
 
 <style scoped>
-/* Aggiungi qui eventuali stili personalizzati */
+/* Modalità scura */
+.dark-mode {
+  background-color: #121212; /* Sfondo scuro per la modalità scura */
+  color: #e0e0e0; /* Colore del testo in modalità scura */
+}
+
+.page-title {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #1b89ff; /* Colore del titolo in modalità chiara */
+}
+
+@media (min-width: 600px) {
+  .page-title {
+    font-size: 2rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .page-title {
+    font-size: 2.5rem;
+  }
+}
+
+.markup-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.markup-table thead tr {
+  background-color: #1b89ff; /* Colore di default per la modalità chiara */
+  color: white;
+}
+
+.markup-table th,
+.markup-table td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.submit-btn {
+  font-size: 1.2rem;
+  padding: 0.75rem 1.5rem;
+}
+
+/* Modalità scura per la tabella */
+.dark-mode .markup-table thead tr {
+  background-color: #333; /* Sfondo scuro per l'intestazione della tabella */
+  color: #e0e0e0; /* Colore del testo dell'intestazione */
+}
+
+.dark-mode .markup-table th,
+.dark-mode .markup-table td {
+  border: 1px solid #444; /* Bordo più scuro per le celle */
+}
+
+.dark-mode .markup-table tr:nth-child(even) {
+  background-color: #1e1e1e; /* Grigio scuro per righe pari in modalità scura */
+}
+
+.dark-mode .markup-table tr:nth-child(odd) {
+  background-color: #000; /* Nero per righe dispari in modalità scura */
+}
+
+.dark-mode .markup-table tr:hover {
+  background-color: #444; /* Grigio scuro al passaggio del mouse in modalità scura */
+}
 </style>

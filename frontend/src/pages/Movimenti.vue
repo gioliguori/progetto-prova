@@ -1,16 +1,66 @@
 <template>
-  <q-page class="flex flex-center q-pa-md">
+  <q-page class="flex flex-center q-pa-md" :class="{ 'dark-mode': $q.dark.isActive }">
     <div class="container text-center">
-      <h2 class="q-mb-md">Noleggi e Prenotazioni</h2>
+      <h1 class="page-title q-mb-md">Noleggi e Prenotazioni</h1>
 
       <div class="q-mb-md">
-        <h3>Noleggi</h3>
-        <q-table
-          :rows="rentals"
-          :columns="rentalColumns"
-          row-key="rental_id"
-          no-data-label="Nessun noleggio trovato"
-        />
+        <h2 class="section-title">La tua Prenotazione</h2>
+        <div v-if="reservation.length">
+          <q-markup-table class="custom-table">
+            <thead>
+              <tr>
+                <th>ID Bici</th>
+                <th>Nome Partner</th>
+                <th>Data Inizio Prenotazione</th>
+                <th>Data Scadenza</th>
+                <th>Azioni</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in reservation" :key="row.reservation_id">
+                <td>{{ row.bike_id_partner }}</td>
+                <td>{{ row.partner_name }}</td>
+                <td>{{ row.reservation_date }}</td>
+                <td>{{ row.expiration_date }}</td>
+                <td>
+                  <q-btn
+                    @click="rentBike(row.bike_id, row.reservation_id)"
+                    label="Avvia Noleggio"
+                    color="custom-color"
+                    class="custom-btn"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </q-markup-table>
+        </div>
+        <div v-else>
+          <p>Nessuna prenotazione trovata.</p>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="section-title">Noleggi</h2>
+        <q-markup-table class="custom-table">
+          <thead>
+            <tr>
+              <th>Tipo Bici</th>
+              <th>Nome Partner</th>
+              <th>Data Inizio</th>
+              <th>Data Fine</th>
+              <th>Importo (€)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in rentals" :key="row.rental_id">
+              <td>{{ row.bike_type }}</td>
+              <td>{{ row.partner_name }}</td>
+              <td>{{ row.rental_start }}</td>
+              <td>{{ row.rental_end }}</td>
+              <td>{{ row.amount }}</td>
+            </tr>
+          </tbody>
+        </q-markup-table>
         <div v-if="activeRental">
           <q-btn
             @click="showPaymentPopup"
@@ -21,55 +71,27 @@
         </div>
       </div>
 
-      <div>
-        <h3>La tua Prenotazione</h3>
-        <div v-if="reservation.length">
-          <q-table
-            :rows="reservation"
-            :columns="reservationColumns"
-            row-key="reservation_id"
-            no-data-label="Nessuna prenotazione trovata"
-          >
-            <template v-slot:body-cell-actions="props">
-              <q-td :props="props">
-                <q-btn
-                  @click="rentBike(props.row.bike_id, props.row.reservation_id)"
-                  label="Avvia Noleggio"
-                  color="primary"
-                />
-              </q-td>
-            </template>
-          </q-table>
-        </div>
-        <div v-else>
-          <p>Nessuna prenotazione trovata.</p>
-        </div>
-      </div>
-
       <q-dialog v-model="paymentDialog">
-        <q-card>
-          <q-card-section>
+        <q-card class="custom-card">
+          <q-card-section class="text-center">
             <div class="text-h6">Come vuoi pagare?</div>
           </q-card-section>
 
-          <q-card-section class="q-pt-none">
+          <q-card-section class="q-pt-none text-center">
             <q-btn
               @click="() => endRental('credit_card')"
               label="Carta di Credito"
-              color="primary"
-              class="q-mt-md"
+              class="custom-btn q-mt-md"
             />
             <q-btn
               @click="() => endRental('paypal')"
               label="PayPal"
-              color="primary"
-              class="q-mt-md"
+              class="custom-btn q-mt-md"
             />
             <q-btn
               @click="() => endRental('bank_transfer')"
               label="Bonifico"
-              color="primary"
-              class="q-mt-md"
+              class="custom-btn q-mt-md"
             />
           </q-card-section>
 
@@ -86,27 +108,24 @@
 import { defineComponent, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import {
-  QTable,
+  QMarkupTable,
   QBtn,
   QDialog,
   QCard,
   QCardSection,
   QCardActions,
-  QTd,
 } from "quasar";
 import axios from "axios";
-import apiUrl from "src/api-config";
 
 export default defineComponent({
   name: "RentalsAndReservations",
   components: {
-    QTable,
+    QMarkupTable,
     QBtn,
     QDialog,
     QCard,
     QCardSection,
     QCardActions,
-    QTd,
   },
   setup() {
     const router = useRouter();
@@ -116,75 +135,12 @@ export default defineComponent({
     const paymentDialog = ref(false);
     const username = localStorage.getItem("username");
 
-    const rentalColumns = [
-      {
-        name: "bike_type",
-        align: "left",
-        label: "Tipo Bici",
-        field: "bike_type",
-      },
-      {
-        name: "partner_name",
-        align: "left",
-        label: "Nome Partner",
-        field: "partner_name",
-      },
-      {
-        name: "rental_start",
-        align: "left",
-        label: "Data Inizio",
-        field: "rental_start",
-      },
-      {
-        name: "rental_end",
-        align: "left",
-        label: "Data Fine",
-        field: "rental_end",
-      },
-      { name: "amount", align: "left", label: "Importo (€)", field: "amount" },
-    ];
-
-    const reservationColumns = [
-      {
-        name: "bike_id_partner",
-        align: "left",
-        label: "ID Bici",
-        field: "bike_id_partner",
-      },
-      {
-        name: "partner_name",
-        align: "left",
-        label: "Nome Partner",
-        field: "partner_name",
-      },
-      {
-        name: "reservation_date",
-        align: "left",
-        label: "Data Inizio Prenotazione",
-        field: "reservation_date",
-      },
-      {
-        name: "expiration_date",
-        align: "left",
-        label: "Data Scadenza",
-        field: "expiration_date",
-      },
-      {
-        name: "actions",
-        align: "right",
-        label: "Azioni",
-        field: "actions",
-        sortable: false,
-        style: "padding-right: 20px;",
-      },
-    ];
-
     onMounted(async () => {
       try {
         console.log(`Username: ${username}`);
 
         const rentalsResponse = await axios.get(
-          `${apiUrl}/rental/user-rentals`, // Usa apiUrl qui
+          "http://localhost:3000/api/rental/user-rentals",
           {
             params: { username },
           }
@@ -193,7 +149,7 @@ export default defineComponent({
         rentals.value = rentalsResponse.data;
 
         const reservationResponse = await axios.get(
-          `${apiUrl}/rental/user-reservations`, // Usa apiUrl qui
+          "http://localhost:3000/api/rental/user-reservations",
           {
             params: { username },
           }
@@ -228,7 +184,7 @@ export default defineComponent({
 
       try {
         const response = await axios.post(
-          `${apiUrl}/rental/end-rental`, // Usa apiUrl qui
+          "http://localhost:3000/api/rental/end-rental",
           {
             username,
             rentalId: activeRental.value.rental_id,
@@ -263,8 +219,6 @@ export default defineComponent({
     return {
       rentals,
       reservation,
-      rentalColumns,
-      reservationColumns,
       rentBike,
       activeRental,
       paymentDialog,
@@ -277,22 +231,99 @@ export default defineComponent({
 </script>
 
 <style scoped>
+/* Modalità scura */
+.dark-mode {
+  background-color: #121212; /* Sfondo scuro per la modalità scura */
+  color: #e0e0e0; /* Colore del testo in modalità scura */
+}
+
 .container {
-  max-width: 800px;
+  max-width: 100%;
   width: 100%;
   padding: 2rem;
 }
 
-h2 {
-  font-size: 2rem;
+.page-title {
+  font-size: 3vw;
   font-weight: bold;
+  color: #1b89ff; /* Colore del titolo */
+  
 }
 
+.section-title {
+  font-size: 2.5vw;
+  font-weight: bold;
+  color: #1b89ff; /* Colore del titolo */
+  border-bottom: 2px solid #1b89ff; /* Divisore sotto il titolo */
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Margini */
 .q-mb-md {
   margin-bottom: 1rem;
 }
 
 .q-mt-md {
   margin-top: 1rem;
+}
+
+/* Tabella personalizzata */
+.custom-table {
+  width: 100%;
+}
+
+.custom-table th {
+  background-color: #1b89ff; /* Colore di default per la modalità chiara */
+  color: white;
+  font-weight: bold;
+}
+
+/* Modalità scura per la tabella */
+.dark-mode .custom-table th {
+  background-color: #333; /* Sfondo scuro per l'intestazione della tabella */
+  color: #e0e0e0; /* Colore del testo dell'intestazione */
+}
+
+.dark-mode .custom-table td {
+  border: 1px solid #444; /* Bordo più scuro per le celle */
+}
+
+.dark-mode .custom-table tr:nth-child(even) {
+  background-color: #1e1e1e; /* Grigio scuro per righe pari in modalità scura */
+}
+
+.dark-mode .custom-table tr:nth-child(odd) {
+  background-color: #000; /* Nero per righe dispari in modalità scura */
+}
+
+.dark-mode .custom-table tr:hover {
+  background-color: #444; /* Grigio scuro al passaggio del mouse in modalità scura */
+}
+
+/* Pulsanti personalizzati */
+.custom-btn {
+  background-color: #1b89ff !important; /* Colore di default per i pulsanti */
+  color: white !important;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+/* Modalità scura per i pulsanti */
+.dark-mode .custom-btn {
+  background-color: #1b89ff !important; /* Colore di default per i pulsanti in modalità scura */
+  color: white !important;
+}
+
+/* Card personalizzata */
+.custom-card {
+  max-width: 400px;
+  width: 100%;
+}
+
+/* Modalità scura per le card */
+.dark-mode .custom-card {
+  background-color: #1e1e1e; /* Sfondo scuro per le card */
+  color: #e0e0e0; /* Colore del testo per le card */
 }
 </style>

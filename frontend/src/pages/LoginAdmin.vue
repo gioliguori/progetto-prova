@@ -53,7 +53,6 @@
 <script>
 import axios from "axios";
 import { Loading, QSpinnerGears } from "quasar";
-import apiUrl from "src/api-config";
 
 export default {
   name: "LoginAdmin",
@@ -61,7 +60,7 @@ export default {
     return {
       username: "",
       password: "",
-      role: "admin", // Default role
+      role: "admin", 
       roleOptions: [
         { label: "Admin", value: "admin" },
         { label: "Partner", value: "partner" },
@@ -78,11 +77,11 @@ export default {
       try {
         console.log("Tentativo di login per l'utente:", this.username);
         const response = await axios.post(
-          `${apiUrl}/login/admin-partner`, // Usa apiUrl qui
+          "http://localhost:3000/api/login/admin-partner",
           {
             username: this.username,
             password: this.password,
-            role: this.role, // Include the role in the request
+            role: this.role, 
           }
         );
         Loading.hide();

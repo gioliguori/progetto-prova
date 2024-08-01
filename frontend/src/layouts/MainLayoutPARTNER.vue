@@ -14,6 +14,16 @@
         <q-space />
 
         <div class="q-gutter-sm row items-center no-wrap">
+          <!-- Pulsante per attivare/disattivare la modalità scura -->
+          <q-btn
+            round
+            dense
+            flat
+            color="white"
+            :icon="$q.dark.isActive ? 'brightness_7' : 'brightness_4'"
+            @click="toggleDarkMode"
+          />
+
           <q-btn
             round
             dense
@@ -86,7 +96,7 @@
           </q-item-section>
         </q-item>
 
-        <!-- Modified WEBEX item with custom icon -->
+      
         <q-item clickable @click="redirectToWebex" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
             <q-img src="src/assets/Webex.png" />
@@ -143,6 +153,10 @@ export default defineComponent({
       });
     };
 
+    const toggleDarkMode = () => {
+      $q.dark.toggle();
+    };
+
     return {
       $q,
       leftDrawerOpen,
@@ -150,7 +164,8 @@ export default defineComponent({
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
       goToLogin,
-      redirectToWebex
+      redirectToWebex,
+      toggleDarkMode
     };
   },
 });

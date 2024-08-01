@@ -147,7 +147,6 @@
 <script>
 import { defineComponent, onMounted, ref } from "vue";
 import axios from "axios";
-import apiUrl from "src/api-config";
 
 export default defineComponent({
   name: "DashboardPartner",
@@ -173,7 +172,7 @@ export default defineComponent({
 
       try {
         const response = await axios.get(
-          `${apiUrl}/partners/partner-details`, // Usa apiUrl qui
+          "http://localhost:3000/api/partners/partner-details",
           {
             params: { partnerId },
           }
@@ -195,7 +194,7 @@ export default defineComponent({
       }
 
       try {
-        await axios.put(`${apiUrl}/partners/update-partner`, {
+        await axios.put("http://localhost:3000/api/partners/update-partner", {
           partner_id: partnerId,
           ...user_details.value,
         });
@@ -224,7 +223,7 @@ export default defineComponent({
       }
 
       try {
-        await axios.put(`${apiUrl}/partners/update-password`, {
+        await axios.put("http://localhost:3000/api/partners/update-password", {
           partner_id: partnerId,
           current_password: password_dict.value.current_password,
           new_password: password_dict.value.new_password,
