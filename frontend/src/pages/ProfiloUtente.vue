@@ -44,6 +44,7 @@
 import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import apiUrl from "src/api-config"; // Importa apiUrl
+
 export default defineComponent({
   name: 'UserProfile',
   setup() {
