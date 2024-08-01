@@ -81,11 +81,7 @@ const routes = [
         component: () => import("pages/ModificaProfilo.vue"),
         name: "ModificaProfilo",
       },
-      {
-        path: "Assistenza",
-        component: () => import("pages/Assistenza.vue"),
-        name: "Assistenza",
-      },
+      
       {
         path: "QReader",
         component: () => import("pages/QReader.vue"),
