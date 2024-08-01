@@ -1,17 +1,13 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-card
-      class="q-mb-md"
-      v-bind:style="$q.screen.lt.sm ? { width: '90%' } : { width: '40%' }"
-    >
+  <q-page class="flex flex-center" :class="{'q-dark': $q.screen.dark, 'bg-light': !$q.screen.dark}">
+    <q-card class="full-size q-mb-md">
       <q-card-section class="text-center">
         <q-avatar size="100px" class="q-mb-md">
-          <img
-            src="src/assets/action.jpg"
-            style="object-fit: cover; width: 100%; height: 100%"
-          />
+          <img src="src/assets/action.jpg" style="object-fit: cover; width: 100%; height: 100%;" />
         </q-avatar>
-        <div class="text-h6">Welcome, {{ username }}</div>
+        <div :class="{'text-h6': true, 'text-primary': !$q.screen.dark, 'text-light': $q.screen.dark}">
+          Welcome, {{ username }}
+        </div>
       </q-card-section>
       <q-card-section>
         <q-btn
