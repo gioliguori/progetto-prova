@@ -75,7 +75,7 @@ export default defineComponent({
           );
           const bikes = response.data;
 
-          markers.clearLayers(); // Rimuovi i marker esistenti
+          markers.clearLayers(); 
 
           bikes.forEach((bike) => {
             const tooltipText = `bici numero: ${bike.bike_id_partner} partner: ${bike.partner_name}`;

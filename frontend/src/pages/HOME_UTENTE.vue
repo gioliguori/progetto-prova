@@ -259,7 +259,7 @@ export default defineComponent({
 /* Modal content */
 .modal-content {
   background: #fff;
-  color: #000; /* Colore del testo per mantenere la leggibilità */
+  color: #000; 
   padding: 20px;
   border-radius: 10px;
   max-width: 500px;
@@ -315,7 +315,7 @@ export default defineComponent({
 }
 
 .bike-item span {
-  flex: 1; /* Assicura che il testo occupi lo spazio rimanente */
+  flex: 1; 
   font-size: 16px;
 }
 
