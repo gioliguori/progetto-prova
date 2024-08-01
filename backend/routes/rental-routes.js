@@ -161,6 +161,14 @@ router.post("/end-rental", async (req, res) => {
       amount: amount,
     });
 
+    // Aggiorna lo stato della bici a disponibile e incrementa il count_run
+    await trx("bikes")
+      .where("bike_id", rental.bike_id)
+      .update({
+        state: "disponibile",
+        count_run: trx.raw("count_run + 1"),
+      });
+
     const finalPaymentMethod =
       paymentMethod === "bank_transfer" ? "other" : paymentMethod;
 

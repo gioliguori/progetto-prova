@@ -72,26 +72,27 @@ CREATE TABLE reservations (
 SET GLOBAL event_scheduler = ON;
 
 -- Crea l'evento per annullare le prenotazioni scadute e aggiornare lo stato della bici
-CREATE EVENT IF NOT EXISTS expire_reservations_event
+CREATE EVENT expire_reservations_event
 ON SCHEDULE EVERY 1 MINUTE
-DO
-  BEGIN
-    -- Aggiorna lo stato delle prenotazioni a 'expired'
-    UPDATE reservations
-    SET status = 'expired'
-    WHERE status = 'active'
-      AND expiration_date <= NOW();
-    
-    -- Aggiorna lo stato delle bici a 'disponibile'
-    UPDATE bikes
-    SET state = 'disponibile'
-    WHERE bike_id IN (
-      SELECT bike_id
-      FROM reservations
-      WHERE status = 'expired'
-        AND expiration_date <= NOW()
-    );
-  END;
+DO BEGIN
+  -- Aggiorna lo stato delle prenotazioni a 'expired'
+  UPDATE reservations
+  SET status = 'expired'
+  WHERE status = 'active'
+    AND expiration_date <= NOW();
+
+  -- Aggiorna lo stato delle bici a 'disponibile' solo se non sono in noleggio
+  UPDATE bikes
+  SET state = 'disponibile'
+  WHERE bike_id IN (
+    SELECT bike_id
+    FROM reservations
+    WHERE status = 'expired'
+      AND expiration_date <= NOW()
+  )
+  AND state != 'in noleggio';
+ END
+
 
 -- Crea la tabella "rentals"
 CREATE TABLE rentals (
