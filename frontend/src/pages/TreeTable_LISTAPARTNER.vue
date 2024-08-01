@@ -1,36 +1,54 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-card class="q-pa-md" style="width: 800px">
+  <q-page :class="pageClass" class="flex flex-center q-pa-md">
+    <q-card class="q-pa-md responsive-card" :class="cardClass">
       <q-card-section class="text-center">
-        <div class="text-h5">LISTA PARTNER</div>
+        <div :class="titleClass">LISTA PARTNER</div>
       </q-card-section>
       <q-card-section>
-        <q-table
-          :rows="partners"
-          :columns="columns"
-          row-key="partner_id"
-          class="q-mt-md"
-        >
-          <template v-slot:body-cell-actions="props">
-            <q-td :props="props">
-              <q-btn
-                color="negative"
-                label="Delete"
-                @click="deletePartner(props.row.partner_id)"
-              />
-            </q-td>
-          </template>
-        </q-table>
-        <q-table
-          :rows="revenues"
-          :columns="revenueColumns"
-          row-key="partner_name"
-          title="Revenues"
-          class="q-mt-md"
-        />
-      </q-card-section>
-      <q-card-section>
-        <q-btn @click="logout" color="primary" label="Logout" />
+        <!-- Tabella dei Partner -->
+        <q-markup-table class="q-mt-md custom-table">
+          <thead>
+            <tr>
+              <th v-for="col in columns" :key="col.name" :style="headerStyle">
+                {{ col.label }}
+              </th>
+              <th :style="headerStyle">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in partners" :key="row.partner_id">
+              <td v-for="col in columns" :key="col.name" class="center-text">
+                {{ row[col.field] }}
+              </td>
+              <td class="center-text">
+                <q-btn
+                  color="negative"
+                  label="Delete"
+                  @click="deletePartner(row.partner_id)"
+                  class="red-btn"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </q-markup-table>
+
+        <!-- Tabella dei Ricavi -->
+        <q-markup-table class="q-mt-md custom-table">
+          <thead>
+            <tr>
+              <th v-for="col in revenueColumns" :key="col.name" :style="headerStyle">
+                {{ col.label }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in revenues" :key="row.partner_name">
+              <td v-for="col in revenueColumns" :key="col.name" class="center-text">
+                {{ row[col.field] }}
+              </td>
+            </tr>
+          </tbody>
+        </q-markup-table>
       </q-card-section>
     </q-card>
   </q-page>
@@ -51,47 +69,39 @@ export default {
         {
           name: "partner_name",
           label: "Name",
-          align: "left",
+          align: "center",
           field: "partner_name",
         },
         {
           name: "partner_type",
           label: "Type",
-          align: "left",
+          align: "center",
           field: "partner_type",
         },
         {
           name: "latitude",
           label: "Latitude",
-          align: "left",
+          align: "center",
           field: "latitude",
         },
         {
           name: "longitude",
           label: "Longitude",
-          align: "left",
+          align: "center",
           field: "longitude",
         },
         {
           name: "count_bike",
           label: "Bike Count",
-          align: "left",
-          field: "count_bike",
-        },
-        {
-          name: "actions",
-          label: "Actions",
           align: "center",
-          field: "actions",
-          required: true,
-          sortable: false,
+          field: "count_bike",
         },
       ],
       revenueColumns: [
         {
           name: "partner_name",
           label: "Partner Name",
-          align: "left",
+          align: "center",
           field: "partner_name",
           format: (val) => `${val}`,
           sortable: true,
@@ -183,14 +193,78 @@ export default {
         });
       }
     },
-    logout() {
-      localStorage.removeItem("username");
-      this.$router.push({ name: "LoginPage" });
-    },
   },
+  computed: {
+    headerStyle() {
+      return {
+        backgroundColor: this.$q.dark.isActive ? '#333' : '#1b89ff',
+        color: this.$q.dark.isActive ? '#e0e0e0' : 'white',
+        fontWeight: 'bold',
+        textAlign: 'center'
+      };
+    },
+    pageClass() {
+      return {
+        'bg-dark text-light': this.$q.dark.isActive,
+        'bg-light text-dark': !this.$q.dark.isActive,
+      };
+    },
+    cardClass() {
+      return {
+        'bg-dark text-light': this.$q.dark.isActive,
+        'bg-light text-dark': !this.$q.dark.isActive,
+      };
+    },
+    titleClass() {
+      return {
+        'text-primary': !this.$q.dark.isActive,
+        'text-white': this.$q.dark.isActive,
+        'title-large': true // Class to increase title size
+      };
+    },
+  }
 };
 </script>
 
 <style scoped>
-/* Add any additional styling if needed */
+/* Card responsiva */
+.responsive-card {
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Titoli responsivi */
+.title-large {
+  font-size: 4rem; /* Imposta una dimensione fissa per il titolo molto grande */
+  font-weight: bold;
+}
+
+/* Stile per le tabelle */
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.custom-table th, .custom-table td {
+  padding: 8px;
+  text-align: center;
+}
+
+.custom-table tr:nth-child(even) {
+  background-color: var(--q-dark-bg-secondary); /* Alternanza righe in modalità scura */
+}
+
+.custom-table tr:hover {
+  background-color: var(--q-dark-hover); /* Evidenziazione riga in modalità scura */
+}
+
+/* Stile per i bottoni personalizzati */
+.red-btn {
+  background-color: #dc0602 !important;
+  color: white !important;
+  border: none;
+  padding: 4px 8px;
+  box-shadow: none;
+}
 </style>

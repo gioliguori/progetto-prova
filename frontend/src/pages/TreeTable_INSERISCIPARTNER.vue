@@ -1,7 +1,7 @@
 <template>
-  <q-page class="q-pa-md">
+  <q-page :class="pageClass" class="q-pa-md">
     <div class="q-mb-lg">
-      <h2>INSERISCI PARTNER</h2>
+      <h2 :class="titleClass">INSERISCI PARTNER</h2>
     </div>
     <q-form @submit="submitForm">
       <q-input
@@ -11,6 +11,7 @@
         outlined
         required
         class="q-mb-md"
+        :class="inputClass"
       ></q-input>
 
       <q-select
@@ -20,6 +21,7 @@
         outlined
         required
         class="q-mb-md"
+        :class="inputClass"
       ></q-select>
 
       <q-input
@@ -29,6 +31,7 @@
         outlined
         required
         class="q-mb-md"
+        :class="inputClass"
       ></q-input>
 
       <!-- Mappa per selezionare latitudine e longitudine -->
@@ -41,6 +44,7 @@
         outlined
         readonly
         class="q-mb-md"
+        :class="inputClass"
       ></q-input>
 
       <q-input
@@ -50,6 +54,7 @@
         outlined
         readonly
         class="q-mb-md"
+        :class="inputClass"
       ></q-input>
 
       <q-input
@@ -59,11 +64,12 @@
         outlined
         readonly
         class="q-mb-md"
+        :class="inputClass"
       ></q-input>
 
       <!-- Titolo per le credenziali del partner -->
       <div class="q-mb-md">
-        <h3>CREDENZIALI PARTNER</h3>
+        <h3 :class="titleClass">CREDENZIALI PARTNER</h3>
       </div>
 
       <q-input
@@ -73,6 +79,7 @@
         outlined
         required
         class="q-mb-md"
+        :class="inputClass"
       ></q-input>
 
       <q-input
@@ -83,6 +90,7 @@
         outlined
         required
         class="q-mb-md"
+        :class="inputClass"
       ></q-input>
 
       <q-btn type="submit" label="Invia" color="primary"></q-btn>
@@ -90,9 +98,9 @@
 
     <!-- Dialogo di successo -->
     <q-dialog v-model="successDialog" persistent>
-      <q-card>
+      <q-card :class="dialogClass">
         <q-card-section>
-          <div class="text-h6">Successo</div>
+          <div :class="dialogTitleClass">Successo</div>
         </q-card-section>
 
         <q-card-section>
@@ -113,9 +121,9 @@
 
     <!-- Dialogo di errore -->
     <q-dialog v-model="errorDialog" persistent>
-      <q-card>
+      <q-card :class="dialogClass">
         <q-card-section>
-          <div class="text-h6">Errore</div>
+          <div :class="dialogTitleClass">Errore</div>
         </q-card-section>
 
         <q-card-section>
@@ -130,9 +138,9 @@
 
     <!-- Dialogo di errore per password -->
     <q-dialog v-model="passwordErrorDialog" persistent>
-      <q-card>
+      <q-card :class="dialogClass">
         <q-card-section>
-          <div class="text-h6">Errore Password</div>
+          <div :class="dialogTitleClass">Errore Password</div>
         </q-card-section>
 
         <q-card-section>
@@ -161,12 +169,12 @@ export default defineComponent({
     return {
       name: "",
       type: null,
-      email: "", // Aggiunto il campo email
-      latitude: 40.8522, // Default latitude
-      longitude: 14.2681, // Default longitude
-      formattedLatitude: "40.852200", // Default formatted latitude
-      formattedLongitude: "14.268100", // Default formatted longitude
-      address: "", // New property for address
+      email: "",
+      latitude: 40.8522,
+      longitude: 14.2681,
+      formattedLatitude: "40.852200",
+      formattedLongitude: "14.268100",
+      address: "",
       username: "",
       password: "",
       typeOptions: [
@@ -177,12 +185,12 @@ export default defineComponent({
       successDialog: false,
       errorDialog: false,
       passwordErrorDialog: false,
-      errorMessage: "", // Aggiunto per memorizzare il messaggio di errore
+      errorMessage: "",
     };
   },
   methods: {
     isPasswordValid(password) {
-      return /\d/.test(password); // Controlla se la password contiene almeno un numero
+      return /\d/.test(password);
     },
     async fetchAddress(latitude, longitude) {
       try {
@@ -196,7 +204,6 @@ export default defineComponent({
     },
     async submitForm() {
       if (!this.isPasswordValid(this.password)) {
-        // Mostra il dialogo di errore se la password non è valida
         this.passwordErrorDialog = true;
       } else {
         try {
@@ -204,21 +211,19 @@ export default defineComponent({
             "http://localhost:3000/api/admin/insert/partner",
             {
               name: this.name,
-              type: this.type.value, // Utilizza il valore effettivo del tipo
-              email: this.email, // Include l'email nella richiesta
+              type: this.type.value,
+              email: this.email,
               latitude: this.latitude,
               longitude: this.longitude,
-              address: this.address, // Include l'indirizzo
+              address: this.address,
               username: this.username,
               password: this.password,
             }
           );
           if (response.status === 201) {
-            // Mostra il dialogo di successo
             this.successDialog = true;
           }
         } catch (error) {
-          // Memorizza il messaggio di errore e mostra il dialogo di errore
           this.errorMessage =
             error.response.data.message ||
             "Errore durante l'inserimento del partner.";
@@ -234,7 +239,7 @@ export default defineComponent({
       this.longitude = event.latlng.lng;
       this.formattedLatitude = this.latitude.toFixed(6);
       this.formattedLongitude = this.longitude.toFixed(6);
-      this.fetchAddress(this.latitude, this.longitude); // Fetch the address when coordinates are updated
+      this.fetchAddress(this.latitude, this.longitude);
     },
   },
   mounted() {
@@ -253,7 +258,6 @@ export default defineComponent({
       marker.setLatLng([this.latitude, this.longitude]);
     });
 
-    // Aggiungi la barra di ricerca
     const geocoder = L.Control.Geocoder.nominatim();
     L.Control.geocoder({
       defaultMarkGeocode: false,
@@ -268,12 +272,62 @@ export default defineComponent({
         this.formattedLongitude = this.longitude.toFixed(6);
         marker.setLatLng([this.latitude, this.longitude]);
         map.fitBounds(bbox);
-        this.fetchAddress(this.latitude, this.longitude); // Fetch the address when coordinates are updated
+        this.fetchAddress(this.latitude, this.longitude);
       })
       .addTo(map);
 
-    // Fetch initial address
     this.fetchAddress(this.latitude, this.longitude);
+  },
+  computed: {
+    pageClass() {
+      return {
+        'bg-dark text-light': this.$q.dark.isActive,
+        'bg-light text-dark': !this.$q.dark.isActive,
+      };
+    },
+    titleClass() {
+      return {
+        'text-primary': !this.$q.dark.isActive,
+        'text-white': this.$q.dark.isActive,
+      };
+    },
+    inputClass() {
+      return {
+        'bg-white text-black': !this.$q.dark.isActive,
+        'bg-dark text-light': this.$q.dark.isActive,
+      };
+    },
+    dialogClass() {
+      return {
+        'bg-white text-black': !this.$q.dark.isActive,
+        'bg-dark text-light': this.$q.dark.isActive,
+      };
+    },
+    dialogTitleClass() {
+      return {
+        'text-primary': !this.$q.dark.isActive,
+        'text-white': this.$q.dark.isActive,
+      };
+    },
   },
 });
 </script>
+
+<style scoped>
+/* Stili per la pagina in dark mode e light mode */
+.bg-dark {
+  background-color: #333 !important;
+}
+
+.text-light {
+  color: #e0e0e0 !important;
+}
+
+.bg-light {
+  background-color: #f9f9f9 !important;
+}
+
+.text-dark {
+  color: #333 !important;
+}
+</style>

@@ -1,87 +1,154 @@
 <template>
-    <q-layout>
-      <q-page-container>
-        <q-page class="flex bg-image flex-center">
-          <q-card
-            v-bind:style="$q.screen.lt.sm ? { width: '90%' } : { width: '40%' }"
-            class="custom-card"
-          >
-            <q-card-section>
-              <div class="avatar-container">
-                <q-avatar size="150px" class="shadow-10">
-                  <img
-                    src="src/assets/schiano.go.png"
-                    style="object-fit: cover; width: 100%; height: 100%"
-                  />
-                </q-avatar>
+  <q-layout>
+    <q-page-container>
+      <q-page class="flex bg-image flex-center">
+        <q-card
+          v-bind:style="$q.screen.lt.sm ? { width: '90%' } : { width: '40%' }"
+          class="custom-card animated-card"
+        >
+          <q-card-section>
+            <div class="avatar-container animated-avatar">
+              <q-avatar size="150px" class="shadow-10">
+                <img
+                  src="src/assets/schiano.go.png"
+                  style="object-fit: cover; width: 100%; height: 100%"
+                />
+              </q-avatar>
+            </div>
+          </q-card-section>
+          <q-card-section class="text-center q-pt-xl">
+            <div class="col text-h6 ellipsis">Benvenuto in SCHIANO.GO</div>
+          </q-card-section>
+          <q-card-section>
+            <q-form class="q-gutter-md text-center">
+              <div>
+                <q-btn
+                  label="Registrati"
+                  type="button"
+                  color="primary"
+                  @click="register"
+                  class="q-mb-md animated-btn"
+                />
               </div>
-            </q-card-section>
-            <q-card-section class="text-center q-pt-xl">
-              <div class="col text-h6 ellipsis">Benvenuto</div>
-            </q-card-section>
-            <q-card-section>
-              <q-form class="q-gutter-md text-center">
-                <div>
-                  <q-btn
-                    label="Registrati"
-                    type="button"
-                    color="primary"
-                    @click="register"
-                    class="q-mb-md"
-                  />
-                </div>
-                <div>
-                  <q-btn
-                    label="Login"
-                    type="button"
-                    color="primary"
-                    @click="login"
-                  />
-                </div>
-              </q-form>
-            </q-card-section>
-          </q-card>
-        </q-page>
-      </q-page-container>
-    </q-layout>
-  </template>
-  
-  <script>
-  export default {
-    name: "Home",
-    methods: {
-      register() {
-        this.$router.push({ name: "RegistrazioneUtente" });
-      },
-      login() {
-        this.$router.push({ name: "LoginUtente" });
-      },
+              <div>
+                <q-btn
+                  label="Login"
+                  type="button"
+                  color="primary"
+                  @click="login"
+                  class="animated-btn"
+                />
+              </div>
+            </q-form>
+          </q-card-section>
+        </q-card>
+      </q-page>
+    </q-page-container>
+  </q-layout>
+</template>
+
+<script>
+export default {
+  name: "Home",
+  methods: {
+    register() {
+      this.$router.push({ name: "RegistrazioneUtente" });
     },
-  };
-  </script>
-  
-  <style>
-  .bg-image {
-    background-image: linear-gradient(135deg, #a2d9ff, #66b2ff);
+    login() {
+      this.$router.push({ name: "LoginUtente" });
+    },
+  },
+};
+</script>
+
+<style scoped>
+/* Sfondo della pagina */
+.bg-image {
+  background-image: linear-gradient(135deg, #a2d9ff, #66b2ff);
+  background-size: cover;
+  background-position: center;
+  height: 100vh; /* Assicura che lo sfondo copra tutta l'altezza della pagina */
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Centratura verticale e orizzontale */
+  margin: 0;
+}
+
+/* Stile della card */
+.custom-card {
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  color: #000; /* Colore del testo per la card */
+  opacity: 0; /* Inizialmente nascosta per animare */
+  transform: translateY(20px); /* Posizionata più in basso per l'animazione */
+  animation: fadeInUp 0.6s forwards; /* Animazione di entrata */
+  max-width: 90%; /* Dimensione massima per schermi piccoli */
+  width: 100%; /* Assicura che la card occupi tutta la larghezza disponibile */
+}
+
+/* Animazione di entrata della card */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  .q-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+}
+
+/* Stile per la sezione dell'avatar */
+.avatar-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: -50px; /* Regola per avvicinare l'avatar alla card */
+}
+
+/* Animazione di pulsazione per l'avatar */
+.animated-avatar {
+  animation: pulse 2s infinite; /* Pulsazione continua */
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
   }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Spaziatura per la sezione del titolo */
+.q-card-section.text-center {
+  padding-top: 100px; /* Aumenta il padding per maggiore spazio dopo l'avatar */
+}
+
+/* Allineamento e centratura del modulo */
+.q-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Stile dei pulsanti */
+.q-btn {
+  background-color: #007bff; /* Colore primario per i pulsanti */
+  color: #fff; /* Colore del testo per i pulsanti */
+  transition: background-color 0.3s, transform 0.3s; /* Transizioni per effetti di hover */
+}
+
+/* Animazione di hover per i pulsanti */
+.animated-btn:hover {
+  background-color: #0056b3; /* Colore più scuro al passaggio del mouse */
+  transform: scale(1.05); /* Leggera ingrandimento al passaggio del mouse */
+}
+
+/* Media queries per adattare la card su schermi più piccoli */
+@media (max-width: 600px) {
   .custom-card {
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    background: #fff;
+    width: 90%; /* Dimensione massima per schermi molto piccoli */
   }
-  .avatar-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: -50px; /* Adjust to bring avatar closer to card */
-  }
-  .q-card-section.text-center {
-    padding-top: 100px; /* Increase padding for more spacing after the avatar */
-  }
-  </style>
-  
+}
+</style>

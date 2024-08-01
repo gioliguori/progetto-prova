@@ -1,7 +1,7 @@
 <template>
-  <q-page class="q-pa-md">
-    <div class="q-mb-lg">
-      <h2>INSERISCI BICI</h2>
+  <q-page class="q-pa-md" :class="{ 'dark-mode': $q.dark.isActive }">
+    <div class="q-mb-lg text-center">
+      <h2 class="page-title">INSERISCI BICI</h2>
     </div>
     <q-form @submit="submitForm">
       <q-select
@@ -23,7 +23,9 @@
         class="q-mb-md"
       ></q-input>
 
-      <q-btn type="submit" label="Invia" color="primary"></q-btn>
+      <div class="text-center">
+        <q-btn type="submit" label="Invia" color="primary" class="submit-btn"></q-btn>
+      </div>
     </q-form>
 
     <!-- Dialogo di successo -->
@@ -146,3 +148,45 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Modalità scura */
+.dark-mode {
+  background-color: #121212; /* Sfondo scuro per la modalità scura */
+  color: #e0e0e0; /* Colore del testo in modalità scura */
+}
+
+.page-title {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #1b89ff; /* Colore del titolo in modalità chiara */
+}
+
+@media (min-width: 600px) {
+  .page-title {
+    font-size: 2rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .page-title {
+    font-size: 2.5rem;
+  }
+}
+
+/* Stile per i pulsanti personalizzati */
+.submit-btn {
+  font-size: 1.2rem;
+  padding: 0.75rem 1.5rem;
+}
+
+/* Modalità scura per i dialoghi */
+.dark-mode .q-card {
+  background-color: #333; /* Sfondo scuro per i card */
+  color: #e0e0e0; /* Colore del testo nei card */
+}
+
+.dark-mode .q-card-actions q-btn {
+  color: #1b89ff; /* Colore dei pulsanti nel dialogo in modalità scura */
+}
+</style>

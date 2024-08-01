@@ -82,11 +82,6 @@ const routes = [
         name: "ModificaProfilo",
       },
       {
-        path: "Assistenza",
-        component: () => import("pages/Assistenza.vue"),
-        name: "Assistenza",
-      },
-      {
         path: "QReader",
         component: () => import("pages/QReader.vue"),
         name: "QReader",
@@ -119,9 +114,9 @@ const routes = [
     component: () => import("pages/Error404.vue"),
   },
   {
-    path: "/mail",
-    component: () => import("layouts/Mail.vue"),
-    name: "Mail",
+    path: "/Index",
+    component: () => import("layouts/Index.vue"),
+    name: "Index",
   },
   {
     path: "/maintenance",

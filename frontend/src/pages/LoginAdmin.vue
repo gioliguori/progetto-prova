@@ -60,7 +60,7 @@ export default {
     return {
       username: "",
       password: "",
-      role: "admin", // Default role
+      role: "admin", 
       roleOptions: [
         { label: "Admin", value: "admin" },
         { label: "Partner", value: "partner" },
@@ -81,7 +81,7 @@ export default {
           {
             username: this.username,
             password: this.password,
-            role: this.role, // Include the role in the request
+            role: this.role, 
           }
         );
         Loading.hide();

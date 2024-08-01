@@ -14,6 +14,18 @@
           Schiano.GO
         </q-toolbar-title>
         <q-space />
+
+        <div class="q-gutter-sm row items-center no-wrap">
+          <!-- Pulsante per attivare/disattivare la modalità scura -->
+          <q-btn
+            round
+            dense
+            flat
+            color="white"
+            :icon="$q.dark.isActive ? 'brightness_7' : 'brightness_4'"
+            @click="toggleDarkMode"
+          />
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -21,7 +33,7 @@
       <router-view />
     </q-page-container>
 
-    <!-- Nuovo Footer Menu -->
+    
     <q-footer class="footer-menu" elevated>
       <div class="footer-btn">
         <q-btn flat round color="primary" @click="navigateTo('Movimenti')">
@@ -47,11 +59,13 @@
 
 <script>
 import { defineComponent } from 'vue';
+import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'MainLayout',
   setup() {
+    const $q = useQuasar();
     const router = useRouter();
 
     const goToHome = () => {
@@ -62,9 +76,15 @@ export default defineComponent({
       router.push(`/${page}`);
     };
 
+    const toggleDarkMode = () => {
+      $q.dark.toggle();
+    };
+
     return {
       goToHome,
       navigateTo,
+      toggleDarkMode,
+      $q
     };
   },
 });
@@ -76,7 +96,7 @@ export default defineComponent({
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: #ffffff; /* Cambiato a bianco */
+  background-color: #ffffff; 
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -87,7 +107,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #333; /* Colore del testo per contrastare con lo sfondo bianco */
+  color: #333; 
 }
 
 .footer-label {
@@ -96,6 +116,6 @@ export default defineComponent({
 }
 
 .q-icon {
-  color: #333; /* Colore delle icone per contrastare con lo sfondo bianco */
+  color: #333; 
 }
 </style>

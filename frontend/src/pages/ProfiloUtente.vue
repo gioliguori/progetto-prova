@@ -1,11 +1,13 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-card class="q-mb-md" v-bind:style="$q.screen.lt.sm ? { width: '90%' } : { width: '40%' }">
+  <q-page class="flex flex-center" :class="{'q-dark': $q.screen.dark, 'bg-light': !$q.screen.dark}">
+    <q-card class="full-size q-mb-md">
       <q-card-section class="text-center">
         <q-avatar size="100px" class="q-mb-md">
           <img src="src/assets/action.jpg" style="object-fit: cover; width: 100%; height: 100%;" />
         </q-avatar>
-        <div class="text-h6">Welcome, {{ username }}</div>
+        <div :class="{'text-h6': true, 'text-primary': !$q.screen.dark, 'text-light': $q.screen.dark}">
+          Welcome, {{ username }}
+        </div>
       </q-card-section>
       <q-card-section>
         <q-btn @click="goToEditProfile" label="MODIFICA PROFILO" color="primary" class="full-width q-mb-sm" />
@@ -41,8 +43,6 @@
 <script>
 import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
-import helpIcon from 'src/assets/help-icon.png';
-import operatorIcon from 'src/assets/operator-icon.png';
 
 export default defineComponent({
   name: 'UserProfile',
@@ -102,8 +102,26 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.q-page {
+  height: 100vh; /* Altezza intera della finestra */
+  width: 100vw; /* Larghezza intera della finestra */
+  background-color: white; /* Sfondo bianco per la modalità chiara */
+  display: flex; /* Utilizzare Flexbox per centrare il contenuto */
+  justify-content: center; /* Centrare orizzontalmente */
+  align-items: center; /* Centrare verticalmente */
+}
+
+.q-page.q-dark {
+  background-color: #212121; /* Sfondo scuro per la modalità scura */
+}
+
 .q-card {
-  max-width: 400px;
+  width: 100%; /* Larghezza al 100% del contenitore */
+  height: 100%; /* Altezza al 100% del contenitore */
+  max-width: 600px; /* Limite massimo della larghezza */
+  max-height: 800px; /* Limite massimo dell'altezza */
+  display: flex;
+  flex-direction: column;
 }
 
 .q-card-section {
@@ -112,6 +130,10 @@ export default defineComponent({
 
 .full-width {
   width: 100%;
+}
+
+.full-height {
+  height: 100%;
 }
 
 .q-mb-sm {
@@ -146,5 +168,17 @@ export default defineComponent({
 .icon {
   width: 24px;
   height: 24px;
+}
+
+.text-primary {
+  color: #1b89ff; /* Colore del testo per la modalità chiara */
+}
+
+.text-light {
+  color: #ffffff; /* Colore del testo per la modalità scura, se necessario */
+}
+
+.bg-light {
+  background-color: white; /* Sfondo bianco per la modalità chiara */
 }
 </style>

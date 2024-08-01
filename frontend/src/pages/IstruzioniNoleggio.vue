@@ -1,25 +1,25 @@
 <template>
-  <q-page class="flex flex-center q-pa-md">
+  <q-page class="flex flex-center q-pa-md" :class="{ 'dark-mode': $q.dark.isActive }">
     <div class="container text-center">
-      <h2 class="q-mb-md">ISTRUZIONI PER IL NOLEGGIO</h2>
-      <img :src="imageSrc" alt="Istruzioni Noleggio" class="center-image" />
+      <h2 class="responsive-title q-mb-md">ISTRUZIONI PER IL NOLEGGIO</h2>
+      <img :src="imageSrc" alt="Istruzioni Noleggio" class="responsive-image" />
       <q-input
         v-model="bikeId"
         label="ID della bici"
         readonly
-        class="q-mb-md"
+        class="responsive-input q-mb-md"
       />
       <q-input
         v-model="reservationId"
         label="ID della prenotazione"
         readonly
-        class="q-mb-md"
+        class="responsive-input q-mb-md"
       />
       <q-btn
         @click="handleNoleggia"
         label="Noleggia"
         color="primary"
-        class="q-mt-md"
+        class="responsive-btn q-mt-md"
       />
     </div>
   </q-page>
@@ -89,31 +89,54 @@ export default defineComponent({
 </script>
 
 <style scoped>
+/* Modalità scura */
+.dark-mode {
+  background-color: #000; /* Sfondo nero per la modalità scura */
+  color: #e0e0e0; /* Colore del testo per la modalità scura */
+}
+
 .container {
-  max-width: 800px;
+  max-width: 90%;
   width: 100%;
   padding: 2rem;
+  margin: auto;
+  background-color: #fff; /* Sfondo bianco per la modalità chiara */
+  color: #000; /* Colore del testo per la modalità chiara */
 }
 
-.center-image {
+.dark-mode .container {
+  background-color: #000; /* Sfondo nero per la modalità scura */
+  color: #e0e0e0; /* Colore del testo per la modalità scura */
+}
+
+.responsive-title {
+  font-size: 2rem; 
+  font-weight: bold;
+  color: #000; /* Colore del titolo per la modalità chiara */
+}
+
+.dark-mode .responsive-title {
+  color: #1b89ff; /* Colore del titolo per la modalità scura */
+}
+
+.responsive-image {
   max-width: 100%;
   height: auto;
+  width: 100%; 
 }
 
-h2 {
-  font-size: 2rem;
-  font-weight: bold;
+.responsive-input {
+  max-width: 100%;
 }
 
-.q-mb-md {
-  margin-bottom: 1rem;
+.responsive-btn {
+  width: 100%;
 }
 
-.q-mt-md {
-  margin-top: 1rem;
-}
-
-.q-input {
-  max-width: 300px;
+/* Media query per dispositivi più piccoli */
+@media (max-width: 600px) {
+  .responsive-title {
+    font-size: 1.5rem; 
+  }
 }
 </style>

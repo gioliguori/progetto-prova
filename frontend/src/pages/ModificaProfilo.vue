@@ -1,8 +1,8 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-card class="q-pa-md" style="width: 400px">
+  <q-page :class="{'bg-light': !$q.screen.dark, 'bg-dark': $q.screen.dark}" class="flex flex-center items-center justify-center q-pa-md">
+    <q-card class="full-width full-height q-pa-md">
       <q-card-section>
-        <div class="text-h6 text-center">Modifica Profilo</div>
+        <div class="page-title">Modifica Profilo</div>
       </q-card-section>
       <q-card-section>
         <q-form @submit.prevent="confirmChanges" class="q-gutter-md">
@@ -125,5 +125,26 @@ export default defineComponent({
 </script>
 
 <style scoped>
-/* Aggiungi eventuali stili personalizzati se necessario */
+.q-page {
+  background-color: white; /* Sfondo bianco per la modalità chiara */
+}
+
+.q-page.q-dark {
+  background-color: #000000; /* Sfondo nero per la modalità scura */
+}
+
+.page-title {
+  font-size: 24px; /* Grandezza del font */
+  font-weight: bold; /* Testo in grassetto */
+  color: #1b89ff; /* Colore del testo */
+  text-align: center; /* Allinea il testo al centro */
+}
+
+.full-width {
+  width: 100%;
+}
+
+.full-height {
+  height: 100%;
+}
 </style>
