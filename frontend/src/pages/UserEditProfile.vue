@@ -40,7 +40,7 @@ import axios from "axios";
 import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default defineComponent({
-  name: "ModificaProfilo",
+  name: "UserEditProfile",
   setup() {
     const router = useRouter();
     const oldUsername = ref("");
@@ -97,7 +97,7 @@ export default defineComponent({
         if (response.data.success) {
           alert("Dati aggiornati con successo!");
           localStorage.setItem("username", newUsername.value); // Aggiorna il localStorage con il nuovo username
-          router.push("/HOME_UTENTE");
+          router.push("/UserHome");
         } else {
           alert(response.data.message);
         }

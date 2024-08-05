@@ -165,7 +165,7 @@ import axios from "axios";
 import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default defineComponent({
-  name: "PartnerForm",
+  name: "AdminInsertPartner",
   data() {
     return {
       name: "",
@@ -230,7 +230,7 @@ export default defineComponent({
       }
     },
     redirectToDashboard() {
-      this.$router.push("/TreeTable_INSERISCIPARTNER");
+      this.$router.push("/AdminDashboard");
     },
     updateLatLong(event) {
       this.latitude = event.latlng.lat;

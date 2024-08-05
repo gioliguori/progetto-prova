@@ -56,7 +56,7 @@ import { Loading, QSpinnerGears } from "quasar";
 import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default {
-  name: "LoginAdmin",
+  name: "AdminLogin",
   data() {
     return {
       username: "",
@@ -90,11 +90,11 @@ export default {
           );
           if (this.role === "admin") {
             localStorage.setItem("username", response.data.user.username); // Salva il nome utente per l'admin
-            this.$router.push({ name: "DashboardAdmin" });
+            this.$router.push({ name: "AdminDashboard" });
           } else if (this.role === "partner") {
             localStorage.setItem("partner_id", response.data.user.partner_id); // Salva il partner_id per il partner
             localStorage.setItem("partner_name", response.data.user.username); // Salva il partner_name per il partner
-            this.$router.push({ name: "DashboardPartner" });
+            this.$router.push({ name: "PartnerDashboard" });
           }
         } else {
           console.log(

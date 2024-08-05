@@ -122,7 +122,7 @@ import axios from "axios";
 import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default defineComponent({
-  name: "RentalsAndReservations",
+  name: "UserRentals",
   components: {
     QMarkupTable,
     QBtn,
@@ -176,7 +176,7 @@ export default defineComponent({
       );
       localStorage.setItem("bikeId", bikeId);
       localStorage.setItem("reservationId", reservationId);
-      router.push({ path: "/IstruzioniNoleggio" });
+      router.push({ path: "/RentalInstructions" });
     };
 
     const showPaymentPopup = () => {
@@ -198,7 +198,7 @@ export default defineComponent({
             "Noleggio terminato con successo. Importo: €" + response.data.amount
           );
           paymentDialog.value = false;
-          router.push("/movimenti");
+          router.push("/UserRentals");
         } else {
           console.error(
             "Errore nel terminare il noleggio:",

@@ -50,7 +50,7 @@ import { Loading, QSpinnerGears } from "quasar";
 import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default {
-  name: "LoginUtente",
+  name: "UserLogin",
   data() {
     return {
       username: "",
@@ -81,7 +81,7 @@ export default {
             this.username
           );
           localStorage.setItem("username", response.data.user.username); // Salva il nome utente
-          this.$router.push({ name: "HOME_UTENTE" }); // Naviga alla dashboard generica
+          this.$router.push({ name: "UserHome" }); // Naviga alla dashboard generica
         } else {
           console.log(
             "Username o password non validi per l'utente:",

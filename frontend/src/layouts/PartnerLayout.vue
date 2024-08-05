@@ -51,7 +51,10 @@
       class="bg-primary text-white"
     >
       <q-list>
-        <q-item to="/DashboardAdmin" active-class="q-item-no-link-highlighting">
+        <q-item
+          to="/PartnerDashboard"
+          active-class="q-item-no-link-highlighting"
+        >
           <q-item-section avatar>
             <q-icon name="dashboard" />
           </q-item-section>
@@ -61,19 +64,7 @@
         </q-item>
 
         <q-item
-          to="/TreeTable_LISTAPARTNER"
-          active-class="q-item-no-link-highlighting"
-        >
-          <q-item-section avatar>
-            <q-icon name="list" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>LISTA PARTNER</q-item-label>
-          </q-item-section>
-        </q-item>
-
-        <q-item
-          to="/TreeTable_LISTABICI"
+          to="/PartnerBikeList"
           active-class="q-item-no-link-highlighting"
         >
           <q-item-section avatar>
@@ -85,26 +76,30 @@
         </q-item>
 
         <q-item
-          to="/TreeTable_INSERISCIPARTNER"
+          to="/PartnerInsertBike"
           active-class="q-item-no-link-highlighting"
         >
           <q-item-section avatar>
             <q-icon name="list" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>INSERISCI PARTNER</q-item-label>
+            <q-item-label>INSERISCI BICI</q-item-label>
           </q-item-section>
         </q-item>
 
-        <q-item to="/PosizioneBici" active-class="q-item-no-link-highlighting">
+        <q-item
+          to="/PartnerEditBike"
+          active-class="q-item-no-link-highlighting"
+        >
           <q-item-section avatar>
             <q-icon name="list" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>POSIZIONI BICI</q-item-label>
+            <q-item-label>MODIFICA BICI</q-item-label>
           </q-item-section>
         </q-item>
-        <!-- Modified WEBEX item with custom icon -->
+
+        <!-- Voce personalizzata per Webex con icona personalizzata -->
         <q-item
           clickable
           @click="redirectToWebex"
@@ -148,10 +143,12 @@ export default defineComponent({
     const $q = useQuasar();
     const router = useRouter();
 
+    // Funzione per reindirizzare alla pagina di login
     const goToLogin = () => {
-      router.push("/LoginAdmin");
+      router.push("/AdminLogin");
     };
 
+    // Funzione per reindirizzare a Webex con dialogo di conferma
     const redirectToWebex = () => {
       $q.dialog({
         title: "ATTENZIONE!",
@@ -166,6 +163,7 @@ export default defineComponent({
       });
     };
 
+    // Funzione per attivare/disattivare la modalità scura
     const toggleDarkMode = () => {
       $q.dark.toggle();
     };
@@ -178,7 +176,7 @@ export default defineComponent({
       },
       goToLogin,
       redirectToWebex,
-      toggleDarkMode
+      toggleDarkMode,
     };
   },
 });

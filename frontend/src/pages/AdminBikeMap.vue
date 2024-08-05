@@ -11,12 +11,6 @@
             {{ modalContent.battery_level }}%, Stato: {{ modalContent.state }}
           </li>
         </ul>
-        <button
-          @click="handleBikeAction(modalContent.bike_id)"
-          class="rent-button"
-        >
-          Noleggia
-        </button>
       </div>
     </div>
   </div>
@@ -33,7 +27,7 @@ import axios from "axios";
 import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default defineComponent({
-  name: "PosizioneBici",
+  name: "AdminBikeMap",
   setup() {
     const router = useRouter();
     const showModal = ref(false);
@@ -55,7 +49,7 @@ export default defineComponent({
 
     const handleBikeAction = (bikeId) => {
       localStorage.setItem("selectedBikeId", bikeId);
-      router.push("/IstruzioniNoleggio");
+      router.push("/RentalInstructions");
     };
 
     onMounted(() => {

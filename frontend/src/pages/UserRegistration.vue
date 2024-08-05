@@ -81,7 +81,7 @@ import { useRouter } from "vue-router";
 import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default {
-  name: "RegisterPage",
+  name: "UserRegistration",
   setup() {
     const router = useRouter();
     const username = ref("");
@@ -140,7 +140,7 @@ export default {
               "Registrazione completata con successo! Sarai reindirizzato alla pagina di login.",
           });
           // Naviga alla pagina di login
-          router.push({ name: "LoginUtente" });
+          router.push({ name: "UserLogin" });
         } else {
           // Solo notifica di errore se la risposta del server indica un fallimento
           Notify.create({

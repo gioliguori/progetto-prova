@@ -1,5 +1,8 @@
 <template>
-  <q-page class="flex flex-center q-pa-md" :class="{ 'dark-mode': $q.dark.isActive }">
+  <q-page
+    class="flex flex-center q-pa-md"
+    :class="{ 'dark-mode': $q.dark.isActive }"
+  >
     <div class="container text-center">
       <h2 class="responsive-title q-mb-md">ISTRUZIONI PER IL NOLEGGIO</h2>
       <img :src="imageSrc" alt="Istruzioni Noleggio" class="responsive-image" />
@@ -50,21 +53,21 @@ export default defineComponent({
     });
 
     const handleNoleggia = () => {
-      router.push({ name: "QReader" });
+      router.push({ name: "UserQrPage" });
     };
 
     watch(
       () => route.name,
       (newRouteName) => {
-        if (newRouteName !== "QReader") {
+        if (newRouteName !== "UserQrPage") {
           console.log(
-            "Navigazione verso una pagina diversa da QReader, rimuovo l'ID della prenotazione e l'ID della bici dal local storage"
+            "Navigazione verso una pagina diversa da UserQrPage, rimuovo l'ID della prenotazione e l'ID della bici dal local storage"
           );
           localStorage.removeItem("reservationId");
           localStorage.removeItem("bikeId");
         } else {
           console.log(
-            "Navigazione verso QReader, mantengo l'ID della prenotazione e l'ID della bici nel local storage"
+            "Navigazione verso UserQrPage, mantengo l'ID della prenotazione e l'ID della bici nel local storage"
           );
         }
       }
@@ -110,7 +113,7 @@ export default defineComponent({
 }
 
 .responsive-title {
-  font-size: 2rem; 
+  font-size: 2rem;
   font-weight: bold;
   color: #000; /* Colore del titolo per la modalità chiara */
 }
@@ -122,7 +125,7 @@ export default defineComponent({
 .responsive-image {
   max-width: 100%;
   height: auto;
-  width: 100%; 
+  width: 100%;
 }
 
 .responsive-input {
@@ -136,7 +139,7 @@ export default defineComponent({
 /* Media query per dispositivi più piccoli */
 @media (max-width: 600px) {
   .responsive-title {
-    font-size: 1.5rem; 
+    font-size: 1.5rem;
   }
 }
 </style>

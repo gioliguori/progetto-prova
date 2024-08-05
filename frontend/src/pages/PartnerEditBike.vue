@@ -61,6 +61,7 @@ import { Dialog } from "quasar";
 import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default {
+  name: "PartnerEditBike",
   data() {
     return {
       bikes: [],
@@ -77,7 +78,7 @@ export default {
     async fetchBikes() {
       try {
         const partnerId = localStorage.getItem("partner_id");
-        const response = await axios.post(`${apiUrl}api/partners/bikes`, {
+        const response = await axios.post(`${apiUrl}/partners/bikes`, {
           partnerId: partnerId,
         });
         if (response.data.success) {

@@ -43,7 +43,7 @@ import { Loading, QSpinnerGears } from "quasar";
 import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default {
-  name: "DashboardPartner",
+  name: "PartnerBikeList",
   data() {
     return {
       bikes: [],
@@ -58,9 +58,10 @@ export default {
         spinner: QSpinnerGears,
         message: "Fetching data...",
       });
+      const partnerId = localStorage.getItem("partner_id");
       try {
         const bikesResponse = await axios.post(`${apiUrl}/partners/bikes`, {
-          partnerId: this.partnerId,
+          partnerId: partnerId,
         });
 
         Loading.hide();
@@ -83,10 +84,11 @@ export default {
       }
     },
     async deleteBike(bikeId) {
+      const partnerId = localStorage.getItem("partner_id");
       try {
         await axios.delete(`${apiUrl}/partners/bike/${bikeId}`, {
           data: {
-            partnerId: this.partnerId,
+            partnerId: partnerId,
           },
         });
         this.bikes = this.bikes.filter((bike) => bike.bike_id !== bikeId);

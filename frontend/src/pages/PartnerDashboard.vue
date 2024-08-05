@@ -150,7 +150,7 @@ import axios from "axios";
 import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default defineComponent({
-  name: "DashboardPartner",
+  name: "PartnerDashboard",
   setup() {
     const user_details = ref({
       user_name: "",
@@ -164,6 +164,7 @@ export default defineComponent({
       confirm_new_password: "",
     });
 
+    // Funzione per ottenere i dettagli del partner
     const getPartnerDetails = async () => {
       const partnerId = localStorage.getItem("partner_id"); // Ottieni l'ID del partner dal local storage
       if (!partnerId) {
@@ -184,6 +185,7 @@ export default defineComponent({
       }
     };
 
+    // Funzione per aggiornare le informazioni del partner
     const updateUserInfo = async () => {
       const partnerId = localStorage.getItem("partner_id"); // Ottieni l'ID del partner dal local storage
       if (!partnerId) {
@@ -205,6 +207,7 @@ export default defineComponent({
       }
     };
 
+    // Funzione per aggiornare la password del partner
     const updatePassword = async () => {
       const partnerId = localStorage.getItem("partner_id"); // Ottieni l'ID del partner dal local storage
       if (!partnerId) {
@@ -232,6 +235,7 @@ export default defineComponent({
       }
     };
 
+    // Richiama i dettagli del partner quando il componente viene montato
     onMounted(() => {
       getPartnerDetails();
     });

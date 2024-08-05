@@ -45,7 +45,7 @@ import { Loading, QSpinnerGears } from "quasar";
 import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default {
-  name: "BikeList",
+  name: "AdminBikeList",
   data() {
     return {
       bikes: [],

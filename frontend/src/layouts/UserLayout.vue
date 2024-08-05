@@ -10,9 +10,7 @@
           icon="arrow_back"
           aria-label="Back"
         />
-        <q-toolbar-title class="title-font">
-          Schiano.GO
-        </q-toolbar-title>
+        <q-toolbar-title class="title-font"> Schiano.GO </q-toolbar-title>
         <q-space />
 
         <div class="q-gutter-sm row items-center no-wrap">
@@ -33,22 +31,21 @@
       <router-view />
     </q-page-container>
 
-    
     <q-footer class="footer-menu" elevated>
       <div class="footer-btn">
-        <q-btn flat round color="primary" @click="navigateTo('Movimenti')">
+        <q-btn flat round color="primary" @click="navigateTo('UserRentals')">
           <q-icon name="credit_card" />
         </q-btn>
         <div class="footer-label">Noleggi</div>
       </div>
       <div class="footer-btn">
-        <q-btn flat round color="primary" @click="navigateTo('HOME_UTENTE')">
+        <q-btn flat round color="primary" @click="navigateTo('UserHome')">
           <q-icon name="map" />
         </q-btn>
         <div class="footer-label">Mappa</div>
       </div>
       <div class="footer-btn">
-        <q-btn flat round color="primary" @click="navigateTo('ProfiloUtente')">
+        <q-btn flat round color="primary" @click="navigateTo('UserProfile')">
           <q-icon name="person" />
         </q-btn>
         <div class="footer-label">Profilo</div>
@@ -58,24 +55,27 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
-import { useQuasar } from 'quasar';
-import { useRouter } from 'vue-router';
+import { defineComponent } from "vue";
+import { useQuasar } from "quasar";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
-  name: 'MainLayout',
+  name: "MainLayout",
   setup() {
     const $q = useQuasar();
     const router = useRouter();
 
+    // Funzione per reindirizzare alla home utente
     const goToHome = () => {
-      router.push('/HOME_UTENTE');
+      router.push("/UserHome");
     };
 
+    // Funzione per navigare tra le pagine
     const navigateTo = (page) => {
       router.push(`/${page}`);
     };
 
+    // Funzione per attivare/disattivare la modalità scura
     const toggleDarkMode = () => {
       $q.dark.toggle();
     };
@@ -84,7 +84,7 @@ export default defineComponent({
       goToHome,
       navigateTo,
       toggleDarkMode,
-      $q
+      $q,
     };
   },
 });
@@ -96,7 +96,7 @@ export default defineComponent({
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: #ffffff; 
+  background-color: #ffffff;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -107,7 +107,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #333; 
+  color: #333;
 }
 
 .footer-label {
@@ -116,6 +116,6 @@ export default defineComponent({
 }
 
 .q-icon {
-  color: #333; 
+  color: #333;
 }
 </style>

@@ -32,7 +32,7 @@ import axios from "axios"; // Importa axios per le chiamate API
 import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default defineComponent({
-  name: "QReader",
+  name: "UserQrPage",
   components: {
     QrcodeStream,
     QBtn,
@@ -80,7 +80,7 @@ export default defineComponent({
 
         if (response.data.success) {
           console.log("Noleggio avviato con successo.");
-          router.push("/movimenti");
+          router.push("/UserRentals");
         } else {
           console.error(
             "Errore nell'avvio del noleggio:",
@@ -88,7 +88,7 @@ export default defineComponent({
           );
           errorMessage.value = response.data.message;
           setTimeout(() => {
-            router.push("/movimenti");
+            router.push("/UserRentals");
           }, 3000);
         }
       } catch (error) {
@@ -99,7 +99,7 @@ export default defineComponent({
         errorMessage.value =
           "Errore durante l'avvio del noleggio. Esiste già un noleggio attivo!";
         setTimeout(() => {
-          router.push("/movimenti");
+          router.push("/UserRentals");
         }, 3000);
       }
     };

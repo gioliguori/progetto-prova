@@ -79,6 +79,7 @@
 import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default {
+  name: "PartnerInsertBike",
   data() {
     return {
       type: "",
@@ -150,7 +151,7 @@ export default {
         });
     },
     redirectToDashboard() {
-      this.$router.push("/DashboardPartner");
+      this.$router.push("/PartnerDashboard");
     },
   },
 };

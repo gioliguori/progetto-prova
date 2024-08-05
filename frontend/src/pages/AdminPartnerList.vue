@@ -68,7 +68,7 @@ import { Loading, QSpinnerGears } from "quasar";
 import apiUrl from "src/api-config";
 
 export default {
-  name: "DashboardAdmin",
+  name: "AdminPartnerList",
   data() {
     return {
       username: localStorage.getItem("username") || "Admin",
@@ -150,8 +150,8 @@ export default {
       });
       try {
         const [partnersResponse, revenuesResponse] = await Promise.all([
-          axios.get("${apiUrl}/admin/partners"),
-          axios.get("${apiUrl}/admin/revenues"),
+          axios.get(`${apiUrl}/admin/partners`),
+          axios.get(`${apiUrl}/admin/revenues`),
         ]);
 
         Loading.hide();

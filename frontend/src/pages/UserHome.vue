@@ -57,7 +57,7 @@ import axios from "axios";
 import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default defineComponent({
-  name: "MapComponent",
+  name: "UserHome",
   setup() {
     const router = useRouter();
     const showModal = ref(false);
@@ -82,7 +82,7 @@ export default defineComponent({
     const handleBikeAction = (bikeId) => {
       localStorage.setItem("bikeId", bikeId);
       console.log("Bike ID salvato nel local storage:", bikeId);
-      router.push({ path: "/IstruzioniNoleggio" });
+      router.push({ path: "/RentalInstructions" });
     };
 
     const handleBikeReservation = async (bikeId) => {
@@ -99,7 +99,7 @@ export default defineComponent({
 
         if (response.data.success) {
           console.log("Prenotazione avvenuta con successo!");
-          router.push("/Movimenti");
+          router.push("/UserRentals");
         } else {
           console.error("Errore nella prenotazione:", response.data.message);
         }

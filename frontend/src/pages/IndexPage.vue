@@ -49,13 +49,13 @@
 
 <script>
 export default {
-  name: "Home",
+  name: "IndexPage",
   methods: {
     register() {
-      this.$router.push({ name: "RegistrazioneUtente" });
+      this.$router.push({ name: "UserRegistration" });
     },
     login() {
-      this.$router.push({ name: "LoginUtente" });
+      this.$router.push({ name: "UserLogin" });
     },
   },
 };
