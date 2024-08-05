@@ -149,7 +149,7 @@ export default defineComponent({
 
         const partnerIcon = L.icon({
           iconUrl: partnerMarkerImage,
-          iconSize: [38, 38], // dimensioni personalizzate
+          iconSize: [30, 30], // dimensioni personalizzate
           iconAnchor: [19, 38], // punto dell'icona che sarà posizionato sul marker
           popupAnchor: [0, -38], // punto da cui apparirà il popup rispetto all'icona
         });
@@ -188,7 +188,7 @@ export default defineComponent({
 
             const currentPositionIcon = L.icon({
               iconUrl: currentPositionMarkerImage,
-              iconSize: [38, 38], // dimensioni personalizzate
+              iconSize: [25, 25], // dimensioni personalizzate
               iconAnchor: [19, 38], // punto dell'icona che sarà posizionato sul marker
               popupAnchor: [0, -38], // punto da cui apparirà il popup rispetto all'icona
             });
