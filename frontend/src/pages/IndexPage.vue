@@ -10,8 +10,9 @@
             <div class="avatar-container animated-avatar">
               <q-avatar size="150px" class="shadow-10">
                 <img
-                  src="src/assets/schiano.go.png"
+                  :src="imageSrc"
                   style="object-fit: cover; width: 100%; height: 100%"
+                  alt="Logo"
                 />
               </q-avatar>
             </div>
@@ -48,8 +49,15 @@
 </template>
 
 <script>
+import imageSrc from "src/assets/schiano.go.png"; // Importa l'immagine
+
 export default {
   name: "IndexPage",
+  data() {
+    return {
+      imageSrc, // Aggiungi l'immagine ai dati del componente
+    };
+  },
   methods: {
     register() {
       this.$router.push({ name: "UserRegistration" });

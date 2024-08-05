@@ -55,6 +55,8 @@ import { useRouter } from "vue-router";
 import "leaflet-control-geocoder";
 import axios from "axios";
 import apiUrl from "src/api-config"; // Importa apiUrl
+import partnerMarkerImage from "src/assets/red-marker-icon.png";
+import currentPositionMarkerImage from "src/assets/marker-posizione-attuale.png";
 
 export default defineComponent({
   name: "UserHome",
@@ -145,6 +147,13 @@ export default defineComponent({
         const response = await axios.get(`${apiUrl}/admin/partners`);
         const partners = response.data.partners;
 
+        const partnerIcon = L.icon({
+          iconUrl: partnerMarkerImage,
+          iconSize: [38, 38], // dimensioni personalizzate
+          iconAnchor: [19, 38], // punto dell'icona che sarà posizionato sul marker
+          popupAnchor: [0, -38], // punto da cui apparirà il popup rispetto all'icona
+        });
+
         partners.forEach((partner) => {
           const marker = {
             position: [partner.latitude, partner.longitude],
@@ -153,11 +162,11 @@ export default defineComponent({
             id: partner.partner_id,
           };
 
-          L.marker(marker.position)
+          L.marker(marker.position, { icon: partnerIcon })
             .addTo(map)
             .bindTooltip(marker.name, {
               permanent: true,
-              direction: "top",
+              direction: "bottom", // Cambiato da "top" a "bottom"
               className: "marker-tooltip",
             })
             .on("click", async () => {
@@ -177,12 +186,19 @@ export default defineComponent({
               position.coords.longitude,
             ];
 
-            L.marker(userLocation)
+            const currentPositionIcon = L.icon({
+              iconUrl: currentPositionMarkerImage,
+              iconSize: [38, 38], // dimensioni personalizzate
+              iconAnchor: [19, 38], // punto dell'icona che sarà posizionato sul marker
+              popupAnchor: [0, -38], // punto da cui apparirà il popup rispetto all'icona
+            });
+
+            L.marker(userLocation, { icon: currentPositionIcon })
               .addTo(map)
               .bindPopup("TU SEI QUI!")
               .bindTooltip("TU SEI QUI!", {
                 permanent: true,
-                direction: "top",
+                direction: "bottom", // Cambiato da "top" a "bottom"
                 className: "marker-tooltip",
               });
 
@@ -203,7 +219,10 @@ export default defineComponent({
         .on("markgeocode", function (e) {
           const bbox = e.geocode.bbox;
           const center = e.geocode.center;
-          L.marker(center).addTo(map).bindPopup(e.geocode.name).openPopup();
+          L.marker(center, { icon: partnerIcon })
+            .addTo(map)
+            .bindPopup(e.geocode.name)
+            .openPopup();
           map.fitBounds(bbox);
         })
         .addTo(map);

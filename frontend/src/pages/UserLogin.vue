@@ -8,8 +8,9 @@
           <q-card-section>
             <q-avatar size="103px" class="absolute-center shadow-10">
               <img
-                src="src/assets/schiano.go.png"
+                :src="imageSrc"
                 style="object-fit: cover; width: 100%; height: 100%"
+                alt="Logo"
               />
             </q-avatar>
           </q-card-section>
@@ -48,6 +49,7 @@
 import axios from "axios";
 import { Loading, QSpinnerGears } from "quasar";
 import apiUrl from "src/api-config"; // Importa apiUrl
+import imageSrc from "src/assets/schiano.go.png"; // Importa l'immagine
 
 export default {
   name: "UserLogin",
@@ -55,6 +57,7 @@ export default {
     return {
       username: "",
       password: "",
+      imageSrc, // Aggiungi l'immagine ai dati del componente
     };
   },
   created() {
