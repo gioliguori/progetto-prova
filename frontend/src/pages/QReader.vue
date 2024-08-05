@@ -1,5 +1,8 @@
 <template>
-  <q-page class="flex flex-center q-pa-md" :class="{ 'dark-mode': $q.dark.isActive }">
+  <q-page
+    class="flex flex-center q-pa-md"
+    :class="{ 'dark-mode': $q.dark.isActive }"
+  >
     <div class="container text-center">
       <h2 class="q-mb-md">Scansione QR</h2>
       <qrcode-stream @decode="onDecode" @error="onError" />
@@ -69,27 +72,30 @@ export default defineComponent({
 
     const startRental = async () => {
       try {
-        const response = await axios.post(
-          "http://localhost:3000/api/rental/create-rental",
-          {
-            username,
-            bikeId: bikeId.value,
-            reservationId: reservationId.value,
-          }
-        );
+        const response = await axios.post(`${apiUrl}/rental/create-rental`, {
+          username,
+          bikeId: bikeId.value,
+          reservationId: reservationId.value,
+        });
 
         if (response.data.success) {
           console.log("Noleggio avviato con successo.");
           router.push("/movimenti");
         } else {
-          console.error("Errore nell'avvio del noleggio:", response.data.message);
+          console.error(
+            "Errore nell'avvio del noleggio:",
+            response.data.message
+          );
           errorMessage.value = response.data.message;
           setTimeout(() => {
             router.push("/movimenti");
           }, 3000);
         }
       } catch (error) {
-        console.error("Errore nella chiamata API per avviare il noleggio:", error);
+        console.error(
+          "Errore nella chiamata API per avviare il noleggio:",
+          error
+        );
         errorMessage.value =
           "Errore durante l'avvio del noleggio. Esiste già un noleggio attivo!";
         setTimeout(() => {

@@ -1,5 +1,8 @@
 <template>
-  <q-page :class="{'bg-light': !$q.screen.dark, 'bg-dark': $q.screen.dark}" class="flex flex-center items-center justify-center q-pa-md">
+  <q-page
+    :class="{ 'bg-light': !$q.screen.dark, 'bg-dark': $q.screen.dark }"
+    class="flex flex-center items-center justify-center q-pa-md"
+  >
     <q-card class="full-width full-height q-pa-md">
       <q-card-section>
         <div class="page-title">Modifica Profilo</div>
@@ -34,6 +37,7 @@
 import { defineComponent, ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default defineComponent({
   name: "ModificaProfilo",
@@ -81,17 +85,14 @@ export default defineComponent({
       });
 
       try {
-        const response = await axios.post(
-          "http://localhost:3000/api/user/update",
-          {
-            oldUsername: oldUsername.value,
-            newUsername: newUsername.value,
-            email: email.value,
-            firstName: firstName.value,
-            lastName: lastName.value,
-            currentPassword: currentPassword.value,
-          }
-        );
+        const response = await axios.post(`${apiUrl}/user/update`, {
+          oldUsername: oldUsername.value,
+          newUsername: newUsername.value,
+          email: email.value,
+          firstName: firstName.value,
+          lastName: lastName.value,
+          currentPassword: currentPassword.value,
+        });
 
         if (response.data.success) {
           alert("Dati aggiornati con successo!");

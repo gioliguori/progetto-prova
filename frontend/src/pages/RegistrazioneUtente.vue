@@ -78,6 +78,7 @@ import axios from "axios";
 import { Loading, QSpinnerGears, Notify } from "quasar";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
+import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default {
   name: "RegisterPage",
@@ -122,23 +123,21 @@ export default {
       });
 
       try {
-        const response = await axios.post(
-          "http://localhost:3000/api/user/register",
-          {
-            username: username.value,
-            email: email.value,
-            firstName: firstName.value,
-            lastName: lastName.value,
-            password: password.value,
-          }
-        );
+        const response = await axios.post(`${apiUrl}/user/register`, {
+          username: username.value,
+          email: email.value,
+          firstName: firstName.value,
+          lastName: lastName.value,
+          password: password.value,
+        });
         Loading.hide();
 
         if (response.data.success) {
           console.log("Registration successful");
           Notify.create({
             type: "positive",
-            message: "Registrazione completata con successo! Sarai reindirizzato alla pagina di login.",
+            message:
+              "Registrazione completata con successo! Sarai reindirizzato alla pagina di login.",
           });
           // Naviga alla pagina di login
           router.push({ name: "LoginUtente" });

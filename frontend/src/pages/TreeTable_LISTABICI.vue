@@ -6,7 +6,10 @@
       </q-card-section>
       <q-card-section>
         <!-- Tabella delle Bici -->
-        <q-markup-table class="q-mt-md custom-table" :class="{ 'dark-mode': $q.dark.isActive }">
+        <q-markup-table
+          class="q-mt-md custom-table"
+          :class="{ 'dark-mode': $q.dark.isActive }"
+        >
           <thead>
             <tr>
               <th v-for="col in columns" :key="col.name" :style="headerStyle">
@@ -48,11 +51,33 @@ export default {
       bikes: [],
       columns: [
         { name: "bike_type", label: "Type", align: "left", field: "bike_type" },
-        { name: "partner_name", label: "Partner Name", align: "left", field: "partner_name" },
+        {
+          name: "partner_name",
+          label: "Partner Name",
+          align: "left",
+          field: "partner_name",
+        },
         { name: "state", label: "State", align: "left", field: "state" },
-        { name: "battery_level", label: "Battery", align: "left", field: "battery_level" },
-        { name: "count_run", label: "Rides", align: "left", field: "count_run" },
-        { name: "actions", label: "Actions", align: "center", field: "actions", required: true, sortable: false },
+        {
+          name: "battery_level",
+          label: "Battery",
+          align: "left",
+          field: "battery_level",
+        },
+        {
+          name: "count_run",
+          label: "Rides",
+          align: "left",
+          field: "count_run",
+        },
+        {
+          name: "actions",
+          label: "Actions",
+          align: "center",
+          field: "actions",
+          required: true,
+          sortable: false,
+        },
       ],
     };
   },
@@ -73,35 +98,47 @@ export default {
         if (bikesResponse.data.success) {
           this.bikes = bikesResponse.data.bikes;
         } else {
-          this.$q.notify({ type: "negative", message: "Failed to fetch bikes" });
+          this.$q.notify({
+            type: "negative",
+            message: "Failed to fetch bikes",
+          });
         }
       } catch (error) {
         Loading.hide();
         console.error("Error fetching data:", error);
-        this.$q.notify({ type: "negative", message: "An error occurred while fetching data" });
+        this.$q.notify({
+          type: "negative",
+          message: "An error occurred while fetching data",
+        });
       }
     },
     async deleteBike(bikeId) {
       try {
-        await axios.delete(`http://localhost:3000/api/admin/bike/${bikeId}`);
+        await axios.delete(`${apiUrl}/admin/bike/${bikeId}`);
         this.bikes = this.bikes.filter((bike) => bike.bike_id !== bikeId);
-        this.$q.notify({ type: "positive", message: "Bike deleted successfully" });
+        this.$q.notify({
+          type: "positive",
+          message: "Bike deleted successfully",
+        });
       } catch (error) {
         console.error("Error deleting bike:", error);
-        this.$q.notify({ type: "negative", message: "An error occurred while deleting the bike" });
+        this.$q.notify({
+          type: "negative",
+          message: "An error occurred while deleting the bike",
+        });
       }
     },
   },
   computed: {
     headerStyle() {
       return {
-        backgroundColor: this.$q.dark.isActive ? '#333' : '#1b89ff',
-        color: this.$q.dark.isActive ? '#e0e0e0' : 'white',
-        fontWeight: 'bold',
-        textAlign: 'center',
+        backgroundColor: this.$q.dark.isActive ? "#333" : "#1b89ff",
+        color: this.$q.dark.isActive ? "#e0e0e0" : "white",
+        fontWeight: "bold",
+        textAlign: "center",
       };
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -126,9 +163,10 @@ export default {
   border-collapse: collapse;
 }
 
-.custom-table th, .custom-table td {
+.custom-table th,
+.custom-table td {
   padding: 8px;
-  text-align: center;  /* Centrare il testo nelle celle */
+  text-align: center; /* Centrare il testo nelle celle */
 }
 
 .custom-table th {

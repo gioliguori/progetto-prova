@@ -54,6 +54,7 @@ import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import { useRouter } from "vue-router";
 import "leaflet-control-geocoder";
 import axios from "axios";
+import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default defineComponent({
   name: "MapComponent",
@@ -89,7 +90,7 @@ export default defineComponent({
 
       try {
         const response = await axios.post(
-          "http://localhost:3000/api/rental/create-reservation",
+          `${apiUrl}/rental/create-reservation`,
           {
             username,
             bikeId,
@@ -129,10 +130,9 @@ export default defineComponent({
         };
 
         try {
-          const response = await axios.post(
-            "http://localhost:3000/api/user/bikes",
-            { partnerId: marker.id }
-          );
+          const response = await axios.post(`${apiUrl}/user/bikes`, {
+            partnerId: marker.id,
+          });
           content.bikes = response.data.bikes;
         } catch (error) {
           console.error("Errore nel recuperare le biciclette:", error);
@@ -142,9 +142,7 @@ export default defineComponent({
       };
 
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/admin/partners"
-        );
+        const response = await axios.get(`${apiUrl}/admin/partners`);
         const partners = response.data.partners;
 
         partners.forEach((partner) => {
@@ -259,7 +257,7 @@ export default defineComponent({
 /* Modal content */
 .modal-content {
   background: #fff;
-  color: #000; 
+  color: #000;
   padding: 20px;
   border-radius: 10px;
   max-width: 500px;
@@ -315,7 +313,7 @@ export default defineComponent({
 }
 
 .bike-item span {
-  flex: 1; 
+  flex: 1;
   font-size: 16px;
 }
 

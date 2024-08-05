@@ -1,5 +1,8 @@
 <template>
-  <q-page class="flex flex-center q-pa-md" :class="{ 'dark-mode': $q.dark.isActive }">
+  <q-page
+    class="flex flex-center q-pa-md"
+    :class="{ 'dark-mode': $q.dark.isActive }"
+  >
     <div class="container text-center">
       <h1 class="page-title q-mb-md">Noleggi e Prenotazioni</h1>
 
@@ -116,6 +119,7 @@ import {
   QCardActions,
 } from "quasar";
 import axios from "axios";
+import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default defineComponent({
   name: "RentalsAndReservations",
@@ -140,7 +144,7 @@ export default defineComponent({
         console.log(`Username: ${username}`);
 
         const rentalsResponse = await axios.get(
-          "http://localhost:3000/api/rental/user-rentals",
+          `${apiUrl}/rental/user-rentals`,
           {
             params: { username },
           }
@@ -149,7 +153,7 @@ export default defineComponent({
         rentals.value = rentalsResponse.data;
 
         const reservationResponse = await axios.get(
-          "http://localhost:3000/api/rental/user-reservations",
+          `${apiUrl}/rental/user-reservations`,
           {
             params: { username },
           }
@@ -183,14 +187,11 @@ export default defineComponent({
       if (!activeRental.value) return;
 
       try {
-        const response = await axios.post(
-          "http://localhost:3000/api/rental/end-rental",
-          {
-            username,
-            rentalId: activeRental.value.rental_id,
-            paymentMethod,
-          }
-        );
+        const response = await axios.post(`${apiUrl}/rental/end-rental`, {
+          username,
+          rentalId: activeRental.value.rental_id,
+          paymentMethod,
+        });
 
         if (response.data.success) {
           console.log(
@@ -247,7 +248,6 @@ export default defineComponent({
   font-size: 3vw;
   font-weight: bold;
   color: #1b89ff; /* Colore del titolo */
-  
 }
 
 .section-title {

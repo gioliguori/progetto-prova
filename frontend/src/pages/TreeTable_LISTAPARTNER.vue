@@ -36,14 +36,22 @@
         <q-markup-table class="q-mt-md custom-table">
           <thead>
             <tr>
-              <th v-for="col in revenueColumns" :key="col.name" :style="headerStyle">
+              <th
+                v-for="col in revenueColumns"
+                :key="col.name"
+                :style="headerStyle"
+              >
                 {{ col.label }}
               </th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="row in revenues" :key="row.partner_name">
-              <td v-for="col in revenueColumns" :key="col.name" class="center-text">
+              <td
+                v-for="col in revenueColumns"
+                :key="col.name"
+                class="center-text"
+              >
                 {{ row[col.field] }}
               </td>
             </tr>
@@ -57,6 +65,7 @@
 <script>
 import axios from "axios";
 import { Loading, QSpinnerGears } from "quasar";
+import apiUrl from "src/api-config";
 
 export default {
   name: "DashboardAdmin",
@@ -141,8 +150,8 @@ export default {
       });
       try {
         const [partnersResponse, revenuesResponse] = await Promise.all([
-          axios.get("http://localhost:3000/api/admin/partners"),
-          axios.get("http://localhost:3000/api/admin/revenues"),
+          axios.get("${apiUrl}/admin/partners"),
+          axios.get("${apiUrl}/admin/revenues"),
         ]);
 
         Loading.hide();
@@ -175,9 +184,7 @@ export default {
     },
     async deletePartner(partnerId) {
       try {
-        await axios.delete(
-          `http://localhost:3000/api/admin/partner/${partnerId}`
-        );
+        await axios.delete(`${apiUrl}/admin/partner/${partnerId}`);
         this.partners = this.partners.filter(
           (partner) => partner.partner_id !== partnerId
         );
@@ -197,32 +204,32 @@ export default {
   computed: {
     headerStyle() {
       return {
-        backgroundColor: this.$q.dark.isActive ? '#333' : '#1b89ff',
-        color: this.$q.dark.isActive ? '#e0e0e0' : 'white',
-        fontWeight: 'bold',
-        textAlign: 'center'
+        backgroundColor: this.$q.dark.isActive ? "#333" : "#1b89ff",
+        color: this.$q.dark.isActive ? "#e0e0e0" : "white",
+        fontWeight: "bold",
+        textAlign: "center",
       };
     },
     pageClass() {
       return {
-        'bg-dark text-light': this.$q.dark.isActive,
-        'bg-light text-dark': !this.$q.dark.isActive,
+        "bg-dark text-light": this.$q.dark.isActive,
+        "bg-light text-dark": !this.$q.dark.isActive,
       };
     },
     cardClass() {
       return {
-        'bg-dark text-light': this.$q.dark.isActive,
-        'bg-light text-dark': !this.$q.dark.isActive,
+        "bg-dark text-light": this.$q.dark.isActive,
+        "bg-light text-dark": !this.$q.dark.isActive,
       };
     },
     titleClass() {
       return {
-        'text-primary': !this.$q.dark.isActive,
-        'text-white': this.$q.dark.isActive,
-        'title-large': true // Class to increase title size
+        "text-primary": !this.$q.dark.isActive,
+        "text-white": this.$q.dark.isActive,
+        "title-large": true, // Class to increase title size
       };
     },
-  }
+  },
 };
 </script>
 
@@ -246,17 +253,22 @@ export default {
   border-collapse: collapse;
 }
 
-.custom-table th, .custom-table td {
+.custom-table th,
+.custom-table td {
   padding: 8px;
   text-align: center;
 }
 
 .custom-table tr:nth-child(even) {
-  background-color: var(--q-dark-bg-secondary); /* Alternanza righe in modalità scura */
+  background-color: var(
+    --q-dark-bg-secondary
+  ); /* Alternanza righe in modalità scura */
 }
 
 .custom-table tr:hover {
-  background-color: var(--q-dark-hover); /* Evidenziazione riga in modalità scura */
+  background-color: var(
+    --q-dark-hover
+  ); /* Evidenziazione riga in modalità scura */
 }
 
 /* Stile per i bottoni personalizzati */

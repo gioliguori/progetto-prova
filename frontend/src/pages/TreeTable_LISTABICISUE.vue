@@ -40,6 +40,7 @@
 <script>
 import axios from "axios";
 import { Loading, QSpinnerGears } from "quasar";
+import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default {
   name: "DashboardPartner",
@@ -67,12 +68,18 @@ export default {
         if (bikesResponse.data.success) {
           this.bikes = bikesResponse.data.bikes;
         } else {
-          this.$q.notify({ type: "negative", message: "Failed to fetch bikes" });
+          this.$q.notify({
+            type: "negative",
+            message: "Failed to fetch bikes",
+          });
         }
       } catch (error) {
         Loading.hide();
         console.error("Error fetching data:", error);
-        this.$q.notify({ type: "negative", message: "An error occurred while fetching data" });
+        this.$q.notify({
+          type: "negative",
+          message: "An error occurred while fetching data",
+        });
       }
     },
     async deleteBike(bikeId) {
@@ -147,7 +154,8 @@ export default {
   border-collapse: collapse;
 }
 
-.custom-table th, .custom-table td {
+.custom-table th,
+.custom-table td {
   padding: 8px;
   text-align: center; /* Centrare il testo nelle celle */
 }

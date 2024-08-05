@@ -81,7 +81,7 @@ const routes = [
         component: () => import("pages/ModificaProfilo.vue"),
         name: "ModificaProfilo",
       },
-      
+
       {
         path: "QReader",
         component: () => import("pages/QReader.vue"),
@@ -116,7 +116,7 @@ const routes = [
   },
   {
     path: "/Index",
-    component: () => import("layouts/Index.vue"),
+    component: () => import("pages/Indexxx.vue"),
     name: "Index",
   },
   {

@@ -162,6 +162,7 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import "leaflet-control-geocoder";
 import axios from "axios";
+import apiUrl from "src/api-config"; // Importa apiUrl
 
 export default defineComponent({
   name: "PartnerForm",
@@ -278,32 +279,32 @@ export default defineComponent({
   computed: {
     pageClass() {
       return {
-        'bg-dark text-light': this.$q.dark.isActive,
-        'bg-light text-dark': !this.$q.dark.isActive,
+        "bg-dark text-light": this.$q.dark.isActive,
+        "bg-light text-dark": !this.$q.dark.isActive,
       };
     },
     titleClass() {
       return {
-        'text-primary': !this.$q.dark.isActive,
-        'text-white': this.$q.dark.isActive,
+        "text-primary": !this.$q.dark.isActive,
+        "text-white": this.$q.dark.isActive,
       };
     },
     inputClass() {
       return {
-        'bg-white text-black': !this.$q.dark.isActive,
-        'bg-dark text-light': this.$q.dark.isActive,
+        "bg-white text-black": !this.$q.dark.isActive,
+        "bg-dark text-light": this.$q.dark.isActive,
       };
     },
     dialogClass() {
       return {
-        'bg-white text-black': !this.$q.dark.isActive,
-        'bg-dark text-light': this.$q.dark.isActive,
+        "bg-white text-black": !this.$q.dark.isActive,
+        "bg-dark text-light": this.$q.dark.isActive,
       };
     },
     dialogTitleClass() {
       return {
-        'text-primary': !this.$q.dark.isActive,
-        'text-white': this.$q.dark.isActive,
+        "text-primary": !this.$q.dark.isActive,
+        "text-white": this.$q.dark.isActive,
       };
     },
   },
