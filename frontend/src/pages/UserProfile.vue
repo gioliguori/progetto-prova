@@ -7,7 +7,7 @@
       <q-card-section class="text-center">
         <q-avatar size="100px" class="q-mb-md">
           <img
-            src="src/assets/action.jpg"
+            :src="actionImage"
             style="object-fit: cover; width: 100%; height: 100%"
           />
         </q-avatar>
@@ -37,7 +37,7 @@
         >
           <template v-slot:append>
             <q-icon>
-              <img src="src/assets/Webex.png" alt="Assistenza" class="icon" />
+              <img :src="webexImage" alt="Assistenza" class="icon" />
             </q-icon>
           </template>
         </q-btn>
@@ -50,11 +50,7 @@
         >
           <template v-slot:append>
             <q-icon>
-              <img
-                src="src/assets/operator-icon.png"
-                alt="Operatore"
-                class="icon"
-              />
+              <img :src="webexImage" alt="Operatore" class="icon" />
             </q-icon>
           </template>
         </q-btn>
@@ -69,7 +65,7 @@
       <q-card-section class="text-center q-mt-md">
         <div class="powered-by">
           <span class="powered-by-text">Powered by</span>
-          <img src="src/assets/Webex.png" alt="Webex" class="powered-by-icon" />
+          <img :src="webexImage" alt="Webex" class="powered-by-icon" />
         </div>
       </q-card-section>
     </q-card>
@@ -80,6 +76,8 @@
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import apiUrl from "src/api-config"; // Importa apiUrl
+import actionImage from "src/assets/action.jpg";
+import webexImage from "src/assets/Webex.png";
 
 export default defineComponent({
   name: "UserProfile",
@@ -134,6 +132,8 @@ export default defineComponent({
       goToHelp,
       contactUs,
       logout,
+      actionImage,
+      webexImage,
     };
   },
 });
