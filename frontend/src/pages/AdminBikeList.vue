@@ -24,6 +24,7 @@
                 {{ row[col.field] }}
               </td>
               <td class="center-text">
+                <!-- Bottone per eliminare una bici -->
                 <q-btn
                   color="negative"
                   label="Delete"
@@ -42,7 +43,7 @@
 <script>
 import axios from "axios";
 import { Loading, QSpinnerGears } from "quasar";
-import apiUrl from "src/api-config"; // Importa apiUrl
+import apiUrl from "src/api-config";
 
 export default {
   name: "AdminBikeList",
@@ -82,6 +83,7 @@ export default {
     };
   },
   created() {
+    // Carica i dati delle bici quando il componente viene creato
     this.fetchData();
   },
   methods: {
@@ -91,6 +93,7 @@ export default {
         message: "Fetching data...",
       });
       try {
+        // Effettua una richiesta per ottenere la lista delle bici
         const bikesResponse = await axios.get(`${apiUrl}/admin/bikes`);
 
         Loading.hide();
@@ -114,6 +117,7 @@ export default {
     },
     async deleteBike(bikeId) {
       try {
+        // Elimina una bici specifica
         await axios.delete(`${apiUrl}/admin/bike/${bikeId}`);
         this.bikes = this.bikes.filter((bike) => bike.bike_id !== bikeId);
         this.$q.notify({
@@ -169,28 +173,10 @@ export default {
   text-align: center; /* Centrare il testo nelle celle */
 }
 
-.custom-table th {
-  background-color: #1b89ff; /* Colore di default per la modalità chiara */
-  color: white;
-  font-weight: bold;
-}
-
 /* Modalità scura */
 .dark-mode .custom-table th {
   background-color: #333;
   color: #e0e0e0;
-}
-
-.dark-mode .custom-table tr:nth-child(even) {
-  background-color: #1e1e1e; /* Grigio scuro per righe pari in modalità scura */
-}
-
-.dark-mode .custom-table tr:nth-child(odd) {
-  background-color: #000; /* Nero per righe dispari in modalità scura */
-}
-
-.dark-mode .custom-table tr:hover {
-  background-color: #444; /* Grigio scuro al passaggio del mouse in modalità scura */
 }
 
 /* Stile per i bottoni personalizzati */

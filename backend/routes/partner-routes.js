@@ -157,7 +157,7 @@ router.put("/update-state/bikes", async (req, res) => {
   }
 });
 
-// Route per aggiornare la password del partner senza crittografia
+// Route per aggiornare la password del partner
 router.put("/update-password", async (req, res) => {
   const { partner_id, current_password, new_password } = req.body;
 

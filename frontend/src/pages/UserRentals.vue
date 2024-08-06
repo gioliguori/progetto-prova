@@ -4,8 +4,10 @@
     :class="{ 'dark-mode': $q.dark.isActive }"
   >
     <div class="container text-center">
+      <!-- Titolo della pagina -->
       <h1 class="page-title q-mb-md">Noleggi e Prenotazioni</h1>
 
+      <!-- Sezione per terminare il noleggio attivo -->
       <div v-if="activeRental" class="q-mb-md">
         <q-btn
           @click="showPaymentPopup"
@@ -15,6 +17,7 @@
         />
       </div>
 
+      <!-- Sezione per le prenotazioni -->
       <div class="q-mb-md">
         <h2 class="section-title">La tua Prenotazione</h2>
         <div v-if="reservation.length">
@@ -51,6 +54,7 @@
         </div>
       </div>
 
+      <!-- Sezione per i noleggi -->
       <div>
         <h2 class="section-title">Noleggi</h2>
         <q-markup-table class="custom-table">
@@ -75,6 +79,7 @@
         </q-markup-table>
       </div>
 
+      <!-- Dialogo per il pagamento -->
       <q-dialog v-model="paymentDialog">
         <q-card class="custom-card">
           <q-card-section class="text-center">
@@ -120,7 +125,7 @@ import {
   QCardActions,
 } from "quasar";
 import axios from "axios";
-import apiUrl from "src/api-config"; // Importa apiUrl
+import apiUrl from "src/api-config";
 
 export default defineComponent({
   name: "UserRentals",
@@ -140,6 +145,7 @@ export default defineComponent({
     const paymentDialog = ref(false);
     const username = localStorage.getItem("username");
 
+    // Recupera i noleggi e le prenotazioni dell'utente quando il componente è montato
     onMounted(async () => {
       try {
         console.log(`Username: ${username}`);
@@ -171,6 +177,7 @@ export default defineComponent({
       }
     });
 
+    // Avvia il noleggio per una bici
     const rentBike = (bikeId, reservationId) => {
       console.log(
         `Avvio noleggio per la bici con ID: ${bikeId} e prenotazione con ID: ${reservationId}`
@@ -180,10 +187,12 @@ export default defineComponent({
       router.push({ path: "/RentalInstructions" });
     };
 
+    // Mostra il popup per il pagamento
     const showPaymentPopup = () => {
       paymentDialog.value = true;
     };
 
+    // Termina il noleggio e gestisce il pagamento
     const endRental = async (paymentMethod) => {
       if (!activeRental.value) return;
 
@@ -214,10 +223,6 @@ export default defineComponent({
       }
     };
 
-    const redirectTo = (method) => {
-      endRental(method);
-    };
-
     return {
       rentals,
       reservation,
@@ -226,7 +231,6 @@ export default defineComponent({
       paymentDialog,
       showPaymentPopup,
       endRental,
-      redirectTo,
     };
   },
 });
@@ -239,18 +243,21 @@ export default defineComponent({
   color: #e0e0e0; /* Colore del testo in modalità scura */
 }
 
+/* Contenitore */
 .container {
   max-width: 100%;
   width: 100%;
   padding: 2rem;
 }
 
+/* Titolo della pagina */
 .page-title {
   font-size: 3vw;
   font-weight: bold;
   color: #1b89ff; /* Colore del titolo */
 }
 
+/* Titolo della sezione */
 .section-title {
   font-size: 2.5vw;
   font-weight: bold;

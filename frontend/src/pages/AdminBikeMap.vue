@@ -24,7 +24,7 @@ import "leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import { useRouter } from "vue-router";
 import axios from "axios";
-import apiUrl from "src/api-config"; // Importa apiUrl
+import apiUrl from "src/api-config";
 
 export default defineComponent({
   name: "AdminBikeMap",
@@ -53,23 +53,28 @@ export default defineComponent({
     };
 
     onMounted(() => {
+      // Crea la mappa e la imposta alla vista iniziale
       const map = L.map("map").setView([40.8522, 14.2681], 13);
 
+      // Aggiunge il layer tile di OpenStreetMap
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map);
 
+      // Crea il gruppo di marker cluster
       const markers = L.markerClusterGroup();
 
       const fetchBikeLocations = async () => {
         try {
+          // Recupera le posizioni delle bici dal server
           const response = await axios.get(`${apiUrl}/bikes/localization`);
           const bikes = response.data;
 
           markers.clearLayers();
 
+          // Aggiunge i marker delle bici alla mappa
           bikes.forEach((bike) => {
             const tooltipText = `bici numero: ${bike.bike_id_partner} partner: ${bike.partner_name}`;
             const marker = L.marker([bike.latitude, bike.longitude])
@@ -92,9 +97,11 @@ export default defineComponent({
       };
 
       fetchBikeLocations();
-      const intervalId = setInterval(fetchBikeLocations, 30000); // Esegui ogni 30 secondi
+      // Aggiorna le posizioni delle bici ogni 30 secondi
+      const intervalId = setInterval(fetchBikeLocations, 30000);
 
-      return () => clearInterval(intervalId); // Pulisci l'intervallo quando il componente viene distrutto
+      // Pulisce l'intervallo quando il componente viene distrutto
+      return () => clearInterval(intervalId);
     });
 
     return {

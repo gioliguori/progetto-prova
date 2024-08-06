@@ -1,6 +1,9 @@
+Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
 <template>
   <div>
+    <!-- Mappa a schermo intero -->
     <div id="map" style="height: 100vh"></div>
+    <!-- Modale per visualizzare le bici di un partner -->
     <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
       <div class="modal-content">
         <button class="close-button" @click="closeModal">X</button>
@@ -15,12 +18,14 @@
               Tipo: {{ bike.bike_type }}, Batteria: {{ bike.battery_level }}%
             </span>
             <div class="buttons-container">
+              <!-- Bottone per noleggiare una bici -->
               <button
                 @click="handleBikeAction(bike.bike_id)"
                 class="rent-button"
               >
                 Noleggia
               </button>
+              <!-- Bottone per prenotare una bici -->
               <button
                 @click="handleBikeReservation(bike.bike_id)"
                 class="reserve-button"
@@ -32,6 +37,7 @@
         </ul>
       </div>
     </div>
+    <!-- Modale di errore -->
     <div
       v-if="showErrorModal"
       class="modal-overlay"
@@ -54,7 +60,7 @@ import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import { useRouter } from "vue-router";
 import "leaflet-control-geocoder";
 import axios from "axios";
-import apiUrl from "src/api-config"; // Importa apiUrl
+import apiUrl from "src/api-config";
 import partnerMarkerImage from "src/assets/red-marker-icon.png";
 import currentPositionMarkerImage from "src/assets/marker-posizione-attuale.png";
 
@@ -68,25 +74,30 @@ export default defineComponent({
     const errorMessage = ref("");
     localStorage.removeItem("reservationId");
 
+    // Funzione per aprire il modale
     const openModal = (content) => {
       modalContent.value = content;
       showModal.value = true;
     };
 
+    // Funzione per chiudere il modale
     const closeModal = () => {
       showModal.value = false;
     };
 
+    // Funzione per chiudere il modale di errore
     const closeErrorModal = () => {
       showErrorModal.value = false;
     };
 
+    // Funzione per gestire l'azione di noleggio di una bici
     const handleBikeAction = (bikeId) => {
       localStorage.setItem("bikeId", bikeId);
       console.log("Bike ID salvato nel local storage:", bikeId);
       router.push({ path: "/RentalInstructions" });
     };
 
+    // Funzione per gestire la prenotazione di una bici
     const handleBikeReservation = async (bikeId) => {
       const username = localStorage.getItem("username");
 
@@ -115,7 +126,9 @@ export default defineComponent({
       }
     };
 
+    // Funzione eseguita quando il componente viene montato
     onMounted(async () => {
+      // Inizializza la mappa
       const map = L.map("map").setView([40.8522, 14.2681], 13);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -124,6 +137,7 @@ export default defineComponent({
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map);
 
+      // Crea il contenuto del popup per un marker
       const createPopupContent = async (marker) => {
         const content = {
           name: marker.name,
@@ -143,6 +157,7 @@ export default defineComponent({
         return content;
       };
 
+      // Recupera i partner e aggiunge i marker sulla mappa
       try {
         const response = await axios.get(`${apiUrl}/admin/partners`);
         const partners = response.data.partners;
@@ -166,7 +181,7 @@ export default defineComponent({
             .addTo(map)
             .bindTooltip(marker.name, {
               permanent: true,
-              direction: "bottom", // Cambiato da "top" a "bottom"
+              direction: "bottom",
               className: "marker-tooltip",
             })
             .on("click", async () => {
@@ -178,6 +193,7 @@ export default defineComponent({
         console.error("Errore nel recuperare i partner:", error);
       }
 
+      // Geolocalizzazione dell'utente
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -198,7 +214,7 @@ export default defineComponent({
               .bindPopup("TU SEI QUI!")
               .bindTooltip("TU SEI QUI!", {
                 permanent: true,
-                direction: "bottom", // Cambiato da "top" a "bottom"
+                direction: "bottom",
                 className: "marker-tooltip",
               });
 
@@ -212,6 +228,7 @@ export default defineComponent({
         console.error("Geolocation non è supportato da questo browser.");
       }
 
+      // Aggiunge il geocoder alla mappa
       const geocoder = L.Control.Geocoder.nominatim();
       L.Control.geocoder({
         defaultMarkGeocode: false,
@@ -401,3 +418,4 @@ export default defineComponent({
   background: #fff;
 }
 </style>
+```

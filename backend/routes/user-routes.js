@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.Router(); // Usa router invece di app
+const router = express.Router();
 const knex = require("../knexfile");
 
 // Route per ottenere le bici disponibili di un partner specifico
@@ -60,7 +60,7 @@ router.post("/register", async (req, res) => {
       email,
       first_name: firstName,
       last_name: lastName,
-      password, // Salva la password come testo in chiaro
+      password,
     });
 
     res.json({
@@ -156,4 +156,4 @@ router.get("/user-rentals/:userId", async (req, res) => {
   }
 });
 
-module.exports = router; // Esporta il router
+module.exports = router;

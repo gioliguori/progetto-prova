@@ -67,7 +67,6 @@
         :class="inputClass"
       ></q-input>
 
-      <!-- Titolo per le credenziali del partner -->
       <div class="q-mb-md">
         <h3 :class="titleClass">CREDENZIALI PARTNER</h3>
       </div>
@@ -162,7 +161,7 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import "leaflet-control-geocoder";
 import axios from "axios";
-import apiUrl from "src/api-config"; // Importa apiUrl
+import apiUrl from "src/api-config";
 
 export default defineComponent({
   name: "AdminInsertPartner",
@@ -191,7 +190,7 @@ export default defineComponent({
   },
   methods: {
     isPasswordValid(password) {
-      return /\d/.test(password);
+      return /\d/.test(password); // Verifica che la password contenga almeno un numero
     },
     async fetchAddress(latitude, longitude) {
       try {
@@ -210,11 +209,11 @@ export default defineComponent({
         try {
           const response = await axios.post(`${apiUrl}/admin/insert/partner`, {
             name: this.name,
-            type: this.type.value, // Utilizza il valore effettivo del tipo
-            email: this.email, // Include l'email nella richiesta
+            type: this.type.value,
+            email: this.email,
             latitude: this.latitude,
             longitude: this.longitude,
-            address: this.address, // Include l'indirizzo
+            address: this.address,
             username: this.username,
             password: this.password,
           });
@@ -230,19 +229,20 @@ export default defineComponent({
       }
     },
     redirectToDashboard() {
-      this.$router.push("/AdminDashboard");
+      this.$router.push("/AdminDashboard"); // Reindirizza alla dashboard admin
     },
     updateLatLong(event) {
       this.latitude = event.latlng.lat;
       this.longitude = event.latlng.lng;
       this.formattedLatitude = this.latitude.toFixed(6);
       this.formattedLongitude = this.longitude.toFixed(6);
-      this.fetchAddress(this.latitude, this.longitude);
+      this.fetchAddress(this.latitude, this.longitude); // Aggiorna l'indirizzo
     },
   },
   mounted() {
     const map = L.map("map").setView([this.latitude, this.longitude], 13);
 
+    // Aggiunge il tile layer di OpenStreetMap alla mappa
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
       attribution:
@@ -251,11 +251,13 @@ export default defineComponent({
 
     const marker = L.marker([this.latitude, this.longitude]).addTo(map);
 
+    // Gestisce il click sulla mappa per aggiornare latitudine e longitudine
     map.on("click", (event) => {
       this.updateLatLong(event);
       marker.setLatLng([this.latitude, this.longitude]);
     });
 
+    // Configura il geocodificatore per la ricerca degli indirizzi
     const geocoder = L.Control.Geocoder.nominatim();
     L.Control.geocoder({
       defaultMarkGeocode: false,
@@ -274,6 +276,7 @@ export default defineComponent({
       })
       .addTo(map);
 
+    // Recupera l'indirizzo iniziale
     this.fetchAddress(this.latitude, this.longitude);
   },
   computed: {
@@ -312,7 +315,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-/* Stili per la pagina in dark mode e light mode */
 .bg-dark {
   background-color: #333 !important;
 }

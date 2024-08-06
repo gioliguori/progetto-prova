@@ -6,12 +6,15 @@
           v-bind:style="$q.screen.lt.sm ? { width: '80%' } : { width: '30%' }"
         >
           <q-card-section>
+            <!-- Titolo della pagina -->
             <div class="text-center q-pt-lg">
               <div class="col text-h6 ellipsis">Registrazione</div>
             </div>
           </q-card-section>
           <q-card-section>
+            <!-- Form di registrazione -->
             <q-form class="q-gutter-md" @submit.prevent="register">
+              <!-- Input per il nome utente -->
               <q-input
                 filled
                 v-model="username"
@@ -19,6 +22,7 @@
                 lazy-rules
                 :rules="[(val) => !!val || 'Il nome utente è obbligatorio']"
               />
+              <!-- Input per l'email -->
               <q-input
                 filled
                 v-model="email"
@@ -29,6 +33,7 @@
                   (val) => /.+@.+\..+/.test(val) || 'Email non valida',
                 ]"
               />
+              <!-- Input per il nome -->
               <q-input
                 filled
                 v-model="firstName"
@@ -36,6 +41,7 @@
                 lazy-rules
                 :rules="[(val) => !!val || 'Il nome è obbligatorio']"
               />
+              <!-- Input per il cognome -->
               <q-input
                 filled
                 v-model="lastName"
@@ -43,6 +49,7 @@
                 lazy-rules
                 :rules="[(val) => !!val || 'Il cognome è obbligatorio']"
               />
+              <!-- Input per la password -->
               <q-input
                 type="password"
                 filled
@@ -57,6 +64,7 @@
                 ]"
               />
               <div>
+                <!-- Pulsante di registrazione -->
                 <q-btn
                   label="Registrati"
                   type="submit"
@@ -78,7 +86,7 @@ import axios from "axios";
 import { Loading, QSpinnerGears, Notify } from "quasar";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
-import apiUrl from "src/api-config"; // Importa apiUrl
+import apiUrl from "src/api-config";
 
 export default {
   name: "UserRegistration",
@@ -90,6 +98,7 @@ export default {
     const lastName = ref("");
     const password = ref("");
 
+    // Controlla se il form è valido
     const isFormValid = computed(() => {
       return (
         username.value &&
@@ -100,6 +109,7 @@ export default {
       );
     });
 
+    // Funzione di registrazione
     const register = async () => {
       console.log("Attempting registration with:", {
         username: username.value,
@@ -142,7 +152,6 @@ export default {
           // Naviga alla pagina di login
           router.push({ name: "UserLogin" });
         } else {
-          // Solo notifica di errore se la risposta del server indica un fallimento
           Notify.create({
             type: "negative",
             message: response.data.message,
@@ -151,7 +160,6 @@ export default {
       } catch (error) {
         Loading.hide();
         console.error("Errore durante la registrazione:", error);
-        // Mostra solo la notifica di errore
         Notify.create({
           type: "negative",
           message: `Si è verificato un errore durante la registrazione: ${error.message}`,
@@ -173,6 +181,7 @@ export default {
 </script>
 
 <style>
+/* Sfondo con gradiente */
 .bg-image {
   background-image: linear-gradient(135deg, #a2d9ff, #66b2ff);
 }

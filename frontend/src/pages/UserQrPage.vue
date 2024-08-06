@@ -4,11 +4,13 @@
     :class="{ 'dark-mode': $q.dark.isActive }"
   >
     <div class="container text-center">
+      <!-- Titolo della pagina -->
       <h2 class="q-mb-md">Scansione QR</h2>
 
       <div>
         <p class="error">{{ error }}</p>
 
+        <!-- Componente per la scansione del QR code -->
         <qrcode-stream
           :constraints="selectedConstraints"
           :track="trackFunctionSelected.value"
@@ -19,11 +21,13 @@
         />
       </div>
 
+      <!-- Visualizzazione degli ID delle bici -->
       <div v-if="bikeId || bikeIdScanned">
         <p>ID della bici da local storage: {{ bikeId }}</p>
         <p>ID della bici scansionata: {{ bikeIdScanned }}</p>
       </div>
 
+      <!-- Messaggio di errore -->
       <div v-if="errorMessage" class="error-message">
         <p>{{ errorMessage }}</p>
       </div>
@@ -268,6 +272,7 @@ export default defineComponent({
   },
 });
 </script>
+
 <style scoped>
 /* Modalità scura */
 .dark-mode {

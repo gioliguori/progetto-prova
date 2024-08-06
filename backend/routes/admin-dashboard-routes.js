@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const knex = require("../knexfile"); // Assicurati che la configurazione di Knex sia corretta
+const knex = require("../knexfile");
 const { v4: uuidv4 } = require("uuid");
 
 // Route per ottenere i partner attivi
@@ -166,11 +166,11 @@ router.post("/insert/partner", async (req, res) => {
       await trx("partners").insert({
         partner_id: partnerId,
         partner_name: name,
-        partner_type: type, // Utilizza il valore effettivo del tipo
-        email: email, // Aggiungi l'email
+        partner_type: type,
+        email: email,
         latitude: latitude,
         longitude: longitude,
-        address: address, // Aggiungi l'indirizzo
+        address: address,
       });
 
       // Inserisci nella tabella partner_auth

@@ -5,12 +5,14 @@
   >
     <q-card class="full-size q-mb-md">
       <q-card-section class="text-center">
+        <!-- Sezione per l'avatar dell'utente -->
         <q-avatar size="100px" class="q-mb-md">
           <img
             :src="actionImage"
             style="object-fit: cover; width: 100%; height: 100%"
           />
         </q-avatar>
+        <!-- Messaggio di benvenuto -->
         <div
           :class="{
             'text-h6': true,
@@ -22,6 +24,7 @@
         </div>
       </q-card-section>
       <q-card-section>
+        <!-- Bottone per modificare il profilo -->
         <q-btn
           @click="goToEditProfile"
           label="MODIFICA PROFILO"
@@ -29,6 +32,7 @@
           class="full-width q-mb-sm"
         />
 
+        <!-- Bottone per assistenza -->
         <q-btn
           @click="goToHelp"
           label="ASSISTENZA"
@@ -42,6 +46,7 @@
           </template>
         </q-btn>
 
+        <!-- Bottone per parlare con un operatore -->
         <q-btn
           @click="contactUs"
           label="PARLA CON UN OPERATORE"
@@ -55,6 +60,7 @@
           </template>
         </q-btn>
 
+        <!-- Bottone per il logout -->
         <q-btn
           @click="logout"
           label="LOGOUT"
@@ -62,6 +68,7 @@
           class="full-width"
         />
       </q-card-section>
+      <!-- Sezione per il footer "Powered by" -->
       <q-card-section class="text-center q-mt-md">
         <div class="powered-by">
           <span class="powered-by-text">Powered by</span>
@@ -75,7 +82,7 @@
 <script>
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
-import apiUrl from "src/api-config"; // Importa apiUrl
+import apiUrl from "src/api-config";
 import actionImage from "src/assets/action.jpg";
 import webexImage from "src/assets/Webex.png";
 
@@ -85,12 +92,13 @@ export default defineComponent({
     const router = useRouter();
     const username = localStorage.getItem("username") || "User";
 
+    // Funzione per navigare alla pagina di modifica del profilo
     const goToEditProfile = () => {
       router.push({ name: "UserEditProfile" });
     };
 
+    // Funzione per aprire la chat di assistenza su Webex
     const goToHelp = () => {
-      // URL per aprire la chat con il bot su Webex
       const webexChatUrl = "webex://chat?to=schianogo@webex.bot";
       const fallbackUrl = "https://webex.com";
 
@@ -102,7 +110,6 @@ export default defineComponent({
 
       // Mostra un messaggio se l'app non è installata
       setTimeout(() => {
-        // Verifica se la finestra ha il focus. Se no, mostra un messaggio di avviso
         if (document.hasFocus()) {
           alert("PER CHATTARE CON IL BOT È NECESSARIO INSTALLARE L'APP WEBEX");
           window.open(fallbackUrl, "_blank"); // Reindirizza all'URL di fallback
@@ -110,6 +117,7 @@ export default defineComponent({
       }, 1000); // Attendi un momento per il tentativo di apertura dell'app
     };
 
+    // Funzione per parlare con un operatore su Webex
     const contactUs = () => {
       const webexCallUrl =
         "webex://meet?url=https://meet1376.webex.com/meet/pr26349809433";
@@ -121,6 +129,7 @@ export default defineComponent({
       }, 500);
     };
 
+    // Funzione per il logout
     const logout = () => {
       localStorage.removeItem("username");
       router.push({ name: "UserLogin" });

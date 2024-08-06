@@ -1,3 +1,4 @@
+Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
 <template>
   <q-page class="q-pa-md" :class="{ 'dark-mode': $q.dark.isActive }">
     <div class="q-mb-lg text-center">
@@ -18,11 +19,13 @@
             </tr>
           </thead>
           <tbody>
+            <!-- Ciclo per visualizzare le bici -->
             <tr v-for="bike in bikes" :key="bike.bike_id">
               <td>{{ bike.bike_id }}</td>
               <td>{{ bike.bike_type }}</td>
               <td>{{ bike.battery_level }}</td>
               <td>
+                <!-- Seleziona lo stato della bici -->
                 <q-select
                   v-model="bike.state"
                   :options="stateOptions"
@@ -32,6 +35,7 @@
                 ></q-select>
               </td>
               <td>
+                <!-- Bottone per eliminare una bici -->
                 <q-btn
                   flat
                   icon="delete"
@@ -45,6 +49,7 @@
       </div>
     </div>
     <div class="text-center">
+      <!-- Bottone per inviare le modifiche -->
       <q-btn
         label="Apporta modifiche"
         color="primary"
@@ -58,23 +63,24 @@
 <script>
 import axios from "axios";
 import { Dialog } from "quasar";
-import apiUrl from "src/api-config"; // Importa apiUrl
+import apiUrl from "src/api-config";
 
 export default {
   name: "PartnerEditBike",
   data() {
     return {
-      bikes: [],
+      bikes: [], // Array per memorizzare le bici
       stateOptions: [
         { label: "Disponibile", value: "disponibile" },
         { label: "In noleggio", value: "in noleggio" },
         { label: "Riservata", value: "riservata" },
         { label: "Dismessa", value: "dismessa" },
       ],
-      modifiedBikes: [],
+      modifiedBikes: [], // Array per memorizzare le bici modificate
     };
   },
   methods: {
+    // Funzione per ottenere la lista delle bici
     async fetchBikes() {
       try {
         const partnerId = localStorage.getItem("partner_id");
@@ -97,6 +103,7 @@ export default {
         });
       }
     },
+    // Funzione per aggiornare lo stato di una bici
     updateBikeState(bike) {
       const existingBikeIndex = this.modifiedBikes.findIndex(
         (b) => b.bike_id === bike.bike_id
@@ -107,6 +114,7 @@ export default {
         this.modifiedBikes.push({ ...bike });
       }
     },
+    // Funzione per eliminare una bici
     async deleteBike(bikeId) {
       try {
         const partnerId = localStorage.getItem("partner_id");
@@ -131,6 +139,7 @@ export default {
         });
       }
     },
+    // Funzione per inviare le modifiche
     async submitChanges() {
       try {
         const partnerId = localStorage.getItem("partner_id");
@@ -165,6 +174,7 @@ export default {
     },
   },
   created() {
+    // Carica le bici quando il componente viene creato
     this.fetchBikes();
   },
 };
@@ -195,6 +205,7 @@ export default {
   }
 }
 
+/* Stile per la tabella */
 .markup-table {
   width: 100%;
   border-collapse: collapse;
@@ -244,3 +255,4 @@ export default {
   background-color: #444; /* Grigio scuro al passaggio del mouse in modalità scura */
 }
 </style>
+```

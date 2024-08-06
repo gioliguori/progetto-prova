@@ -1,3 +1,4 @@
+Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
 <template>
   <q-page :class="pageClass" class="flex flex-center q-pa-md">
     <q-card class="q-pa-md responsive-card" :class="cardClass">
@@ -9,6 +10,7 @@
         <q-markup-table class="q-mt-md custom-table">
           <thead>
             <tr>
+              <!-- Intestazioni delle colonne -->
               <th v-for="col in columns" :key="col.name" :style="headerStyle">
                 {{ col.label }}
               </th>
@@ -16,11 +18,13 @@
             </tr>
           </thead>
           <tbody>
+            <!-- Righe della tabella -->
             <tr v-for="row in partners" :key="row.partner_id">
               <td v-for="col in columns" :key="col.name" class="center-text">
                 {{ row[col.field] }}
               </td>
               <td class="center-text">
+                <!-- Bottone per eliminare un partner -->
                 <q-btn
                   color="negative"
                   label="Delete"
@@ -36,6 +40,7 @@
         <q-markup-table class="q-mt-md custom-table">
           <thead>
             <tr>
+              <!-- Intestazioni delle colonne per i ricavi -->
               <th
                 v-for="col in revenueColumns"
                 :key="col.name"
@@ -46,6 +51,7 @@
             </tr>
           </thead>
           <tbody>
+            <!-- Righe della tabella per i ricavi -->
             <tr v-for="row in revenues" :key="row.partner_name">
               <td
                 v-for="col in revenueColumns"
@@ -140,6 +146,7 @@ export default {
     };
   },
   created() {
+    // Carica i dati quando il componente viene creato
     this.fetchData();
   },
   methods: {
@@ -149,6 +156,7 @@ export default {
         message: "Fetching data...",
       });
       try {
+        // Effettua le richieste per ottenere i dati dei partner e dei ricavi
         const [partnersResponse, revenuesResponse] = await Promise.all([
           axios.get(`${apiUrl}/admin/partners`),
           axios.get(`${apiUrl}/admin/revenues`),
@@ -156,6 +164,7 @@ export default {
 
         Loading.hide();
 
+        // Gestione della risposta dei partner
         if (partnersResponse.data.success) {
           this.partners = partnersResponse.data.partners;
         } else {
@@ -165,6 +174,7 @@ export default {
           });
         }
 
+        // Gestione della risposta dei ricavi
         if (revenuesResponse.data.success) {
           this.revenues = revenuesResponse.data.revenues;
         } else {
@@ -184,6 +194,7 @@ export default {
     },
     async deletePartner(partnerId) {
       try {
+        // Elimina un partner specifico
         await axios.delete(`${apiUrl}/admin/partner/${partnerId}`);
         this.partners = this.partners.filter(
           (partner) => partner.partner_id !== partnerId
@@ -226,7 +237,7 @@ export default {
       return {
         "text-primary": !this.$q.dark.isActive,
         "text-white": this.$q.dark.isActive,
-        "title-large": true, // Class to increase title size
+        "title-large": true,
       };
     },
   },
@@ -243,7 +254,7 @@ export default {
 
 /* Titoli responsivi */
 .title-large {
-  font-size: 4rem; /* Imposta una dimensione fissa per il titolo molto grande */
+  font-size: 4rem;
   font-weight: bold;
 }
 
@@ -260,15 +271,11 @@ export default {
 }
 
 .custom-table tr:nth-child(even) {
-  background-color: var(
-    --q-dark-bg-secondary
-  ); /* Alternanza righe in modalità scura */
+  background-color: var(--q-dark-bg-secondary);
 }
 
 .custom-table tr:hover {
-  background-color: var(
-    --q-dark-hover
-  ); /* Evidenziazione riga in modalità scura */
+  background-color: var(--q-dark-hover);
 }
 
 /* Stile per i bottoni personalizzati */
@@ -280,3 +287,4 @@ export default {
   box-shadow: none;
 }
 </style>
+```

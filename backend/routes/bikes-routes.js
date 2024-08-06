@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Nuova rotta per ottenere i dati combinati di bici e partner
+// Rotta per ottenere i dati combinati di bici e partner
 router.get("/localization", async (req, res) => {
   try {
     const results = await knex("bikes")
@@ -91,7 +91,6 @@ router.post("/insert", async (req, res) => {
         throw new Error("Partner non trovato");
       }
 
-      // Assegna il nuovo bike_id_partner
       const newBikeIdPartner = partner.count_bike + 1;
 
       // Inserisci la nuova bici

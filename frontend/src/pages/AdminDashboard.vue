@@ -78,21 +78,20 @@ export default {
     },
   },
   computed: {
-    // Computed property per gestire la classe della pagina in base alla modalità scura
     pageClass() {
       return {
         "bg-dark text-light": this.$q.dark.isActive,
         "bg-light text-dark": !this.$q.dark.isActive,
       };
     },
-    // Computed property per gestire la classe della card in base alla modalità scura
+
     cardClass() {
       return {
         "bg-dark text-light": this.$q.dark.isActive,
         "bg-light text-dark": !this.$q.dark.isActive,
       };
     },
-    // Computed property per gestire la classe del titolo in base alla modalità scura
+
     titleClass() {
       return {
         "text-primary": !this.$q.dark.isActive,

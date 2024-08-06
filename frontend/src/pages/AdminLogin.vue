@@ -6,6 +6,7 @@
           v-bind:style="$q.screen.lt.sm ? { width: '80%' } : { width: '30%' }"
         >
           <q-card-section>
+            <!-- Logo dell'applicazione -->
             <q-avatar size="103px" class="absolute-center shadow-10">
               <img
                 src="src/assets/schiano.go.png"
@@ -14,11 +15,13 @@
             </q-avatar>
           </q-card-section>
           <q-card-section>
+            <!-- Titolo della sezione di login -->
             <div class="text-center q-pt-lg">
               <div class="col text-h6 ellipsis">Log in</div>
             </div>
           </q-card-section>
           <q-card-section>
+            <!-- Form di login -->
             <q-form class="q-gutter-md">
               <q-input filled v-model="username" label="Username" lazy-rules />
               <q-input
@@ -28,12 +31,14 @@
                 label="Password"
                 lazy-rules
               />
+              <!-- Selezione del ruolo -->
               <q-option-group
                 v-model="role"
                 :options="roleOptions"
                 type="radio"
                 inline
               />
+              <!-- Bottone di login -->
               <div>
                 <q-btn
                   label="Login"
@@ -53,7 +58,7 @@
 <script>
 import axios from "axios";
 import { Loading, QSpinnerGears } from "quasar";
-import apiUrl from "src/api-config"; // Importa apiUrl
+import apiUrl from "src/api-config";
 
 export default {
   name: "AdminLogin",
@@ -70,13 +75,12 @@ export default {
   },
   methods: {
     async login() {
-      console.log("Login button clicked"); // Log per capire se il metodo viene chiamato
       Loading.show({
         spinner: QSpinnerGears,
         message: "Logging in...",
       });
       try {
-        console.log("Tentativo di login per l'utente:", this.username);
+        // Effettua la richiesta di login
         const response = await axios.post(`${apiUrl}/login/admin-partner`, {
           username: this.username,
           password: this.password,
@@ -84,23 +88,17 @@ export default {
         });
         Loading.hide();
         if (response.data.success) {
-          console.log(
-            "Login avvenuto con successo per l'utente:",
-            this.username
-          );
+          // Salva i dati dell'utente e reindirizza alla dashboard appropriata
           if (this.role === "admin") {
-            localStorage.setItem("username", response.data.user.username); // Salva il nome utente per l'admin
+            localStorage.setItem("username", response.data.user.username);
             this.$router.push({ name: "AdminDashboard" });
           } else if (this.role === "partner") {
-            localStorage.setItem("partner_id", response.data.user.partner_id); // Salva il partner_id per il partner
-            localStorage.setItem("partner_name", response.data.user.username); // Salva il partner_name per il partner
+            localStorage.setItem("partner_id", response.data.user.partner_id);
+            localStorage.setItem("partner_name", response.data.user.username);
             this.$router.push({ name: "PartnerDashboard" });
           }
         } else {
-          console.log(
-            "Username o password non validi per l'utente:",
-            this.username
-          );
+          // Notifica in caso di credenziali non valide
           this.$q.notify({
             type: "negative",
             message: "Invalid username or password",
@@ -108,7 +106,7 @@ export default {
         }
       } catch (error) {
         Loading.hide();
-        console.error("Errore durante il login:", error);
+        // Notifica in caso di errore durante il login
         this.$q.notify({
           type: "negative",
           message: "An error occurred while logging in",

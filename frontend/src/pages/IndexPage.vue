@@ -1,12 +1,15 @@
+Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
 <template>
   <q-layout>
     <q-page-container>
       <q-page class="flex bg-image flex-center">
+        <!-- Card principale con stile dinamico per la larghezza -->
         <q-card
           v-bind:style="$q.screen.lt.sm ? { width: '90%' } : { width: '40%' }"
           class="custom-card animated-card"
         >
           <q-card-section>
+            <!-- Contenitore dell'avatar con animazione -->
             <div class="avatar-container animated-avatar">
               <q-avatar size="150px" class="shadow-10">
                 <img
@@ -21,6 +24,7 @@
             <div class="col text-h6 ellipsis">Benvenuto in SCHIANO.GO</div>
           </q-card-section>
           <q-card-section>
+            <!-- Form con i bottoni di registrazione e login -->
             <q-form class="q-gutter-md text-center">
               <div>
                 <q-btn
@@ -59,9 +63,11 @@ export default {
     };
   },
   methods: {
+    // Metodo per la navigazione alla pagina di registrazione
     register() {
       this.$router.push({ name: "UserRegistration" });
     },
+    // Metodo per la navigazione alla pagina di login
     login() {
       this.$router.push({ name: "UserLogin" });
     },
@@ -75,7 +81,7 @@ export default {
   background-image: linear-gradient(135deg, #a2d9ff, #66b2ff);
   background-size: cover;
   background-position: center;
-  height: 100vh; /* Assicura che lo sfondo copra tutta l'altezza della pagina */
+  height: 100vh; /* Copre l'intera altezza della pagina */
   display: flex;
   justify-content: center;
   align-items: center; /* Centratura verticale e orizzontale */
@@ -89,11 +95,11 @@ export default {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   background: #fff;
   color: #000; /* Colore del testo per la card */
-  opacity: 0; /* Inizialmente nascosta per animare */
+  opacity: 0; /* Inizialmente nascosta per l'animazione */
   transform: translateY(20px); /* Posizionata più in basso per l'animazione */
   animation: fadeInUp 0.6s forwards; /* Animazione di entrata */
   max-width: 90%; /* Dimensione massima per schermi piccoli */
-  width: 100%; /* Assicura che la card occupi tutta la larghezza disponibile */
+  width: 100%; /* Occupa tutta la larghezza disponibile */
 }
 
 /* Animazione di entrata della card */
@@ -104,11 +110,11 @@ export default {
   }
 }
 
-/* Stile per la sezione dell'avatar */
+/* Contenitore dell'avatar */
 .avatar-container {
   display: flex;
   justify-content: center;
-  margin-bottom: -50px; /* Regola per avvicinare l'avatar alla card */
+  margin-bottom: -50px; /* Avvicina l'avatar alla card */
 }
 
 /* Animazione di pulsazione per l'avatar */
@@ -130,7 +136,7 @@ export default {
 
 /* Spaziatura per la sezione del titolo */
 .q-card-section.text-center {
-  padding-top: 100px; /* Aumenta il padding per maggiore spazio dopo l'avatar */
+  padding-top: 100px; /* Aumenta lo spazio dopo l'avatar */
 }
 
 /* Allineamento e centratura del modulo */
@@ -144,13 +150,13 @@ export default {
 .q-btn {
   background-color: #007bff; /* Colore primario per i pulsanti */
   color: #fff; /* Colore del testo per i pulsanti */
-  transition: background-color 0.3s, transform 0.3s; /* Transizioni per effetti di hover */
+  transition: background-color 0.3s, transform 0.3s; /* Effetti di transizione */
 }
 
 /* Animazione di hover per i pulsanti */
 .animated-btn:hover {
   background-color: #0056b3; /* Colore più scuro al passaggio del mouse */
-  transform: scale(1.05); /* Leggera ingrandimento al passaggio del mouse */
+  transform: scale(1.05); /* Leggero ingrandimento al passaggio del mouse */
 }
 
 /* Media queries per adattare la card su schermi più piccoli */
@@ -160,3 +166,4 @@ export default {
   }
 }
 </style>
+```

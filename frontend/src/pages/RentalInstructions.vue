@@ -1,3 +1,4 @@
+Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
 <template>
   <q-page
     class="flex flex-center q-pa-md"
@@ -5,19 +6,23 @@
   >
     <div class="container text-center">
       <h2 class="responsive-title q-mb-md">ISTRUZIONI PER IL NOLEGGIO</h2>
+      <!-- Immagine delle istruzioni per il noleggio -->
       <img :src="imageSrc" alt="Istruzioni Noleggio" class="responsive-image" />
+      <!-- Input per l'ID della bici, solo lettura -->
       <q-input
         v-model="bikeId"
         label="ID della bici"
         readonly
         class="responsive-input q-mb-md"
       />
+      <!-- Input per l'ID della prenotazione, solo lettura -->
       <q-input
         v-model="reservationId"
         label="ID della prenotazione"
         readonly
         class="responsive-input q-mb-md"
       />
+      <!-- Bottone per iniziare il noleggio -->
       <q-btn
         @click="handleNoleggia"
         label="Noleggia"
@@ -42,6 +47,7 @@ export default defineComponent({
     const route = useRoute();
 
     onMounted(() => {
+      // Recupera gli ID dal local storage quando il componente viene montato
       bikeId.value = localStorage.getItem("bikeId") || "";
       reservationId.value = localStorage.getItem("reservationId") || "";
 
@@ -53,30 +59,24 @@ export default defineComponent({
     });
 
     const handleNoleggia = () => {
+      // Naviga alla pagina UserQrPage
       router.push({ name: "UserQrPage" });
     };
 
+    // Watcher per monitorare i cambiamenti di route
     watch(
       () => route.name,
       (newRouteName) => {
         if (newRouteName !== "UserQrPage") {
-          console.log(
-            "Navigazione verso una pagina diversa da UserQrPage, rimuovo l'ID della prenotazione e l'ID della bici dal local storage"
-          );
+          // Rimuove gli ID dal local storage se si naviga lontano da UserQrPage
           localStorage.removeItem("reservationId");
           localStorage.removeItem("bikeId");
-        } else {
-          console.log(
-            "Navigazione verso UserQrPage, mantengo l'ID della prenotazione e l'ID della bici nel local storage"
-          );
         }
       }
     );
 
+    // Rimuove gli ID dal local storage quando la pagina viene ricaricata o si naviga manualmente
     window.addEventListener("beforeunload", () => {
-      console.log(
-        "Pagina ricaricata o navigazione manuale, rimuovo l'ID della prenotazione e l'ID della bici dal local storage"
-      );
       localStorage.removeItem("reservationId");
       localStorage.removeItem("bikeId");
     });
@@ -143,3 +143,4 @@ export default defineComponent({
   }
 }
 </style>
+```

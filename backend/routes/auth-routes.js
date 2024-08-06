@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const knex = require("../knexfile"); // Assicurati che la configurazione di Knex sia corretta
+const knex = require("../knexfile");
 
 // Login route per utenti generici (users)
 router.post("/api/login", async (req, res) => {

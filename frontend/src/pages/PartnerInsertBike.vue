@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import apiUrl from "src/api-config"; // Importa apiUrl
+import apiUrl from "src/api-config";
 
 export default {
   name: "PartnerInsertBike",

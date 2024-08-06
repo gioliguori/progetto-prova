@@ -1,6 +1,8 @@
+Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
 <template>
   <q-page class="q-pa-sm">
     <div class="row q-col-gutter-sm">
+      <!-- Sezione per modificare il profilo -->
       <div class="col-lg-8 col-md-8 col-xs-12 col-sm-12">
         <q-card class="card-bg text-white no-shadow" bordered>
           <q-card-section class="text-h6">
@@ -26,6 +28,7 @@
                 </q-item-section>
               </q-item>
 
+              <!-- Input per modificare i dettagli del profilo -->
               <q-item class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                 <q-item-section>
                   <q-input
@@ -62,6 +65,7 @@
             </q-list>
           </q-card-section>
           <q-card-actions align="right">
+            <!-- Bottone per aggiornare le informazioni del profilo -->
             <q-btn
               class="text-capitalize bg-info text-white"
               @click="updateUserInfo"
@@ -73,6 +77,7 @@
 
       <div class="col-lg-4 col-md-4 col-xs-12 col-sm-12"></div>
 
+      <!-- Sezione per modificare la password -->
       <div class="col-lg-8 col-md-8 col-xs-12 col-sm-12">
         <q-card class="card-bg text-white no-shadow" bordered>
           <q-card-section class="text-h6 q-pa-sm">
@@ -132,6 +137,7 @@
             </q-item>
           </q-card-section>
           <q-card-actions align="right">
+            <!-- Bottone per aggiornare la password -->
             <q-btn
               class="text-capitalize bg-info text-white"
               @click="updatePassword"
@@ -147,7 +153,7 @@
 <script>
 import { defineComponent, onMounted, ref } from "vue";
 import axios from "axios";
-import apiUrl from "src/api-config"; // Importa apiUrl
+import apiUrl from "src/api-config";
 
 export default defineComponent({
   name: "PartnerDashboard",
@@ -166,7 +172,7 @@ export default defineComponent({
 
     // Funzione per ottenere i dettagli del partner
     const getPartnerDetails = async () => {
-      const partnerId = localStorage.getItem("partner_id"); // Ottieni l'ID del partner dal local storage
+      const partnerId = localStorage.getItem("partner_id");
       if (!partnerId) {
         console.error("Partner ID non trovato nel local storage");
         return;
@@ -187,7 +193,7 @@ export default defineComponent({
 
     // Funzione per aggiornare le informazioni del partner
     const updateUserInfo = async () => {
-      const partnerId = localStorage.getItem("partner_id"); // Ottieni l'ID del partner dal local storage
+      const partnerId = localStorage.getItem("partner_id");
       if (!partnerId) {
         console.error("Partner ID non trovato nel local storage");
         return;
@@ -209,7 +215,7 @@ export default defineComponent({
 
     // Funzione per aggiornare la password del partner
     const updatePassword = async () => {
-      const partnerId = localStorage.getItem("partner_id"); // Ottieni l'ID del partner dal local storage
+      const partnerId = localStorage.getItem("partner_id");
       if (!partnerId) {
         console.error("Partner ID non trovato nel local storage");
         return;
@@ -251,7 +257,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
+/* Sfondo per la card */
 .card-bg {
   background-color: #162b4d;
 }
 </style>
+```

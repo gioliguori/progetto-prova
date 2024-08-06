@@ -1,3 +1,4 @@
+Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
 <template>
   <q-page
     :class="{ 'bg-light': !$q.screen.dark, 'bg-dark': $q.screen.dark }"
@@ -8,11 +9,13 @@
         <div class="page-title">Modifica Profilo</div>
       </q-card-section>
       <q-card-section>
+        <!-- Form per modificare il profilo -->
         <q-form @submit.prevent="confirmChanges" class="q-gutter-md">
           <q-input v-model="newUsername" label="Username" filled />
           <q-input v-model="email" label="Email" type="email" filled />
           <q-input v-model="firstName" label="Nome" filled />
           <q-input v-model="lastName" label="Cognome" filled />
+          <!-- Input per la password corrente con validazione -->
           <q-input
             v-model="currentPassword"
             type="password"
@@ -20,6 +23,7 @@
             filled
             :rules="[(val) => !!val || 'Password corrente è obbligatoria']"
           />
+          <!-- Bottone per confermare le modifiche -->
           <q-btn
             label="Conferma"
             type="submit"
@@ -37,7 +41,7 @@
 import { defineComponent, ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
-import apiUrl from "src/api-config"; // Importa apiUrl
+import apiUrl from "src/api-config";
 
 export default defineComponent({
   name: "UserEditProfile",
@@ -50,20 +54,19 @@ export default defineComponent({
     const lastName = ref("");
     const currentPassword = ref("");
 
+    // Verifica se almeno un campo del modulo è stato compilato
     const isAnyFieldFilled = computed(() => {
       return (
         newUsername.value || email.value || firstName.value || lastName.value
       );
     });
 
+    // Recupera il vecchio username dal local storage quando il componente viene montato
     onMounted(() => {
-      oldUsername.value = localStorage.getItem("username"); // Recupera il vecchio username da localStorage
-      console.log(
-        "Old Username recuperato da localStorage:",
-        oldUsername.value
-      );
+      oldUsername.value = localStorage.getItem("username");
     });
 
+    // Funzione per confermare le modifiche
     const confirmChanges = async () => {
       if (!isAnyFieldFilled.value) {
         alert("Per favore, compila almeno uno dei campi.");
@@ -75,16 +78,8 @@ export default defineComponent({
         return;
       }
 
-      console.log("Inviando richiesta di aggiornamento con i seguenti dati:", {
-        oldUsername: oldUsername.value,
-        newUsername: newUsername.value,
-        email: email.value,
-        firstName: firstName.value,
-        lastName: lastName.value,
-        currentPassword: currentPassword.value,
-      });
-
       try {
+        // Invia la richiesta di aggiornamento dei dati
         const response = await axios.post(`${apiUrl}/user/update`, {
           oldUsername: oldUsername.value,
           newUsername: newUsername.value,
@@ -96,8 +91,8 @@ export default defineComponent({
 
         if (response.data.success) {
           alert("Dati aggiornati con successo!");
-          localStorage.setItem("username", newUsername.value); // Aggiorna il localStorage con il nuovo username
-          router.push("/UserHome");
+          localStorage.setItem("username", newUsername.value); // Aggiorna il local storage con il nuovo username
+          router.push("/UserHome"); // Reindirizza alla home dell'utente
         } else {
           alert(response.data.message);
         }
@@ -149,3 +144,4 @@ export default defineComponent({
   height: 100%;
 }
 </style>
+```

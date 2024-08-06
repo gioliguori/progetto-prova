@@ -2,9 +2,11 @@
   <q-layout>
     <q-page-container>
       <q-page class="flex bg-image flex-center">
+        <!-- Card per il login -->
         <q-card
           v-bind:style="$q.screen.lt.sm ? { width: '80%' } : { width: '30%' }"
         >
+          <!-- Sezione per l'avatar -->
           <q-card-section>
             <q-avatar size="103px" class="absolute-center shadow-10">
               <img
@@ -14,11 +16,13 @@
               />
             </q-avatar>
           </q-card-section>
+          <!-- Sezione per il titolo del login -->
           <q-card-section>
             <div class="text-center q-pt-lg">
               <div class="col text-h6 ellipsis">Log in</div>
             </div>
           </q-card-section>
+          <!-- Form per il login -->
           <q-card-section>
             <q-form class="q-gutter-md">
               <q-input filled v-model="username" label="Username" lazy-rules />
@@ -30,6 +34,7 @@
                 lazy-rules
               />
               <div>
+                <!-- Bottone per inviare il form di login -->
                 <q-btn
                   label="Login"
                   type="button"
@@ -48,8 +53,8 @@
 <script>
 import axios from "axios";
 import { Loading, QSpinnerGears } from "quasar";
-import apiUrl from "src/api-config"; // Importa apiUrl
-import imageSrc from "src/assets/schiano.go.png"; // Importa l'immagine
+import apiUrl from "src/api-config";
+import imageSrc from "src/assets/schiano.go.png";
 
 export default {
   name: "UserLogin",

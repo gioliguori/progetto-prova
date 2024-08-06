@@ -1,3 +1,4 @@
+Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
 <template>
   <q-page class="q-pa-sm full-page" :class="{ 'dark-mode': $q.dark.isActive }">
     <q-card class="q-pa-md full-height full-width">
@@ -5,6 +6,7 @@
         <div class="page-title">LISTA BICI DEL PARTNER</div>
       </q-card-section>
       <q-card-section>
+        <!-- Tabella delle Bici del Partner -->
         <q-markup-table class="q-mt-md custom-table">
           <thead>
             <tr>
@@ -16,12 +18,14 @@
             </tr>
           </thead>
           <tbody>
+            <!-- Ciclo per visualizzare le bici del partner -->
             <tr v-for="bike in bikes" :key="bike.bike_id">
               <td class="center-text">{{ bike.bike_type }}</td>
               <td class="center-text">{{ bike.state }}</td>
               <td class="center-text">{{ bike.battery_level }}</td>
               <td class="center-text">{{ bike.count_run }}</td>
               <td class="center-text">
+                <!-- Bottone per eliminare una bici -->
                 <q-btn
                   color="negative"
                   label="Delete"
@@ -40,16 +44,17 @@
 <script>
 import axios from "axios";
 import { Loading, QSpinnerGears } from "quasar";
-import apiUrl from "src/api-config"; // Importa apiUrl
+import apiUrl from "src/api-config";
 
 export default {
   name: "PartnerBikeList",
   data() {
     return {
-      bikes: [],
+      bikes: [], // Array per memorizzare le bici del partner
     };
   },
   created() {
+    // Carica i dati delle bici quando il componente viene creato
     this.fetchData();
   },
   methods: {
@@ -60,6 +65,7 @@ export default {
       });
       const partnerId = localStorage.getItem("partner_id");
       try {
+        // Effettua una richiesta per ottenere le bici del partner
         const bikesResponse = await axios.post(`${apiUrl}/partners/bikes`, {
           partnerId: partnerId,
         });
@@ -86,6 +92,7 @@ export default {
     async deleteBike(bikeId) {
       const partnerId = localStorage.getItem("partner_id");
       try {
+        // Effettua una richiesta per eliminare una bici
         await axios.delete(`${apiUrl}/partners/bike/${bikeId}`, {
           data: {
             partnerId: partnerId,
@@ -195,3 +202,4 @@ export default {
   box-shadow: none;
 }
 </style>
+```
