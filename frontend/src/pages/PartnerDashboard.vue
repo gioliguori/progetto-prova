@@ -1,4 +1,3 @@
-Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
 <template>
   <q-page class="q-pa-sm">
     <div class="row q-col-gutter-sm">
@@ -14,17 +13,10 @@ Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
               <q-item class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <q-item-section side>
                   <q-avatar size="100px">
-                    <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+                    <img :src="hotelImage" />
                   </q-avatar>
                 </q-item-section>
                 <q-item-section>
-                  <q-btn
-                    label="Add Photo"
-                    class="text-capitalize"
-                    rounded
-                    color="info"
-                    style="max-width: 120px"
-                  ></q-btn>
                 </q-item-section>
               </q-item>
 
@@ -154,6 +146,7 @@ Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
 import { defineComponent, onMounted, ref } from "vue";
 import axios from "axios";
 import apiUrl from "src/api-config";
+import hotelImage from "src/assets/hotel.jpg"; // Importa l'immagine
 
 export default defineComponent({
   name: "PartnerDashboard",
@@ -251,6 +244,7 @@ export default defineComponent({
       password_dict,
       updateUserInfo,
       updatePassword,
+      hotelImage, // Aggiungi l'immagine importata alla reattività
     };
   },
 });
@@ -262,4 +256,3 @@ export default defineComponent({
   background-color: #162b4d;
 }
 </style>
-```

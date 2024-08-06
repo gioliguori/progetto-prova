@@ -35,7 +35,9 @@ Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
             </tr>
           </tbody>
         </q-markup-table>
-
+        <q-card-section class="text-center q-mt-md">
+          <div :class="titleClass">REVENUES</div>
+        </q-card-section>
         <!-- Tabella dei Ricavi -->
         <q-markup-table class="q-mt-md custom-table">
           <thead>

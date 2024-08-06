@@ -41,8 +41,7 @@
                   <q-btn
                     @click="rentBike(row.bike_id, row.reservation_id)"
                     label="Avvia Noleggio"
-                    color="custom-color"
-                    class="custom-btn"
+                    class="custom-btn-red"
                   />
                 </td>
               </tr>
@@ -317,9 +316,18 @@ export default defineComponent({
   margin-bottom: 1rem;
 }
 
+/* Pulsante rosso */
+.custom-btn-red {
+  background-color: #C10015 !important; /* Colore rosso per il pulsante */
+  color: white !important;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
 /* Modalità scura per i pulsanti */
-.dark-mode .custom-btn {
-  background-color: #1b89ff !important; /* Colore di default per i pulsanti in modalità scura */
+.dark-mode .custom-btn,
+.dark-mode .custom-btn-red {
+  background-color: #C10015 !important; /* Colore rosso per i pulsanti in modalità scura */
   color: white !important;
 }
 

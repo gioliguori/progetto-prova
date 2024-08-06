@@ -8,20 +8,6 @@ Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
       <h2 class="responsive-title q-mb-md">ISTRUZIONI PER IL NOLEGGIO</h2>
       <!-- Immagine delle istruzioni per il noleggio -->
       <img :src="imageSrc" alt="Istruzioni Noleggio" class="responsive-image" />
-      <!-- Input per l'ID della bici, solo lettura -->
-      <q-input
-        v-model="bikeId"
-        label="ID della bici"
-        readonly
-        class="responsive-input q-mb-md"
-      />
-      <!-- Input per l'ID della prenotazione, solo lettura -->
-      <q-input
-        v-model="reservationId"
-        label="ID della prenotazione"
-        readonly
-        class="responsive-input q-mb-md"
-      />
       <!-- Bottone per iniziare il noleggio -->
       <q-btn
         @click="handleNoleggia"
