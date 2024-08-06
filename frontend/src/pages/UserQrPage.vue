@@ -1,4 +1,3 @@
-
 <template>
   <q-page
     class="flex flex-center q-pa-md"
@@ -6,17 +5,25 @@
   >
     <div class="container text-center">
       <h2 class="q-mb-md">Scansione QR</h2>
-      <qrcode-stream @decode="onDecode" @error="onError" />
-      <input type="file" @change="onFileChange" accept="image/*" class="q-mt-md" />
-      <div v-if="bikeId">
-        <p>ID della bici: {{ bikeId }}</p>
-        <q-btn
-          @click="startRental"
-          label="Avvia Noleggio"
-          color="primary"
-          class="q-mt-md"
+
+      <div>
+        <p class="error">{{ error }}</p>
+
+        <qrcode-stream
+          :constraints="selectedConstraints"
+          :track="trackFunctionSelected.value"
+          :formats="selectedBarcodeFormats"
+          @error="onError"
+          @detect="onDetect"
+          @camera-on="onCameraReady"
         />
       </div>
+
+      <div v-if="bikeId || bikeIdScanned">
+        <p>ID della bici da local storage: {{ bikeId }}</p>
+        <p>ID della bici scansionata: {{ bikeIdScanned }}</p>
+      </div>
+
       <div v-if="errorMessage" class="error-message">
         <p>{{ errorMessage }}</p>
       </div>
@@ -25,13 +32,13 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
-import { QrcodeStream } from "vue-qrcode-reader"; // Importa i componenti QR
-import { QBtn } from "quasar"; // Importa il componente del pulsante
-import jsQR from "jsqr"; // Importa jsQR per decodificare i QR code dalle immagini
-import axios from "axios"; // Importa axios per le chiamate API
-import apiUrl from "src/api-config"; // Importa apiUrl
+import { QrcodeStream } from "vue-qrcode-reader";
+import { QBtn } from "quasar";
+import jsQR from "jsqr";
+import axios from "axios";
+import apiUrl from "src/api-config";
 
 export default defineComponent({
   name: "UserQrPage",
@@ -42,9 +49,32 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const bikeId = ref("");
+    const bikeIdScanned = ref("");
     const reservationId = ref("");
     const username = localStorage.getItem("username");
     const errorMessage = ref("");
+
+    const result = ref("");
+
+    const selectedConstraints = ref({ facingMode: 'environment' });
+    const defaultConstraintOptions = [
+      { label: 'rear camera', constraints: { facingMode: 'environment' } },
+    ];
+    const constraintOptions = ref(defaultConstraintOptions);
+
+    const trackFunctionOptions = [
+      { text: 'nothing (default)', value: undefined },
+      { text: 'outline', value: paintOutline },
+    ];
+    const trackFunctionSelected = ref(trackFunctionOptions[1]);
+
+    const barcodeFormats = ref({
+      qr_code: true,
+      
+    });
+    const selectedBarcodeFormats = computed(() => {
+      return Object.keys(barcodeFormats.value).filter((format) => barcodeFormats.value[format])
+    });
 
     onMounted(() => {
       console.log("SCANSIONE AVVIATA");
@@ -53,9 +83,9 @@ export default defineComponent({
       reservationId.value = localStorage.getItem("reservationId") || "";
 
       if (bikeId.value) {
-        console.log(`ID della bici': ${bikeId.value}`);
+        console.log(`ID della bici da local storage: ${bikeId.value}`);
       } else {
-        console.log("ID della bici non trovato.");
+        console.log("ID della bici non trovato nel local storage.");
       }
 
       if (reservationId.value) {
@@ -65,26 +95,69 @@ export default defineComponent({
       }
     });
 
-    const onDecode = (result) => {
-      bikeId.value = result;
-      console.log("QR RILEVATO, L'ID DELLA BICI E':", result);
-      console.log("AAAAAAAAAAAAA");
-    };
+    async function onCameraReady() {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoDevices = devices.filter(({ kind }) => kind === 'videoinput');
+
+      constraintOptions.value = [
+        ...defaultConstraintOptions,
+        ...videoDevices.map(({ deviceId, label }) => ({
+          label: `${label} (ID: ${deviceId})`,
+          constraints: { deviceId }
+        }))
+      ];
+
+      error.value = '';
+    }
+
+    function onDetect(detectedCodes) {
+  if (detectedCodes.length === 0) return; // Non fare nulla se non ci sono codici rilevati
+
+  // Ottieni il valore del primo codice rilevato
+  const firstDetectedCode = detectedCodes[0].rawValue;
+
+  // Pulisci il valore (rimuovi virgolette e parentesi quadre se necessario)
+  bikeIdScanned.value = firstDetectedCode;
+
+  console.log("QR RILEVATO, L'ID DELLA BICI SCANSIONATA E':", bikeIdScanned.value);
+
+  // Controlla se bikeIdScanned coincide con bikeId
+  if (bikeIdScanned.value === bikeId.value) {
+    // Se coincidono, avvia il noleggio
+    startRental();
+  } else {
+    // Altrimenti, notifica un errore
+    errorMessage.value = "L'ID della bici scansionata non corrisponde all'ID della bici memorizzato.";
+  }
+}
+
+
 
     const onError = (error) => {
       console.error("Errore nella scansione QR:", error);
+      const errorMessages = {
+        NotAllowedError: 'you need to grant camera access permission',
+        NotFoundError: 'no camera on this device',
+        NotSupportedError: 'secure context required (HTTPS, localhost)',
+        NotReadableError: 'is the camera already in use?',
+        OverconstrainedError: 'installed cameras are not suitable',
+        StreamApiNotSupportedError: 'Stream API is not supported in this browser',
+        InsecureContextError: 'Camera access is only permitted in secure context. Use HTTPS or localhost rather than HTTP.'
+      };
+
+      errorMessage.value = errorMessages[error.name] || error.message;
     };
 
     const startRental = async () => {
       try {
         const response = await axios.post(`${apiUrl}/rental/create-rental`, {
           username,
-          bikeId: bikeId.value,
+          bikeId: bikeIdScanned.value,
           reservationId: reservationId.value,
         });
 
         if (response.data.success) {
-          console.log(`Noleggio attivato per la bici con ID: ${bikeId.value}`);
+          console.log(`Noleggio attivato per la bici con ID: ${bikeIdScanned.value}`);
           router.push("/UserRentals");
         } else {
           console.error(
@@ -125,8 +198,8 @@ export default defineComponent({
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const code = jsQR(imageData.data, canvas.width, canvas.height);
           if (code) {
-            console.log("QR RILEVATO, L'ID DELLA BICI E':", code.data);
-            console.log("AAAAAAAAAAAAA");
+            bikeIdScanned.value = code.data;
+            console.log("QR RILEVATO, L'ID DELLA BICI SCANSIONATA E':", code.data);
           } else {
             console.error("Impossibile decodificare il QR code.");
           }
@@ -136,19 +209,48 @@ export default defineComponent({
       reader.readAsDataURL(file);
     };
 
+    function paintOutline(detectedCodes, ctx) {
+      for (const detectedCode of detectedCodes) {
+        const [firstPoint, ...otherPoints] = detectedCode.cornerPoints;
+
+        ctx.strokeStyle = 'red';
+
+        ctx.beginPath();
+        ctx.moveTo(firstPoint.x, firstPoint.y);
+        for (const { x, y } of otherPoints) {
+          ctx.lineTo(x, y);
+        }
+        ctx.lineTo(firstPoint.x, firstPoint.y);
+        ctx.closePath();
+        ctx.stroke();
+      }
+    }
+
+  
+
+    
+
     return {
       bikeId,
+      bikeIdScanned,
       reservationId,
       errorMessage,
-      onDecode,
+      result,
+      selectedConstraints,
+      constraintOptions,
+      trackFunctionOptions,
+      trackFunctionSelected,
+      barcodeFormats,
+      selectedBarcodeFormats,
+      onDetect,
       onError,
       startRental,
       onFileChange,
+      onCameraReady,
     };
   },
 });
 </script>
-
 <style scoped>
 /* Modalità scura */
 .dark-mode {
@@ -191,5 +293,16 @@ h2 {
   color: red;
   font-weight: bold;
   margin-top: 1rem;
+}
+
+.error {
+  font-weight: bold;
+  color: red;
+}
+
+.barcode-format-checkbox {
+  margin-right: 10px;
+  white-space: nowrap;
+  display: inline-block;
 }
 </style>
