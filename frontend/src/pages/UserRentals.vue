@@ -6,6 +6,15 @@
     <div class="container text-center">
       <h1 class="page-title q-mb-md">Noleggi e Prenotazioni</h1>
 
+      <div v-if="activeRental" class="q-mb-md">
+        <q-btn
+          @click="showPaymentPopup"
+          label="Termina Noleggio"
+          color="negative"
+          class="q-mb-md"
+        />
+      </div>
+
       <div class="q-mb-md">
         <h2 class="section-title">La tua Prenotazione</h2>
         <div v-if="reservation.length">
@@ -64,14 +73,6 @@
             </tr>
           </tbody>
         </q-markup-table>
-        <div v-if="activeRental">
-          <q-btn
-            @click="showPaymentPopup"
-            label="Termina Noleggio"
-            color="negative"
-            class="q-mt-md"
-          />
-        </div>
       </div>
 
       <q-dialog v-model="paymentDialog">

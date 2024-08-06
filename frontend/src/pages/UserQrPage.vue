@@ -35,7 +35,7 @@
 import { defineComponent, ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { QrcodeStream } from "vue-qrcode-reader";
-import { QBtn } from "quasar";
+import { QBtn, Notify } from "quasar";
 import jsQR from "jsqr";
 import axios from "axios";
 import apiUrl from "src/api-config";
@@ -56,24 +56,25 @@ export default defineComponent({
 
     const result = ref("");
 
-    const selectedConstraints = ref({ facingMode: 'environment' });
+    const selectedConstraints = ref({ facingMode: "environment" });
     const defaultConstraintOptions = [
-      { label: 'rear camera', constraints: { facingMode: 'environment' } },
+      { label: "rear camera", constraints: { facingMode: "environment" } },
     ];
     const constraintOptions = ref(defaultConstraintOptions);
 
     const trackFunctionOptions = [
-      { text: 'nothing (default)', value: undefined },
-      { text: 'outline', value: paintOutline },
+      { text: "nothing (default)", value: undefined },
+      { text: "outline", value: paintOutline },
     ];
     const trackFunctionSelected = ref(trackFunctionOptions[1]);
 
     const barcodeFormats = ref({
       qr_code: true,
-      
     });
     const selectedBarcodeFormats = computed(() => {
-      return Object.keys(barcodeFormats.value).filter((format) => barcodeFormats.value[format])
+      return Object.keys(barcodeFormats.value).filter(
+        (format) => barcodeFormats.value[format]
+      );
     });
 
     onMounted(() => {
@@ -97,52 +98,56 @@ export default defineComponent({
 
     async function onCameraReady() {
       const devices = await navigator.mediaDevices.enumerateDevices();
-      const videoDevices = devices.filter(({ kind }) => kind === 'videoinput');
+      const videoDevices = devices.filter(({ kind }) => kind === "videoinput");
 
       constraintOptions.value = [
         ...defaultConstraintOptions,
         ...videoDevices.map(({ deviceId, label }) => ({
           label: `${label} (ID: ${deviceId})`,
-          constraints: { deviceId }
-        }))
+          constraints: { deviceId },
+        })),
       ];
 
-      error.value = '';
+      error.value = "";
     }
 
     function onDetect(detectedCodes) {
-  if (detectedCodes.length === 0) return; // Non fare nulla se non ci sono codici rilevati
+      if (detectedCodes.length === 0) return; // Non fare nulla se non ci sono codici rilevati
 
-  // Ottieni il valore del primo codice rilevato
-  const firstDetectedCode = detectedCodes[0].rawValue;
+      // Ottieni il valore del primo codice rilevato
+      const firstDetectedCode = detectedCodes[0].rawValue;
 
-  // Pulisci il valore (rimuovi virgolette e parentesi quadre se necessario)
-  bikeIdScanned.value = firstDetectedCode;
+      // Pulisci il valore (rimuovi virgolette e parentesi quadre se necessario)
+      bikeIdScanned.value = firstDetectedCode;
 
-  console.log("QR RILEVATO, L'ID DELLA BICI SCANSIONATA E':", bikeIdScanned.value);
+      console.log(
+        "QR RILEVATO, L'ID DELLA BICI SCANSIONATA E':",
+        bikeIdScanned.value
+      );
 
-  // Controlla se bikeIdScanned coincide con bikeId
-  if (bikeIdScanned.value === bikeId.value) {
-    // Se coincidono, avvia il noleggio
-    startRental();
-  } else {
-    // Altrimenti, notifica un errore
-    errorMessage.value = "L'ID della bici scansionata non corrisponde all'ID della bici memorizzato.";
-  }
-}
-
-
+      // Controlla se bikeIdScanned coincide con bikeId
+      if (bikeIdScanned.value === bikeId.value) {
+        // Se coincidono, avvia il noleggio
+        startRental();
+      } else {
+        // Altrimenti, notifica un errore
+        errorMessage.value =
+          "L'ID della bici scansionata non corrisponde all'ID della bici memorizzato.";
+      }
+    }
 
     const onError = (error) => {
       console.error("Errore nella scansione QR:", error);
       const errorMessages = {
-        NotAllowedError: 'you need to grant camera access permission',
-        NotFoundError: 'no camera on this device',
-        NotSupportedError: 'secure context required (HTTPS, localhost)',
-        NotReadableError: 'is the camera already in use?',
-        OverconstrainedError: 'installed cameras are not suitable',
-        StreamApiNotSupportedError: 'Stream API is not supported in this browser',
-        InsecureContextError: 'Camera access is only permitted in secure context. Use HTTPS or localhost rather than HTTP.'
+        NotAllowedError: "you need to grant camera access permission",
+        NotFoundError: "no camera on this device",
+        NotSupportedError: "secure context required (HTTPS, localhost)",
+        NotReadableError: "is the camera already in use?",
+        OverconstrainedError: "installed cameras are not suitable",
+        StreamApiNotSupportedError:
+          "Stream API is not supported in this browser",
+        InsecureContextError:
+          "Camera access is only permitted in secure context. Use HTTPS or localhost rather than HTTP.",
       };
 
       errorMessage.value = errorMessages[error.name] || error.message;
@@ -157,8 +162,21 @@ export default defineComponent({
         });
 
         if (response.data.success) {
-          console.log(`Noleggio attivato per la bici con ID: ${bikeIdScanned.value}`);
-          router.push("/UserRentals");
+          console.log(
+            `Noleggio attivato per la bici con ID: ${bikeIdScanned.value}`
+          );
+
+          // Display success notification
+          Notify.create({
+            type: "positive",
+            message: "Noleggio attivato con successo!",
+            timeout: 2000,
+            position: "bottom", // Modifica la posizione della notifica
+          });
+
+          setTimeout(() => {
+            router.push("/UserRentals");
+          }, 2000);
         } else {
           console.error(
             "Errore nell'avvio del noleggio:",
@@ -199,7 +217,10 @@ export default defineComponent({
           const code = jsQR(imageData.data, canvas.width, canvas.height);
           if (code) {
             bikeIdScanned.value = code.data;
-            console.log("QR RILEVATO, L'ID DELLA BICI SCANSIONATA E':", code.data);
+            console.log(
+              "QR RILEVATO, L'ID DELLA BICI SCANSIONATA E':",
+              code.data
+            );
           } else {
             console.error("Impossibile decodificare il QR code.");
           }
@@ -213,7 +234,7 @@ export default defineComponent({
       for (const detectedCode of detectedCodes) {
         const [firstPoint, ...otherPoints] = detectedCode.cornerPoints;
 
-        ctx.strokeStyle = 'red';
+        ctx.strokeStyle = "red";
 
         ctx.beginPath();
         ctx.moveTo(firstPoint.x, firstPoint.y);
@@ -225,10 +246,6 @@ export default defineComponent({
         ctx.stroke();
       }
     }
-
-  
-
-    
 
     return {
       bikeId,
