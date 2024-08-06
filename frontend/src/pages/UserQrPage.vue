@@ -1,3 +1,4 @@
+
 <template>
   <q-page
     class="flex flex-center q-pa-md"
@@ -6,8 +7,8 @@
     <div class="container text-center">
       <h2 class="q-mb-md">Scansione QR</h2>
       <qrcode-stream @decode="onDecode" @error="onError" />
+      <input type="file" @change="onFileChange" accept="image/*" class="q-mt-md" />
       <div v-if="bikeId">
-        <p>Scansione completata!</p>
         <p>ID della bici: {{ bikeId }}</p>
         <q-btn
           @click="startRental"
@@ -28,6 +29,7 @@ import { defineComponent, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { QrcodeStream } from "vue-qrcode-reader"; // Importa i componenti QR
 import { QBtn } from "quasar"; // Importa il componente del pulsante
+import jsQR from "jsqr"; // Importa jsQR per decodificare i QR code dalle immagini
 import axios from "axios"; // Importa axios per le chiamate API
 import apiUrl from "src/api-config"; // Importa apiUrl
 
@@ -45,11 +47,13 @@ export default defineComponent({
     const errorMessage = ref("");
 
     onMounted(() => {
+      console.log("SCANSIONE AVVIATA");
+
       bikeId.value = localStorage.getItem("bikeId") || "";
       reservationId.value = localStorage.getItem("reservationId") || "";
 
       if (bikeId.value) {
-        console.log(`Noleggio attivato per la bici con ID: ${bikeId.value}`);
+        console.log(`ID della bici': ${bikeId.value}`);
       } else {
         console.log("ID della bici non trovato.");
       }
@@ -63,7 +67,8 @@ export default defineComponent({
 
     const onDecode = (result) => {
       bikeId.value = result;
-      console.log(`ID della bici scansionato: ${result}`);
+      console.log("QR RILEVATO, L'ID DELLA BICI E':", result);
+      console.log("AAAAAAAAAAAAA");
     };
 
     const onError = (error) => {
@@ -79,7 +84,7 @@ export default defineComponent({
         });
 
         if (response.data.success) {
-          console.log("Noleggio avviato con successo.");
+          console.log(`Noleggio attivato per la bici con ID: ${bikeId.value}`);
           router.push("/UserRentals");
         } else {
           console.error(
@@ -104,6 +109,33 @@ export default defineComponent({
       }
     };
 
+    const onFileChange = async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(imageData.data, canvas.width, canvas.height);
+          if (code) {
+            console.log("QR RILEVATO, L'ID DELLA BICI E':", code.data);
+            console.log("AAAAAAAAAAAAA");
+          } else {
+            console.error("Impossibile decodificare il QR code.");
+          }
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    };
+
     return {
       bikeId,
       reservationId,
@@ -111,6 +143,7 @@ export default defineComponent({
       onDecode,
       onError,
       startRental,
+      onFileChange,
     };
   },
 });
