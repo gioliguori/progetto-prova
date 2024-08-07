@@ -20,13 +20,6 @@
           @camera-on="onCameraReady"
         />
       </div>
-
-      <!-- Visualizzazione degli ID delle bici -->
-      <div v-if="bikeId || bikeIdScanned">
-        <p>ID della bici da local storage: {{ bikeId }}</p>
-        <p>ID della bici scansionata: {{ bikeIdScanned }}</p>
-      </div>
-
       <!-- Messaggio di errore -->
       <div v-if="errorMessage" class="error-message">
         <p>{{ errorMessage }}</p>
