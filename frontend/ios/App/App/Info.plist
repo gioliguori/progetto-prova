@@ -50,5 +50,12 @@
     <string>Abbiamo bisogno della tua posizione per mostrarti dove ti trovi sulla mappa.</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>Abbiamo bisogno della tua posizione per fornire una migliore esperienza utente.</string>
+    <!-- Aggiunte le chiavi per le autorizzazioni alla fotocamera -->
+    <key>NSCameraUsageDescription</key>
+    <string>Abbiamo bisogno di accedere alla tua fotocamera per scansionare i codici QR</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Abbiamo bisogno di accedere al tuo microfono per catturare l'audio</string>
+
+
 </dict>
 </plist>

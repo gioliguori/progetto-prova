@@ -1,4 +1,3 @@
-Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
 <template>
   <q-page :class="pageClass" class="flex flex-center q-pa-md">
     <q-card class="q-pa-md responsive-card" :class="cardClass">
@@ -289,4 +288,3 @@ export default {
   box-shadow: none;
 }
 </style>
-```
