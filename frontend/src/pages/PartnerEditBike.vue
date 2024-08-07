@@ -1,4 +1,3 @@
-Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
 <template>
   <q-page class="q-pa-md" :class="{ 'dark-mode': $q.dark.isActive }">
     <div class="q-mb-lg text-center">
@@ -255,4 +254,3 @@ export default {
   background-color: #444; /* Grigio scuro al passaggio del mouse in modalità scura */
 }
 </style>
-```

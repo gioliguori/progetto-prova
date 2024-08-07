@@ -1,4 +1,3 @@
-Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
 <template>
   <div>
     <!-- Mappa a schermo intero -->
@@ -418,4 +417,3 @@ export default defineComponent({
   background: #fff;
 }
 </style>
-```

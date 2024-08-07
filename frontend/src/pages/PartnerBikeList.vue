@@ -1,4 +1,3 @@
-Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
 <template>
   <q-page class="q-pa-sm full-page" :class="{ 'dark-mode': $q.dark.isActive }">
     <q-card class="q-pa-md full-height full-width">
@@ -202,4 +201,3 @@ export default {
   box-shadow: none;
 }
 </style>
-```

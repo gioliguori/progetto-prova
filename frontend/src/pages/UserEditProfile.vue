@@ -1,4 +1,3 @@
-Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
 <template>
   <q-page
     :class="{ 'bg-light': !$q.screen.dark, 'bg-dark': $q.screen.dark }"
@@ -144,4 +143,3 @@ export default defineComponent({
   height: 100%;
 }
 </style>
-```
