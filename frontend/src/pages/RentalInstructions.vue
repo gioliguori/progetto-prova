@@ -1,4 +1,3 @@
-Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
 <template>
   <q-page
     class="flex flex-center q-pa-md"
@@ -129,4 +128,3 @@ export default defineComponent({
   }
 }
 </style>
-```

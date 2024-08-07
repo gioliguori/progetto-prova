@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
+    <q-header class="statusbar" elevated>
+      <q-toolbar class="toolbar-bottom">
         <q-btn
           flat
           dense
@@ -10,7 +10,7 @@
           icon="arrow_back"
           aria-label="Back"
         />
-        <q-toolbar-title class="title-font"> Schiano.GO </q-toolbar-title>
+        <q-toolbar-title class="title-font"> SchianoGO </q-toolbar-title>
         <q-space />
 
         <div class="q-gutter-sm row items-center no-wrap">
@@ -91,6 +91,24 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.statusbar {
+  padding: 20px 0;
+  display: flex;
+  align-items: flex-end;
+}
+
+.toolbar-bottom {
+  display: flex;
+  width: 100%;
+  align-items: end;
+  padding-bottom: 0px;
+}
+
+.title-font {
+  margin-left: 6px;
+  font-size: 16px;
+}
+
 .footer-menu {
   position: fixed;
   bottom: 0;
@@ -100,7 +118,7 @@ export default defineComponent({
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 10px 0;
+  padding: 20px 0;
 }
 
 .footer-btn {

@@ -1,4 +1,3 @@
-Ecco il codice con i commenti aggiunti alle parti più importanti: ```html
 <template>
   <q-layout>
     <q-page-container>
@@ -166,4 +165,3 @@ export default {
   }
 }
 </style>
-```
